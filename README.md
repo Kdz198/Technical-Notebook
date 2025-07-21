@@ -8,7 +8,7 @@ It includes both **theory (in markdown)** and **interactive visualizations (HTML
 ## 📘 Topics
 
 ### 🐇 RabbitMQ
-- **Theory**: [RabbitMQ/RabbitMQ.md](./rabbitmq/rabbitmq.md)  
+- **Theory**: [RabbitMQ.MD](RabbitMQ/RabbitMQ.markdown)  
 - **Visualize**: [RabbitMQ Visualization](https://chipper-sopapillas-7b23db.netlify.app/rabbitmq/rabbitmq)
 
 ---
