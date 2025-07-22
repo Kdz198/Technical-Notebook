@@ -98,8 +98,8 @@ RabbitMQ cung cấp một số loại Exchange cơ bản, mỗi loại có cơ c
 
 - **Cơ chế hoạt động**: Topic Exchange định tuyến tin nhắn dựa trên khớp mẫu (pattern matching) giữa routing key của tin nhắn và routing pattern được khai báo trong binding. Routing key trong Topic Exchange thường là một chuỗi các từ được phân tách bằng dấu chấm (ví dụ: user.create, order.update.status).
 - **Wildcard**: Topic Exchange hỗ trợ hai loại wildcard trong routing pattern:
-  - * (dấu sao): Khớp chính xác một từ trong một vị trí cụ thể. Ví dụ: regions.na.cities.* sẽ khớp với regions.na.cities.toronto nhưng không khớp regions.na.cities.
-  - # (dấu thăng): Khớp không hoặc nhiều từ. Ví dụ: audit.events.# sẽ khớp với audit.events.users.signup và audit.events.orders.placed. Một mẫu # đơn lẻ sẽ khớp với bất kỳ routing key nào, khiến topic exchange hoạt động như một fanout exchange cho các binding sử dụng mẫu đó.
+  - **(*)**: Khớp chính xác một từ trong một vị trí cụ thể. Ví dụ: regions.na.cities.* sẽ khớp với regions.na.cities.toronto nhưng không khớp regions.na.cities.
+  - **(#)**: Khớp không hoặc nhiều từ. Ví dụ: audit.events.# sẽ khớp với audit.events.users.signup và audit.events.orders.placed. Một mẫu # đơn lẻ sẽ khớp với bất kỳ routing key nào, khiến topic exchange hoạt động như một fanout exchange cho các binding sử dụng mẫu đó.
 - **Trường hợp sử dụng**: Topic Exchange phù hợp khi Consumer quan tâm đến các "topic" cụ thể hoặc các tập hợp con của tin nhắn. Nó thường được sử dụng trong các hệ thống log (ví dụ: error.system.database), phân tích dữ liệu theo chủ đề, hoặc các dịch vụ thông báo có cấu trúc.
 
 #### Headers Exchange
@@ -194,14 +194,14 @@ Nếu ứng dụng cần gửi và nhận các đối tượng Java dưới dạ
 
 ```xml
 <dependencies>
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-amqp</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-    </dependency>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-amqp</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+  </dependency>
 </dependencies>
 ```
 
@@ -266,13 +266,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class RabbitMQProducer {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+  @Autowired
+  private RabbitTemplate rabbitTemplate;
 
-    public void sendStringMessage(String exchangeName, String routingKey, String message) {
-        rabbitTemplate.convertAndSend(exchangeName, routingKey, message);
-        System.out.println(" [x] Sent '" + message + "' to exchange '" + exchangeName + "' with routing key '" + routingKey + "'");
-    }
+  public void sendStringMessage(String exchangeName, String routingKey, String message) {
+    rabbitTemplate.convertAndSend(exchangeName, routingKey, message);
+    System.out.println(" [x] Sent '" + message + "' to exchange '" + exchangeName + "' with routing key '" + routingKey + "'");
+  }
 }
 ```
 
@@ -287,35 +287,35 @@ import org.springframework.stereotype.Service;
 
 // Định nghĩa một POJO đơn giản
 class MyObject {
-    private String name;
-    private int value;
+  private String name;
+  private int value;
 
-    public MyObject() {} // Default constructor for deserialization
+  public MyObject() {} // Default constructor for deserialization
 
-    public MyObject(String name, int value) {
-        this.name = name;
-        this.value = value;
-    }
+  public MyObject(String name, int value) {
+    this.name = name;
+    this.value = value;
+  }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public int getValue() { return value; }
-    public void setValue(int value) { this.value = value; }
+  public String getName() { return name; }
+  public void setName(String name) { this.name = name; }
+  public int getValue() { return value; }
+  public void setValue(int value) { this.value = value; }
 
-    @Override
-    public String toString() { return "MyObject{name='" + name + "', value=" + value + "}"; }
+  @Override
+  public String toString() { return "MyObject{name='" + name + "', value=" + value + "}"; }
 }
 
 @Service
 public class RabbitMQProducer {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+  @Autowired
+  private RabbitTemplate rabbitTemplate;
 
-    public void sendJsonObject(String exchangeName, String routingKey, MyObject object) {
-        rabbitTemplate.convertAndSend(exchangeName, routingKey, object);
-        System.out.println(" [x] Sent JSON object '" + object + "' to exchange '" + exchangeName + "' with routing key '" + routingKey + "'");
-    }
+  public void sendJsonObject(String exchangeName, String routingKey, MyObject object) {
+    rabbitTemplate.convertAndSend(exchangeName, routingKey, object);
+    System.out.println(" [x] Sent JSON object '" + object + "' to exchange '" + exchangeName + "' with routing key '" + routingKey + "'");
+  }
 }
 ```
 
@@ -338,11 +338,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitMQConsumer {
 
-    @RabbitListener(queues = "myQueue") // Tên queue cần lắng nghe
-    public void receiveStringMessage(String message) {
-        System.out.println(" [x] Received String: '" + message + "'");
-        // Logic xử lý tin nhắn tại đây
-    }
+  @RabbitListener(queues = "myQueue") // Tên queue cần lắng nghe
+  public void receiveStringMessage(String message) {
+    System.out.println(" [x] Received String: '" + message + "'");
+    // Logic xử lý tin nhắn tại đây
+  }
 }
 ```
 
@@ -357,11 +357,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class RabbitMQConsumer {
 
-    @RabbitListener(queues = "myQueue") // Tên queue cần lắng nghe
-    public void receiveJsonObject(MyObject object) { // Spring sẽ tự động deserialize JSON thành MyObject
-        System.out.println(" [x] Received JSON object: '" + object + "'");
-        // Logic xử lý tin nhắn tại đây
-    }
+  @RabbitListener(queues = "myQueue") // Tên queue cần lắng nghe
+  public void receiveJsonObject(MyObject object) { // Spring sẽ tự động deserialize JSON thành MyObject
+    System.out.println(" [x] Received JSON object: '" + object + "'");
+    // Logic xử lý tin nhắn tại đây
+  }
 }
 ```
 
@@ -390,22 +390,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConsumerConfig {
 
-    @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
-        factory.setConcurrentConsumers(3);    // Số lượng consumer tối thiểu
-        factory.setMaxConcurrentConsumers(10); // Số lượng consumer tối đa
-        factory.setPrefetchCount(5);         // Số lượng tin nhắn chưa ACK tối đa mỗi consumer
-        factory.setMessageConverter(jsonMessageConverter()); // Sử dụng JSON converter
-        // factory.setAdviceChain(retryInterceptor()); // Thêm retry interceptor nếu có
-        return factory;
-    }
+  @Bean
+  public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+    SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+    factory.setConnectionFactory(connectionFactory);
+    factory.setConcurrentConsumers(3);    // Số lượng consumer tối thiểu
+    factory.setMaxConcurrentConsumers(10); // Số lượng consumer tối đa
+    factory.setPrefetchCount(5);         // Số lượng tin nhắn chưa ACK tối đa mỗi consumer
+    factory.setMessageConverter(jsonMessageConverter()); // Sử dụng JSON converter
+    // factory.setAdviceChain(retryInterceptor()); // Thêm retry interceptor nếu có
+    return factory;
+  }
 
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
+  @Bean
+  public MessageConverter jsonMessageConverter() {
+    return new Jackson2JsonMessageConverter();
+  }
 }
 ```
 
@@ -432,41 +432,41 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQTopologyConfig {
 
-    // Khai báo Queue
-    @Bean
-    public Queue myQueue() {
-        // Tạo một Queue có tên "myQueue" và là durable (bền vững)
-        return new Queue("myQueue", true);
-    }
+  // Khai báo Queue
+  @Bean
+  public Queue myQueue() {
+    // Tạo một Queue có tên "myQueue" và là durable (bền vững)
+    return new Queue("myQueue", true);
+  }
 
-    // Khai báo Exchange (ví dụ: TopicExchange)
-    @Bean
-    public TopicExchange myExchange() {
-        // Tạo một TopicExchange có tên "myExchange", durable và không auto-delete
-        return new TopicExchange("myExchange", true, false); // name, durable, autoDelete
-    }
+  // Khai báo Exchange (ví dụ: TopicExchange)
+  @Bean
+  public TopicExchange myExchange() {
+    // Tạo một TopicExchange có tên "myExchange", durable và không auto-delete
+    return new TopicExchange("myExchange", true, false); // name, durable, autoDelete
+  }
 
-    // Khai báo Binding
-    @Bean
-    public Binding binding(Queue myQueue, TopicExchange myExchange) {
-        // Liên kết "myQueue" với "myExchange" sử dụng routing key "routing.key.#"
-        return BindingBuilder.bind(myQueue)
-                            .to(myExchange)
-                            .with("routing.key.#");
-    }
+  // Khai báo Binding
+  @Bean
+  public Binding binding(Queue myQueue, TopicExchange myExchange) {
+    // Liên kết "myQueue" với "myExchange" sử dụng routing key "routing.key.#"
+    return BindingBuilder.bind(myQueue)
+            .to(myExchange)
+            .with("routing.key.#");
+  }
 
-    // Có thể khai báo thêm các Exchange, Queue, Binding khác
-    @Bean
-    public Queue anotherQueue() {
-        return new Queue("anotherQueue", true);
-    }
+  // Có thể khai báo thêm các Exchange, Queue, Binding khác
+  @Bean
+  public Queue anotherQueue() {
+    return new Queue("anotherQueue", true);
+  }
 
-    @Bean
-    public Binding anotherBinding(Queue anotherQueue, TopicExchange myExchange) {
-        return BindingBuilder.bind(anotherQueue)
-                            .to(myExchange)
-                            .with("another.key");
-    }
+  @Bean
+  public Binding anotherBinding(Queue anotherQueue, TopicExchange myExchange) {
+    return BindingBuilder.bind(anotherQueue)
+            .to(myExchange)
+            .with("another.key");
+  }
 }
 ```
 
@@ -499,29 +499,29 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 @Configuration
 public class RabbitMQMessageConverterConfig {
 
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        // Cấu hình Jackson2JsonMessageConverter để tự động chuyển đổi JSON
-        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
-        // Có thể cấu hình classMapper nếu cần kiểm soát chặt chẽ hơn về kiểu
-        // converter.setClassMapper(myCustomClassMapper());
-        // converter.setCreateMessageIds(true); // Tùy chọn: tạo Message ID duy nhất cho mỗi tin nhắn
-        return converter;
-    }
+  @Bean
+  public MessageConverter jsonMessageConverter() {
+    // Cấu hình Jackson2JsonMessageConverter để tự động chuyển đổi JSON
+    Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+    // Có thể cấu hình classMapper nếu cần kiểm soát chặt chẽ hơn về kiểu
+    // converter.setClassMapper(myCustomClassMapper());
+    // converter.setCreateMessageIds(true); // Tùy chọn: tạo Message ID duy nhất cho mỗi tin nhắn
+    return converter;
+  }
 
-    // Nếu bạn muốn tùy chỉnh ObjectMapper (ví dụ: cho phép các thuộc tính không xác định)
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper;
-    }
+  // Nếu bạn muốn tùy chỉnh ObjectMapper (ví dụ: cho phép các thuộc tính không xác định)
+  @Bean
+  public ObjectMapper objectMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    return mapper;
+  }
 
-    // Sử dụng ObjectMapper tùy chỉnh với Jackson2JsonMessageConverter
-    @Bean
-    public MessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
-        return new Jackson2JsonMessageConverter(objectMapper);
-    }
+  // Sử dụng ObjectMapper tùy chỉnh với Jackson2JsonMessageConverter
+  @Bean
+  public MessageConverter jsonMessageConverter(ObjectMapper objectMapper) {
+    return new Jackson2JsonMessageConverter(objectMapper);
+  }
 }
 ```
 
