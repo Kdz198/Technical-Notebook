@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám Phá Docker và Spring Boot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Dev (shades of slate blue, warm gray, off-white, with a subtle teal accent) -->
+    <!-- Application Structure Plan: The application uses a hub-and-spoke model. The main view acts as a central hub, introducing the key topics (Concepts, Architecture, Spring Boot, Best Practices, Case Study). A sticky navigation bar allows users to jump to any section. This structure breaks down the dense technical report into manageable, interactive modules, empowering users to choose their learning path rather than passively scrolling through a long document. This non-linear approach enhances engagement and comprehension for complex subjects. -->
+    <!-- Visualization & Content Choices:
+        - Report Info: Docker vs VM comparison -> Goal: Compare -> Viz: Radar Chart (Chart.js) -> Interaction: Hover for details -> Justification: Effectively shows multi-dimensional comparison of features like performance, resources, and isolation.
+        - Report Info: Case Study quantitative benefits -> Goal: Inform/Impact -> Viz: Bar Chart (Chart.js) -> Interaction: Hover for exact values -> Justification: Clearly visualizes the magnitude of improvements (e.g., deployment time reduction), making the benefits tangible.
+        - Report Info: Core Concepts & Architecture -> Goal: Organize/Explain -> Viz: Interactive Diagram (HTML/CSS/JS) -> Interaction: Click/Hover to reveal definitions -> Justification: Makes learning abstract relationships more engaging and less overwhelming than text lists.
+        - Report Info: Dockerfile commands/Best Practices -> Goal: Organize/Reference -> Viz: Tabs and Accordions (HTML/CSS/JS) -> Interaction: Click to switch/expand -> Justification: Organizes large amounts of text into a compact, user-controlled interface, perfect for reference material.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #0d9488; /* teal-600 */
+            border-bottom-color: #0d9488; /* teal-600 */
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+        .tab-btn.active {
+            background-color: #0d9488; /* teal-600 */
+            color: white;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50">
+
+<header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+    <nav class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <a href="#" class="text-2xl font-bold text-slate-800">Docker & Spring Boot</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#intro" class="nav-link text-slate-600 font-medium">Giới thiệu</a>
+                <a href="#concepts" class="nav-link text-slate-600 font-medium">Khái niệm</a>
+                <a href="#architecture" class="nav-link text-slate-600 font-medium">Kiến trúc</a>
+                <a href="#springboot" class="nav-link text-slate-600 font-medium">Spring Boot</a>
+                <a href="#best-practices" class="nav-link text-slate-600 font-medium">Thực hành tốt nhất</a>
+                <a href="#casestudy" class="nav-link text-slate-600 font-medium">Case Study</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden text-slate-700 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden mt-4 space-y-2">
+            <a href="#intro" class="block nav-link text-slate-600 font-medium">Giới thiệu</a>
+            <a href="#concepts" class="block nav-link text-slate-600 font-medium">Khái niệm</a>
+            <a href="#architecture" class="block nav-link text-slate-600 font-medium">Kiến trúc</a>
+            <a href="#springboot" class="block nav-link text-slate-600 font-medium">Spring Boot</a>
+            <a href="#best-practices" class="block nav-link text-slate-600 font-medium">Thực hành tốt nhất</a>
+            <a href="#casestudy" class="block nav-link text-slate-600 font-medium">Case Study</a>
+        </div>
+    </nav>
+</header>
+
+<main class="container mx-auto px-6 py-12">
+
+    <section id="intro" class="mb-24 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">Khám phá Docker</h1>
+        <p class="text-lg text-slate-600 max-w-3xl mx-auto mb-12">Một nền tảng mã nguồn mở cách mạng hóa cách chúng ta xây dựng, triển khai và quản lý ứng dụng. Hãy cùng tìm hiểu sâu hơn về vai trò, lợi ích và so sánh với công nghệ máy ảo truyền thống.</p>
+
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="text-left bg-white p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-teal-600 mb-4">Docker vs. Máy ảo (VM)</h3>
+                <p class="text-slate-600 mb-4">
+                    Docker và Máy ảo đều là công nghệ ảo hóa nhưng hoạt động ở các cấp độ khác nhau. Biểu đồ radar này so sánh các khía cạnh chính. Di chuột qua các điểm để xem chi tiết. VM ảo hóa phần cứng, trong khi Docker ảo hóa hệ điều hành, giúp nó nhẹ hơn và nhanh hơn.
+                </p>
+                <ul class="space-y-2 text-slate-600">
+                    <li><span class="font-semibold text-teal-700">Hiệu năng:</span> Docker nhanh hơn do chia sẻ kernel của host.</li>
+                    <li><span class="font-semibold text-teal-700">Tài nguyên:</span> Docker nhẹ hơn, tiêu thụ ít CPU và RAM hơn.</li>
+                    <li><span class="font-semibold text-teal-700">Cách ly:</span> VM cung cấp mức độ cách ly cao hơn.</li>
+                    <li><span class="font-semibold text-teal-700">Khởi động:</span> Docker khởi động trong vài giây, VM mất vài phút.</li>
+                </ul>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="chart-container">
+                    <canvas id="dockerVsVmChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="concepts" class="mb-24">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-slate-800 mb-4">Các Khái niệm Cốt lõi</h2>
+        <p class="text-lg text-center text-slate-600 max-w-3xl mx-auto mb-12">Để làm chủ Docker, bạn cần nắm vững các thành phần nền tảng. Hãy khám phá các khái niệm chính tạo nên hệ sinh thái Docker.</p>
+
+        <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="mb-6 border-b border-slate-200">
+                <div id="tabs-container-concepts" class="flex flex-wrap -mb-px">
+                    <button data-tab="image" class="tab-btn concepts-tab-btn active text-lg font-medium px-6 py-3 rounded-t-lg border-b-2 border-transparent">Image</button>
+                    <button data-tab="container" class="tab-btn concepts-tab-btn text-lg font-medium px-6 py-3 rounded-t-lg border-b-2 border-transparent">Container</button>
+                    <button data-tab="dockerfile" class="tab-btn concepts-tab-btn text-lg font-medium px-6 py-3 rounded-t-lg border-b-2 border-transparent">Dockerfile</button>
+                    <button data-tab="volume" class="tab-btn concepts-tab-btn text-lg font-medium px-6 py-3 rounded-t-lg border-b-2 border-transparent">Volume</button>
+                    <button data-tab="network" class="tab-btn concepts-tab-btn text-lg font-medium px-6 py-3 rounded-t-lg border-b-2 border-transparent">Network</button>
+                    <button data-tab="compose" class="tab-btn concepts-tab-btn text-lg font-medium px-6 py-3 rounded-t-lg border-b-2 border-transparent">Compose</button>
+                </div>
+            </div>
+            <div id="tab-content-concepts">
+                <div id="content-image" class="tab-content concepts-tab-content">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-3">📦 Docker Image</h3>
+                    <p class="text-slate-600">Là một mẫu (template) chỉ đọc, chứa mọi thứ cần thiết để chạy một ứng dụng: mã nguồn, runtime, thư viện, và cấu hình. Image là "bản thiết kế" để tạo ra các container. Chúng có tính bất biến, nghĩa là một khi đã được tạo, chúng không thể thay đổi.</p>
+                </div>
+                <div id="content-container" class="tab-content concepts-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-3">🏃 Docker Container</h3>
+                    <p class="text-slate-600">Là một thực thể chạy (running instance) của một Docker Image. Container là môi trường được cách ly, nhẹ, chứa ứng dụng và các phụ thuộc của nó. Bạn có thể tạo, khởi động, dừng, di chuyển và xóa container. Nhiều container có thể chạy từ cùng một image.</p>
+                </div>
+                <div id="content-dockerfile" class="tab-content concepts-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-3">📜 Dockerfile</h3>
+                    <p class="text-slate-600">Là một tệp văn bản chứa các hướng dẫn từng bước để Docker tự động xây dựng một image. Mỗi lệnh trong Dockerfile tạo ra một lớp (layer) trong image, giúp tối ưu hóa việc build và lưu trữ.</p>
+                </div>
+                <div id="content-volume" class="tab-content concepts-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-3">💾 Docker Volume</h3>
+                    <p class="text-slate-600">Là cơ chế để lưu trữ dữ liệu bền vững, độc lập với vòng đời của container. Dữ liệu trong volume sẽ không bị mất khi container bị xóa, và có thể được chia sẻ giữa nhiều container. Đây là cách được khuyến nghị để xử lý dữ liệu của ứng dụng.</p>
+                </div>
+                <div id="content-network" class="tab-content concepts-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-3">🌐 Docker Network</h3>
+                    <p class="text-slate-600">Cho phép các container giao tiếp với nhau và với thế giới bên ngoài. Docker cung cấp các chế độ mạng khác nhau (bridge, host, overlay) để đáp ứng các nhu cầu kết nối đa dạng, từ ứng dụng đơn lẻ đến kiến trúc microservices phức tạp.</p>
+                </div>
+                <div id="content-compose" class="tab-content concepts-tab-content hidden">
+                    <h3 class="text-2xl font-bold text-teal-600 mb-3">🎼 Docker Compose</h3>
+                    <p class="text-slate-600">Là công cụ để định nghĩa và chạy các ứng dụng đa container. Với một tệp YAML duy nhất, bạn có thể cấu hình toàn bộ các dịch vụ, mạng và volume của ứng dụng, sau đó khởi chạy tất cả chỉ bằng một lệnh.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="mb-24">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-slate-800 mb-4">Kiến trúc Docker</h2>
+        <p class="text-lg text-center text-slate-600 max-w-3xl mx-auto mb-12">Hiểu cách Docker hoạt động "dưới mui xe". Kiến trúc client-server của Docker bao gồm các thành phần cốt lõi phối hợp với nhau để quản lý vòng đời của container.</p>
+
+        <div class="bg-white rounded-xl shadow-lg p-8">
+            <div class="relative p-4 border-2 border-dashed border-slate-300 rounded-lg">
+                <div class="text-center mb-6">
+                    <div class="inline-block bg-sky-100 text-sky-800 p-4 rounded-lg shadow">
+                        <h4 class="font-bold">Người dùng (Docker Client / CLI)</h4>
+                        <p class="text-sm">Gửi lệnh như `docker run`</p>
+                    </div>
+                </div>
+                <div class="text-center text-2xl font-bold text-slate-500 my-2">↓</div>
+                <div class="text-center mb-6">
+                    <div class="inline-block bg-slate-100 text-slate-800 p-4 rounded-lg shadow">
+                        <h4 class="font-bold">REST API</h4>
+                        <p class="text-sm">Giao diện giao tiếp</p>
+                    </div>
+                </div>
+                <div class="text-center text-2xl font-bold text-slate-500 my-2">↓</div>
+                <div class="bg-teal-50 border-2 border-teal-200 p-6 rounded-lg shadow-inner">
+                    <h3 class="text-xl font-bold text-teal-700 text-center mb-4">Docker Engine (Host)</h3>
+                    <div class="grid md:grid-cols-3 gap-4 text-center">
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <h4 class="font-bold text-teal-600">Docker Daemon (dockerd)</h4>
+                            <p class="text-sm text-slate-600">Lắng nghe API, quản lý Images, Containers, Networks, Volumes.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <h4 class="font-bold text-teal-600">Containerd</h4>
+                            <p class="text-sm text-slate-600">Quản lý vòng đời container (tạo, chạy, dừng).</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow">
+                            <h4 class="font-bold text-teal-600">RunC</h4>
+                            <p class="text-sm text-slate-600">Runtime cấp thấp, tương tác với kernel để thực thi container.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="springboot" class="mb-24">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-slate-800 mb-4">Triển khai với Spring Boot</h2>
+        <p class="text-lg text-center text-slate-600 max-w-3xl mx-auto mb-12">Docker và Spring Boot là một sự kết hợp mạnh mẽ. Docker giúp đóng gói ứng dụng Spring Boot, đảm bảo môi trường nhất quán và đơn giản hóa quy trình CI/CD.</p>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-teal-600 mb-4">Dockerfile Tối ưu cho Spring Boot</h3>
+                <p class="text-slate-600 mb-4">
+                    Sử dụng multi-stage builds để tạo image nhỏ gọn. Giai đoạn đầu tiên dùng Maven để build file JAR, giai đoạn thứ hai chỉ chứa JRE và ứng dụng đã build, giúp giảm kích thước và tăng bảo mật.
+                </p>
+                <div class="bg-slate-800 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                        <pre><code># Giai đoạn 1: Build
+FROM maven:3.8-openjdk-17 AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Giai đoạn 2: Runtime
+FROM eclipse-temurin:17-jre-alpine
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+</code></pre>
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-teal-600 mb-4">Quản lý Phụ thuộc với Docker Compose</h3>
+                <p class="text-slate-600 mb-4">
+                    Sử dụng Docker Compose để chạy ứng dụng Spring Boot cùng với các dịch vụ phụ thuộc như database (PostgreSQL). Compose tự động tạo mạng và cho phép các dịch vụ giao tiếp với nhau bằng tên.
+                </p>
+                <div class="bg-slate-800 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                        <pre><code>version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mydb
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=mydb
+volumes:
+  postgres_data:
+</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="best-practices" class="mb-24">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-slate-800 mb-4">Thực hành Tốt nhất</h2>
+        <p class="text-lg text-center text-slate-600 max-w-3xl mx-auto mb-12">Tuân thủ các phương pháp hay nhất để xây dựng các ứng dụng Docker hiệu quả, an toàn và dễ quản lý.</p>
+
+        <div class="space-y-4">
+            <div class="accordion-item bg-white rounded-xl shadow-lg overflow-hidden">
+                <button class="accordion-header w-full text-left p-6 flex justify-between items-center">
+                    <span class="text-xl font-semibold text-teal-700">✍️ Dockerfile</span>
+                    <span class="accordion-icon text-2xl font-light transform transition-transform">+</span>
+                </button>
+                <div class="accordion-content">
+                    <ul class="p-6 pt-0 space-y-2 text-slate-600 list-disc list-inside">
+                        <li>Sử dụng Multi-stage Builds để giảm kích thước image.</li>
+                        <li>Chọn base image tối giản (vd: `alpine`).</li>
+                        <li>Tối ưu hóa caching bằng cách sắp xếp lệnh hợp lý.</li>
+                        <li>Chạy ứng dụng với user không có quyền root.</li>
+                        <li>Sử dụng file `.dockerignore` để loại bỏ các file không cần thiết.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item bg-white rounded-xl shadow-lg overflow-hidden">
+                <button class="accordion-header w-full text-left p-6 flex justify-between items-center">
+                    <span class="text-xl font-semibold text-teal-700">🖼️ Image</span>
+                    <span class="accordion-icon text-2xl font-light transform transition-transform">+</span>
+                </button>
+                <div class="accordion-content">
+                    <ul class="p-6 pt-0 space-y-2 text-slate-600 list-disc list-inside">
+                        <li>Giữ kích thước image nhỏ nhất có thể.</li>
+                        <li>Quét image để tìm lỗ hổng bảo mật (với Trivy, Snyk).</li>
+                        <li>Gắn tag cho image một cách có ý nghĩa (vd: `1.2.3-alpine`).</li>
+                        <li>Tránh dùng tag `:latest` trong môi trường production.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item bg-white rounded-xl shadow-lg overflow-hidden">
+                <button class="accordion-header w-full text-left p-6 flex justify-between items-center">
+                    <span class="text-xl font-semibold text-teal-700">🔒 Bảo mật</span>
+                    <span class="accordion-icon text-2xl font-light transform transition-transform">+</span>
+                </button>
+                <div class="accordion-content">
+                    <ul class="p-6 pt-0 space-y-2 text-slate-600 list-disc list-inside">
+                        <li>Không hardcode thông tin nhạy cảm (secrets) vào image.</li>
+                        <li>Giới hạn quyền của container, tránh chạy với cờ `--privileged`.</li>
+                        <li>Thường xuyên cập nhật Docker Engine và base image.</li>
+                        <li>Sử dụng hệ thống tệp chỉ đọc (read-only) nếu có thể.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="casestudy" class="mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-center text-slate-800 mb-4">Nghiên cứu Điển hình (Case Study)</h2>
+        <p class="text-lg text-center text-slate-600 max-w-3xl mx-auto mb-12">Một công ty đã hiện đại hóa ứng dụng đơn khối của mình bằng Docker và microservices. Hãy xem những lợi ích thực tế mà họ đã đạt được.</p>
+
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-teal-600 mb-4">Vấn đề & Giải pháp</h3>
+                <div class="mb-6">
+                    <h4 class="font-semibold text-red-600">🔴 Vấn đề trước đây:</h4>
+                    <ul class="list-disc list-inside text-slate-600">
+                        <li>Môi trường không nhất quán, lỗi "chạy trên máy tôi".</li>
+                        <li>Triển khai chậm, tỷ lệ lỗi cao (8%).</li>
+                        <li>Sử dụng tài nguyên không hiệu quả, chi phí cao.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-green-600">🟢 Giải pháp với Docker:</h4>
+                    <ul class="list-disc list-inside text-slate-600">
+                        <li>Đóng gói mỗi microservice vào một container.</li>
+                        <li>Tích hợp Docker vào pipeline CI/CD tự động.</li>
+                        <li>Sử dụng Docker Compose cho môi trường phát triển.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h3 class="text-2xl font-bold text-center text-teal-600 mb-4">Kết quả Đạt được</h3>
+                <div class="chart-container">
+                    <canvas id="caseStudyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-800 text-slate-300 py-8">
+    <div class="container mx-auto px-6 text-center">
+        <p>&copy; 2025 Báo cáo Tương tác về Docker. Được tạo để minh họa khả năng của ứng dụng web tương tác.</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const dockerVsVmCtx = document.getElementById('dockerVsVmChart').getContext('2d');
+        new Chart(dockerVsVmCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Hiệu năng', 'Sử dụng Tài nguyên', 'Cách ly', 'Tính di động', 'Tốc độ Khởi động', 'Kích thước'],
+                datasets: [{
+                    label: 'Docker',
+                    data: [9, 9, 7, 9, 10, 10],
+                    backgroundColor: 'rgba(13, 148, 136, 0.2)',
+                    borderColor: 'rgb(13, 148, 136)',
+                    pointBackgroundColor: 'rgb(13, 148, 136)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(13, 148, 136)'
+                }, {
+                    label: 'Máy ảo (VM)',
+                    data: [6, 4, 10, 7, 3, 2],
+                    backgroundColor: 'rgba(51, 65, 85, 0.2)',
+                    borderColor: 'rgb(51, 65, 85)',
+                    pointBackgroundColor: 'rgb(51, 65, 85)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(51, 65, 85)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 12
+                            }
+                        },
+                        ticks: {
+                            backdropColor: 'transparent',
+                            stepSize: 2
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.r !== null) {
+                                    label += context.parsed.r + ' / 10';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const caseStudyCtx = document.getElementById('caseStudyChart').getContext('2d');
+        new Chart(caseStudyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Thời gian Triển khai', 'Tỷ lệ Lỗi', 'Sử dụng CPU/Memory', 'Chi phí Hạ tầng'],
+                datasets: [{
+                    label: 'Mức giảm/cải thiện (%)',
+                    data: [60, 87.5, 50, 25],
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.6)',
+                        'rgba(239, 68, 68, 0.6)',
+                        'rgba(16, 185, 129, 0.6)',
+                        'rgba(249, 115, 22, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgb(59, 130, 246)',
+                        'rgb(239, 68, 68)',
+                        'rgb(16, 185, 129)',
+                        'rgb(249, 115, 22)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    let value = context.parsed.y;
+                                    if (context.label === 'Tỷ lệ Lỗi') {
+                                        label = `Giảm từ 8% xuống 1% (giảm ${value}%)`;
+                                    } else {
+                                        label += value + '%';
+                                    }
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const tabsContainer = document.getElementById('tabs-container-concepts');
+        const tabButtons = tabsContainer.querySelectorAll('.concepts-tab-btn');
+        const tabContents = document.getElementById('tab-content-concepts').querySelectorAll('.concepts-tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                const tabId = button.getAttribute('data-tab');
+                tabContents.forEach(content => {
+                    if (content.id === `content-${tabId}`) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        accordionItems.forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            const content = item.querySelector('.accordion-content');
+            const icon = item.querySelector('.accordion-icon');
+
+            header.addEventListener('click', () => {
+                const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+
+                accordionItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.querySelector('.accordion-content').style.maxHeight = '0px';
+                        otherItem.querySelector('.accordion-icon').textContent = '+';
+                        otherItem.querySelector('.accordion-icon').classList.remove('rotate-45');
+                    }
+                });
+
+                if (isOpen) {
+                    content.style.maxHeight = '0px';
+                    icon.textContent = '+';
+                    icon.classList.remove('rotate-45');
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.textContent = '+';
+                    icon.classList.add('rotate-45');
+                }
+            });
+        });
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('main section');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

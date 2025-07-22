@@ -8,14 +8,14 @@ It includes both **theory (in markdown)** and **interactive visualizations (HTML
 ## 📘 Topics
 
 ### 🐇 RabbitMQ
-- **Theory**: [RabbitMQ.MD](RabbitMQ/RabbitMQ.markdown)  
+- **Theory**: [RabbitMQ](RabbitMQ/RabbitMQ.markdown)  
 - **Visualize**: [RabbitMQ Visualization](https://chipper-sopapillas-7b23db.netlify.app/rabbitmq/rabbitmq)
 
 ---
 
 ### 🐳 Docker
-- **Theory**: Coming soon  
-- **Visualize**: Coming soon
+- **Theory**: [Docker](Docker/Docker.markdown)
+- **Visualize**: [Docker Visualization](https://chipper-sopapillas-7b23db.netlify.app/Docker/Docker)
 
 ---
 
