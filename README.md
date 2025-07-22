@@ -19,6 +19,18 @@ It includes both **theory (in markdown)** and **interactive visualizations (HTML
 
 ---
 
+### 🔐 JWT
+- **Theory**: [JWT](JWT/JWT.markdown)
+- **Visualize**: [JWT Visualization](https://chipper-sopapillas-7b23db.netlify.app/JWT/JWT)
+
+---
+
+### 🛡️ Spring Security
+- **Theory**: Coming soon
+- **Visualize**: Coming soon
+
+---
+
 ### 📨 Kafka
 - **Theory**: Coming soon  
 - **Visualize**: Coming soon

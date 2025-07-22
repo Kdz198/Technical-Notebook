@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Học JWT Tương Tác | Mentor-Mentee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chosen Palette: Calm Neutrals -->
+  <!-- Application Structure Plan: Tôi đã thiết kế ứng dụng này như một mô-đun học tập tương tác trên một trang duy nhất. Thay vì cuộn dài, người dùng sử dụng thanh điều hướng bên cạnh để chuyển đổi giữa các phần học tập chính: Tổng Quan, Giải Phẫu JWT, Luồng Hoạt Động, Triển Khai Thực Tế, Bảo Mật, và Tình Huống Thực Tế. Cấu trúc này cho phép người dùng tự do khám phá các chủ đề theo tốc độ của riêng họ, tập trung vào từng khái niệm một cách trực quan. Các tương tác như click, hover, và chuyển tab được sử dụng để làm cho các khái niệm phức tạp trở nên dễ hiểu và hấp dẫn hơn, thay vì chỉ đọc văn bản thuần túy. Cấu trúc này được chọn để tối ưu hóa trải nghiệm học tập, biến một tài liệu kỹ thuật thành một công cụ hướng dẫn hấp dẫn. -->
+  <!-- Visualization & Content Choices:
+      - So sánh JWT vs Session: Dùng bảng so sánh trực quan (HTML/Tailwind) để làm nổi bật sự khác biệt cốt lõi. Mục tiêu: So sánh. Tương tác: Hover để xem chi tiết.
+      - Giải phẫu JWT: Một "bộ giải mã" JWT mô phỏng (HTML/CSS/JS) cho phép người dùng nhấp vào từng phần (Header, Payload, Signature) để xem nội dung đã giải mã và giải thích. Mục tiêu: Tổ chức, Thông tin. Tương tác: Click.
+      - Luồng hoạt động: Sơ đồ quy trình từng bước (HTML/CSS) minh họa vòng đời của JWT, được điều khiển bằng các nút bấm. Mục tiêu: Hiển thị sự thay đổi, Tổ chức. Tương tác: Click.
+      - Triển khai Spring Boot: Sử dụng giao diện tab (HTML/JS) để trình bày các đoạn mã khác nhau (`pom.xml`, `SecurityConfig`, v.v.), giúp người dùng không bị choáng ngợp. Mục tiêu: Tổ chức, Thông tin. Tương tác: Click tab, copy code.
+      - Best Practices: Lưới các thẻ (card) có thể lật (HTML/CSS/JS), mỗi thẻ đại diện cho một nguyên tắc bảo mật. Mục tiêu: Thông tin, Tổ chức. Tương tác: Click/hover.
+      - Case Study: Sơ đồ kiến trúc microservices đơn giản (HTML/CSS) minh họa luồng xác thực trong một ứng dụng thực tế. Mục tiêu: Hiển thị mối quan hệ. Tương tác: Click vào các mũi tên để xem mô tả luồng.
+      Tất cả các lựa chọn này đều nhằm mục đích biến nội dung tĩnh thành trải nghiệm học tập chủ động và trực quan, tuân thủ các yêu cầu kỹ thuật.
+  -->
+  <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+  <style>
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background-color: #F8F9FA;
+      color: #343A40;
+    }
+    .nav-link {
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+    }
+    .nav-link.active {
+      background-color: #E9ECEF;
+      color: #007BFF;
+      border-left-color: #007BFF;
+    }
+    .nav-link:hover {
+      background-color: #F1F3F5;
+      border-left-color: #007BFF;
+    }
+    .content-section {
+      display: none;
+    }
+    .content-section.active {
+      display: block;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .jwt-part {
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    .jwt-part:hover {
+      transform: scale(1.05);
+    }
+    .tab-button.active {
+      border-bottom-color: #007BFF;
+      color: #007BFF;
+      font-weight: 600;
+    }
+    .flow-step {
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    .flow-step.active {
+      border-color: #007BFF;
+      box-shadow: 0 4px 14px rgba(0, 123, 255, 0.2);
+      transform: scale(1.02);
+    }
+    .practice-card {
+      transition: transform 0.3s;
+    }
+    .practice-card:hover {
+      transform: translateY(-5px);
+    }
+    .code-block {
+      position: relative;
+      background-color: #282c34;
+      color: #abb2bf;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+      overflow-x: auto;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #4B5563;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: background-color 0.2s;
+    }
+    .copy-btn:hover {
+      background-color: #6B7280;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+<div class="flex flex-col md:flex-row min-h-screen">
+  <aside class="w-full md:w-64 bg-white shadow-md md:min-h-screen">
+    <div class="p-6">
+      <h1 class="text-2xl font-bold text-gray-800">Học JWT</h1>
+      <p class="text-sm text-gray-500">Mentor-Mentee</p>
+    </div>
+    <nav id="main-nav" class="mt-4">
+      <a href="#overview" class="nav-link block p-4 text-gray-600 font-semibold active">
+        <span class="mr-2">🚀</span> Tổng Quan
+      </a>
+      <a href="#anatomy" class="nav-link block p-4 text-gray-600 font-semibold">
+        <span class="mr-2">🔬</span> Giải Phẫu JWT
+      </a>
+      <a href="#flow" class="nav-link block p-4 text-gray-600 font-semibold">
+        <span class="mr-2">🌊</span> Luồng Hoạt Động
+      </a>
+      <a href="#implementation" class="nav-link block p-4 text-gray-600 font-semibold">
+        <span class="mr-2">💻</span> Triển Khai Thực Tế
+      </a>
+      <a href="#best-practices" class="nav-link block p-4 text-gray-600 font-semibold">
+        <span class="mr-2">🛡️</span> Bảo Mật Tối Ưu
+      </a>
+      <a href="#case-study" class="nav-link block p-4 text-gray-600 font-semibold">
+        <span class="mr-2">🍔</span> Tình Huống Thực Tế
+      </a>
+    </nav>
+  </aside>
+
+  <main class="flex-1 p-6 md:p-10 overflow-auto">
+    <div id="overview" class="content-section active">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">JWT là gì và tại sao nó lại quan trọng?</h2>
+      <p class="mb-6 text-lg text-gray-600">Chào bạn, chúng ta hãy bắt đầu hành trình tìm hiểu về JSON Web Token (JWT). Hãy coi nó như một chiếc "thẻ căn cước kỹ thuật số" nhỏ gọn và an toàn. Nó cho phép các dịch vụ trong hệ thống của bạn tin tưởng lẫn nhau mà không cần phải hỏi đi hỏi lại "bạn là ai?". Điều này đặc biệt quan trọng trong kiến trúc microservices, nơi các dịch vụ cần giao tiếp liên tục với nhau.</p>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <h3 class="text-2xl font-semibold mb-4 text-center">JWT vs. Session-based Authentication</h3>
+        <p class="text-center text-gray-500 mb-6">Đây là câu hỏi gợi mở quan trọng: “Bạn nghĩ tại sao JWT lại được ưa chuộng hơn session-based authentication trong microservices?”. Bảng so sánh dưới đây sẽ cho bạn câu trả lời rõ ràng nhất.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="border border-red-200 bg-red-50 p-6 rounded-lg">
+            <h4 class="text-xl font-bold text-red-700 mb-3 text-center">Xác thực dựa trên Session</h4>
+            <p class="text-center mb-4">Cách tiếp cận "stateful" (có trạng thái).</p>
+            <ul class="space-y-3 text-gray-700">
+              <li><span class="font-semibold text-red-600">Lưu trữ:</span> Server phải lưu trữ thông tin phiên (session) của người dùng.</li>
+              <li><span class="font-semibold text-red-600">Phụ thuộc:</span> Các yêu cầu phải được kiểm tra với kho lưu trữ session.</li>
+              <li><span class="font-semibold text-red-600">Khả năng mở rộng:</span> Khó mở rộng theo chiều ngang vì cần đồng bộ session giữa các server.</li>
+              <li><span class="font-semibold text-red-600">Ví dụ:</span> Giống như việc bạn gửi xe và nhận một vé xe. Bảo vệ phải giữ lại cuống vé để đối chiếu.</li>
+            </ul>
+          </div>
+          <div class="border border-blue-200 bg-blue-50 p-6 rounded-lg">
+            <h4 class="text-xl font-bold text-blue-700 mb-3 text-center">Xác thực dựa trên JWT</h4>
+            <p class="text-center mb-4">Cách tiếp cận "stateless" (phi trạng thái).</p>
+            <ul class="space-y-3 text-gray-700">
+              <li><span class="font-semibold text-blue-600">Lưu trữ:</span> Server không cần lưu gì cả. Mọi thông tin nằm trong token.</li>
+              <li><span class="font-semibold text-blue-600">Tự chứa:</span> Token mang theo thông tin người dùng và quyền hạn.</li>
+              <li><span class="font-semibold text-blue-600">Khả năng mở rộng:</span> Rất dễ mở rộng. Bất kỳ server nào cũng có thể xác thực token.</li>
+              <li><span class="font-semibold text-blue-600">Ví dụ:</span> Giống như bạn có một tấm thẻ VIP. Bất kỳ cửa hàng nào trong chuỗi cũng có thể nhận ra bạn mà không cần gọi về tổng đài.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="anatomy" class="content-section">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">Giải Phẫu một JWT</h2>
+      <p class="mb-6 text-lg text-gray-600">Một JWT bao gồm 3 phần, được phân tách bởi dấu chấm: <span class="font-mono text-red-500">Header</span>.<span class="font-mono text-purple-500">Payload</span>.<span class="font-mono text-blue-500">Signature</span>. Hãy nhấp vào từng phần để xem bên trong có gì nhé!</p>
+
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div id="jwt-visualizer" class="mb-4 p-4 font-mono text-sm break-all bg-gray-100 rounded">
+          <span class="jwt-part text-red-500" data-part="header">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span>.<span class="jwt-part text-purple-500" data-part="payload">eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJyb2xlcyI6WyJBRE1JTiIsIlVTRVIiXX0</span>.<span class="jwt-part text-blue-500" data-part="signature">w3x_v0i-ax32iN2j3iE-E3a3b_x-C3b3a2a8c9d0e1f</span>
+        </div>
+        <div id="jwt-explanation" class="p-6 border border-gray-200 rounded-lg bg-gray-50 min-h-[200px]">
+          <h3 id="explanation-title" class="text-xl font-semibold mb-2">Chọn một phần để khám phá</h3>
+          <div id="explanation-content" class="text-gray-700"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="flow" class="content-section">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">Luồng Hoạt Động của JWT</h2>
+      <p class="mb-6 text-lg text-gray-600">JWT hoạt động theo một quy trình rất logic. Hãy cùng theo dõi từng bước, từ lúc người dùng đăng nhập cho đến khi họ nhận được dữ liệu từ một API được bảo vệ. Nhấn "Bước Tiếp Theo" để xem luồng di chuyển.</p>
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="flex flex-col md:flex-row justify-around items-center space-y-4 md:space-y-0 md:space-x-4 mb-8">
+          <div id="flow-step-1" class="flow-step text-center p-4 rounded-lg bg-gray-50 w-full md:w-1/4">
+            <div class="text-4xl mb-2">👤</div>
+            <h4 class="font-bold">1. Client</h4>
+            <p class="text-sm">Người dùng đăng nhập</p>
+          </div>
+          <div class="text-2xl font-bold text-gray-400">→</div>
+          <div id="flow-step-2" class="flow-step text-center p-4 rounded-lg bg-gray-50 w-full md:w-1/4">
+            <div class="text-4xl mb-2">🏢</div>
+            <h4 class="font-bold">2. Server</h4>
+            <p class="text-sm">Xác thực & Cấp Token</p>
+          </div>
+          <div class="text-2xl font-bold text-gray-400">←</div>
+          <div id="flow-step-3" class="flow-step text-center p-4 rounded-lg bg-gray-50 w-full md:w-1/4">
+            <div class="text-4xl mb-2">💾</div>
+            <h4 class="font-bold">3. Client</h4>
+            <p class="text-sm">Lưu trữ Token</p>
+          </div>
+        </div>
+        <div class="flex flex-col md:flex-row justify-around items-center space-y-4 md:space-y-0 md:space-x-4">
+          <div id="flow-step-4" class="flow-step text-center p-4 rounded-lg bg-gray-50 w-full md:w-1/4">
+            <div class="text-4xl mb-2">📤</div>
+            <h4 class="font-bold">4. Client</h4>
+            <p class="text-sm">Gửi yêu cầu với Token</p>
+          </div>
+          <div class="text-2xl font-bold text-gray-400">→</div>
+          <div id="flow-step-5" class="flow-step text-center p-4 rounded-lg bg-gray-50 w-full md:w-1/4">
+            <div class="text-4xl mb-2">🛡️</div>
+            <h4 class="font-bold">5. Server</h4>
+            <p class="text-sm">Xác minh Token</p>
+          </div>
+          <div class="text-2xl font-bold text-gray-400">→</div>
+          <div id="flow-step-6" class="flow-step text-center p-4 rounded-lg bg-gray-50 w-full md:w-1/4">
+            <div class="text-4xl mb-2">📦</div>
+            <h4 class="font-bold">6. Server</h4>
+            <p class="text-sm">Trả về dữ liệu</p>
+          </div>
+        </div>
+        <div id="flow-explanation" class="mt-8 p-6 border rounded-lg bg-gray-50 min-h-[100px]">
+          <p id="flow-explanation-text" class="text-lg text-gray-700"></p>
+        </div>
+        <div class="text-center mt-6">
+          <button id="flow-next-btn" class="bg-blue-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-600 transition-colors">Bước Tiếp Theo</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="implementation" class="content-section">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">Triển Khai với Spring Boot</h2>
+      <p class="mb-6 text-lg text-gray-600">Bây giờ là phần thú vị nhất: áp dụng lý thuyết vào thực tế! Đây là cách bạn tích hợp JWT vào một ứng dụng Spring Boot. Tôi sẽ chỉ cung cấp các đoạn mã cốt lõi để bạn tập trung vào tư duy. Hãy chuyển qua lại giữa các tab để xem từng phần nhé.</p>
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <div class="border-b border-gray-200 mb-4">
+          <nav id="code-tabs" class="flex space-x-8 -mb-px">
+            <button data-tab="pom" class="tab-button py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 active">pom.xml</button>
+            <button data-tab="config" class="tab-button py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">SecurityConfig</button>
+            <button data-tab="service" class="tab-button py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">JwtService</button>
+            <button data-tab="filter" class="tab-button py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">JwtAuthFilter</button>
+          </nav>
+        </div>
+        <div id="code-content">
+          <!-- Code content will be injected here by JS -->
+        </div>
+      </div>
+    </div>
+
+    <div id="best-practices" class="content-section">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">Bảo Mật Tối Ưu (Best Practices)</h2>
+      <p class="mb-6 text-lg text-gray-600">Sử dụng JWT rất mạnh mẽ, nhưng "quyền lực lớn đi kèm với trách nhiệm lớn". Để đảm bảo hệ thống của bạn an toàn, hãy luôn ghi nhớ những nguyên tắc vàng sau. Hãy di chuột qua các thẻ để xem chi tiết.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="practice-card bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
+          <h4 class="font-bold text-lg mb-2">Thời gian sống ngắn</h4>
+          <p class="text-gray-600">Luôn đặt thời gian hết hạn (expiration time - `exp`) cho Access Token ngắn (ví dụ: 15-60 phút) để giảm thiểu rủi ro nếu token bị lộ.</p>
+        </div>
+        <div class="practice-card bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
+          <h4 class="font-bold text-lg mb-2">Sử dụng Refresh Token</h4>
+          <p class="text-gray-600">Dùng Refresh Token có thời gian sống dài hơn để lấy Access Token mới, giúp người dùng không phải đăng nhập lại liên tục.</p>
+        </div>
+        <div class="practice-card bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-500">
+          <h4 class="font-bold text-lg mb-2">Không lưu thông tin nhạy cảm</h4>
+          <p class="text-gray-600">Payload của JWT có thể bị giải mã dễ dàng. Tuyệt đối không lưu mật khẩu, số thẻ tín dụng hay thông tin cá nhân nhạy cảm trong đó.</p>
+        </div>
+        <div class="practice-card bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
+          <h4 class="font-bold text-lg mb-2">Luôn dùng HTTPS</h4>
+          <p class="text-gray-600">Mọi giao tiếp phải được mã hóa qua HTTPS để ngăn chặn kẻ gian nghe lén và đánh cắp token trên đường truyền.</p>
+        </div>
+        <div class="practice-card bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
+          <h4 class="font-bold text-lg mb-2">Lưu trữ Token an toàn</h4>
+          <p class="text-gray-600">Ở phía client, ưu tiên lưu JWT trong cookie `HttpOnly` và `Secure` để chống lại các cuộc tấn công XSS.</p>
+        </div>
+        <div class="practice-card bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500">
+          <h4 class="font-bold text-lg mb-2">Cơ chế thu hồi Token</h4>
+          <p class="text-gray-600">Xây dựng một danh sách đen (blacklist) các token đã bị vô hiệu hóa (ví dụ khi người dùng đăng xuất) để ngăn chặn việc tái sử dụng.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="case-study" class="content-section">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">Tình Huống Thực Tế: Hệ Thống Đặt Món Ăn</h2>
+      <p class="mb-6 text-lg text-gray-600">Hãy xem cách JWT tỏa sáng trong một hệ thống microservices đặt món ăn. Sơ đồ này minh họa luồng xác thực từ client đến các dịch vụ backend thông qua API Gateway. Nhấp vào các mũi tên để xem JWT đóng vai trò gì ở mỗi bước.</p>
+      <div class="bg-white p-8 rounded-lg shadow-sm">
+        <div class="relative">
+          <div class="grid grid-cols-3 gap-8 items-center">
+            <div class="text-center">
+              <div class="p-4 bg-blue-100 border-2 border-blue-300 rounded-lg">
+                <span class="text-4xl">📱</span>
+                <h4 class="font-bold mt-2">Client App</h4>
+              </div>
+            </div>
+            <div class="text-center">
+              <div class="p-4 bg-purple-100 border-2 border-purple-300 rounded-lg">
+                <span class="text-4xl">🚪</span>
+                <h4 class="font-bold mt-2">API Gateway</h4>
+              </div>
+            </div>
+            <div class="space-y-4">
+              <div class="p-3 bg-green-100 border-2 border-green-300 rounded-lg text-center">
+                <span class="text-2xl">👤</span>
+                <h5 class="font-semibold">User Service</h5>
+              </div>
+              <div class="p-3 bg-orange-100 border-2 border-orange-300 rounded-lg text-center">
+                <span class="text-2xl">🍔</span>
+                <h5 class="font-semibold">Order Service</h5>
+              </div>
+            </div>
+          </div>
+
+          <!-- Arrows -->
+          <div class="absolute top-1/2 left-0 w-full h-full">
+            <div id="arrow-1" data-info="1. Client gửi yêu cầu đăng nhập đến API Gateway." class="case-arrow absolute" style="top: 25%; left: 16%; transform: translateY(-50%);">
+              <span class="text-3xl text-gray-500 cursor-pointer hover:text-blue-500">⟶</span>
+            </div>
+            <div id="arrow-2" data-info="2. API Gateway chuyển tiếp yêu cầu đến User Service để xác thực." class="case-arrow absolute" style="top: 10%; left: 49%; transform: translateY(-50%);">
+              <span class="text-3xl text-gray-500 cursor-pointer hover:text-blue-500">⟶</span>
+            </div>
+            <div id="arrow-3" data-info="3. User Service cấp JWT và trả về cho Client qua Gateway." class="case-arrow absolute" style="top: 25%; left: 49%; transform: translateY(-50%) rotate(180deg);">
+              <span class="text-3xl text-gray-500 cursor-pointer hover:text-blue-500">⟶</span>
+            </div>
+            <div id="arrow-4" data-info="4. Client gửi yêu cầu tạo đơn hàng (kèm JWT) đến API Gateway." class="case-arrow absolute" style="top: 60%; left: 16%; transform: translateY(-50%);">
+              <span class="text-3xl text-gray-500 cursor-pointer hover:text-blue-500">⟶</span>
+            </div>
+            <div id="arrow-5" data-info="5. API Gateway xác thực JWT, sau đó chuyển yêu cầu đến Order Service." class="case-arrow absolute" style="top: 75%; left: 49%; transform: translateY(-50%);">
+              <span class="text-3xl text-gray-500 cursor-pointer hover:text-blue-500">⟶</span>
+            </div>
+          </div>
+        </div>
+        <div id="case-study-info" class="mt-12 p-4 border rounded-lg bg-gray-50 text-center min-h-[60px]">
+          <p class="text-lg text-gray-700">Nhấp vào một mũi tên để xem chi tiết luồng.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.nav-link');
+    const contentSections = document.querySelectorAll('.content-section');
+
+    function navigateTo(hash) {
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === hash) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+
+      contentSections.forEach(section => {
+        if ('#' + section.id === hash) {
+          section.classList.add('active');
+        } else {
+          section.classList.remove('active');
+        }
+      });
+    }
+
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        navigateTo(targetId);
+        window.location.hash = targetId;
+      });
+    });
+
+    if (window.location.hash) {
+      navigateTo(window.location.hash);
+    } else {
+      navigateTo('#overview');
+    }
+
+    // JWT Anatomy Section
+    const jwtParts = document.querySelectorAll('.jwt-part');
+    const explanationTitle = document.getElementById('explanation-title');
+    const explanationContent = document.getElementById('explanation-content');
+    const jwtExplanations = {
+      header: {
+        title: 'Header (Tiêu đề)',
+        content: `
+                <p>Phần này chứa thông tin về loại token và thuật toán mã hóa được sử dụng.</p>
+                <pre class="bg-gray-200 p-2 rounded mt-2 text-sm"><code>{\n  "alg": "HS256",\n  "typ": "JWT"\n}</code></pre>
+                <ul class="list-disc list-inside mt-2">
+                    <li><b>alg:</b> Thuật toán ký (ví dụ: HS256 - HMAC using SHA-256).</li>
+                    <li><b>typ:</b> Loại token (luôn là "JWT").</li>
+                </ul>
+            `
+      },
+      payload: {
+        title: 'Payload (Nội dung)',
+        content: `
+                <p>Đây là nơi chứa các "claims" - thông tin về người dùng và các dữ liệu khác.</p>
+                <pre class="bg-gray-200 p-2 rounded mt-2 text-sm"><code>{\n  "sub": "1234567890",\n  "name": "John Doe",\n  "iat": 1516239022,\n  "roles": ["ADMIN", "USER"]\n}</code></pre>
+                <p class="mt-2">Gợi ý: "Bạn nghĩ claims trong Payload có thể được dùng như thế nào trong hệ thống đặt món ăn?". Ví dụ, claim <b>roles</b> có thể dùng để phân quyền, chỉ cho phép người dùng có vai trò "ADMIN" truy cập các API quản trị.</p>
+            `
+      },
+      signature: {
+        title: 'Signature (Chữ ký)',
+        content: `
+                <p>Chữ ký được tạo ra để xác thực rằng token không bị thay đổi. Nó được tính toán bằng cách:</p>
+                <pre class="bg-gray-200 p-2 rounded mt-2 text-sm"><code>HMACSHA256(\n  base64UrlEncode(header) + "." +\n  base64UrlEncode(payload),\n  your-256-bit-secret\n)</code></pre>
+                <p class="mt-2">Chữ ký này đảm bảo tính toàn vẹn và xác thực của token. Nếu ai đó cố gắng thay đổi Header hoặc Payload, chữ ký sẽ không còn hợp lệ.</p>
+            `
+      }
+    };
+
+    jwtParts.forEach(part => {
+      part.addEventListener('click', function() {
+        const partName = this.dataset.part;
+        const data = jwtExplanations[partName];
+        explanationTitle.textContent = data.title;
+        explanationContent.innerHTML = data.content;
+      });
+    });
+
+    // Flow Section
+    const flowSteps = document.querySelectorAll('.flow-step');
+    const flowNextBtn = document.getElementById('flow-next-btn');
+    const flowExplanationText = document.getElementById('flow-explanation-text');
+    let currentStep = 0;
+    const flowExplanations = [
+      "1. Người dùng cung cấp thông tin đăng nhập (username/password).",
+      "2. Server xác thực thông tin. Nếu hợp lệ, server tạo một JWT chứa thông tin người dùng (claims) và ký nó bằng một khóa bí mật.",
+      "3. Server trả JWT về cho client. Client lưu trữ token này một cách an toàn (ví dụ: trong HttpOnly cookie).",
+      "4. Với mỗi yêu cầu đến các API được bảo vệ, client đính kèm JWT vào header Authorization (ví dụ: Bearer <token>).",
+      "5. Server nhận yêu cầu, trích xuất token và xác minh chữ ký. Nó cũng kiểm tra các claims như thời gian hết hạn (`exp`).",
+      "6. Nếu token hợp lệ, server xử lý yêu cầu và trả về dữ liệu cho client. Nếu không, server trả về lỗi 401 Unauthorized."
+    ];
+
+    function updateFlow() {
+      flowSteps.forEach((step, index) => {
+        if (index === currentStep) {
+          step.classList.add('active');
+        } else {
+          step.classList.remove('active');
+        }
+      });
+      flowExplanationText.textContent = flowExplanations[currentStep];
+      currentStep = (currentStep + 1) % flowSteps.length;
+    }
+    flowNextBtn.addEventListener('click', updateFlow);
+    updateFlow();
+
+    // Implementation Section
+    const codeTabs = document.getElementById('code-tabs');
+    const codeContent = document.getElementById('code-content');
+    const codeSnippets = {
+      pom: {
+        title: 'Dependencies (pom.xml)',
+        code: `
+<dependencies>
+    <!-- Spring Security -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <!-- JWT Library: jjwt -->
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-api</artifactId>
+        <version>0.11.5</version>
+    </dependency>
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-impl</artifactId>
+        <version>0.11.5</version>
+        <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt-jackson</artifactId>
+        <version>0.11.5</version>
+        <scope>runtime</scope>
+    </dependency>
+</dependencies>
+`
+      },
+      config: {
+        title: 'Cấu hình Spring Security',
+        code: `
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+    // ... inject JwtAuthFilter, AuthenticationProvider ...
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+}
+`
+      },
+      service: {
+        title: 'JwtService: Tạo và xác thực Token',
+        code: `
+@Service
+public class JwtService {
+
+    @Value("\${security.jwt.secret-key}")
+    private String secretKey;
+
+    public String generateToken(UserDetails userDetails) {
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+    // ... other helper methods ...
+}
+`
+      },
+      filter: {
+        title: 'JwtAuthFilter: Chặn và xử lý yêu cầu',
+        code: `
+@Component
+public class JwtAuthFilter extends OncePerRequestFilter {
+    // ... inject JwtService, UserDetailsService ...
+
+    @Override
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
+
+        final String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        final String jwt = authHeader.substring(7);
+        final String username = jwtService.extractUsername(jwt);
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authToken);
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+}
+`
+      }
+    };
+
+    function renderCode(tabName) {
+      const snippet = codeSnippets[tabName];
+      codeContent.innerHTML = `
+            <h4 class="text-xl font-semibold mb-4">${snippet.title}</h4>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><code>${snippet.code.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>
+            </div>
+        `;
+    }
+
+    codeTabs.addEventListener('click', function(e) {
+      if (e.target.tagName === 'BUTTON') {
+        codeTabs.querySelector('.active').classList.remove('active');
+        e.target.classList.add('active');
+        renderCode(e.target.dataset.tab);
+      }
+    });
+
+    renderCode('pom');
+
+    // Case Study Section
+    const arrows = document.querySelectorAll('.case-arrow');
+    const caseStudyInfo = document.getElementById('case-study-info').querySelector('p');
+    arrows.forEach(arrow => {
+      arrow.addEventListener('click', function() {
+        const info = this.dataset.info;
+        caseStudyInfo.textContent = info;
+      });
+    });
+  });
+
+  function copyCode(button) {
+    const pre = button.nextElementSibling;
+    const code = pre.querySelector('code');
+    const text = code.innerText;
+
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      button.textContent = 'Đã chép!';
+      setTimeout(() => {
+        button.textContent = 'Copy';
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+      button.textContent = 'Lỗi';
+    }
+    document.body.removeChild(textarea);
+  }
+</script>
+
+</body>
+</html>
