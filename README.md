@@ -26,8 +26,8 @@ It includes both **theory (in markdown)** and **interactive visualizations (HTML
 ---
 
 ### 🛡️ Spring Security
-- **Theory**: Coming soon
-- **Visualize**: Coming soon
+- **Theory**: [Spring Security](SpringSecurity/SpringSecurity.markdown)
+- **Visualize**: [Spring Security](https://chipper-sopapillas-7b23db.netlify.app/SpringSecurity/SpringSecurity)
 
 ---
 
