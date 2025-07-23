@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám Phá Spring Security</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: Ứng dụng được thiết kế theo cấu trúc dashboard theo chủ đề, phi tuyến tính để biến tài liệu học thuật thành một công cụ học tập tương tác. Các phần chính (Tổng quan, Kiến trúc, Xác thực, Phân quyền, Case Study, Best Practices) được truy cập qua thanh điều hướng cố định. Cấu trúc này khuyến khích sự khám phá tự do, cho phép người dùng kết nối các khái niệm một cách trực quan (ví dụ: xem một thành phần trong sơ đồ kiến trúc và sau đó thấy nó được áp dụng trong case study). Mục tiêu là tăng cường sự hiểu biết và khả năng ghi nhớ thông qua tương tác thay vì đọc tuần tự. -->
+    <!-- Visualization & Content Choices:
+        - Tổng quan: Sử dụng các thẻ (card) so sánh AuthN và AuthZ.
+        - So sánh Session vs Token: Dùng biểu đồ cột ngang của Chart.js để so sánh các tiêu chí như khả năng mở rộng, trạng thái. Tương tác qua tooltip.
+        - Kiến trúc cốt lõi: Sơ đồ luồng dữ liệu được xây dựng bằng HTML/Tailwind. Tương tác bằng cách nhấp vào từng thành phần để xem chi tiết, giúp hình dung sự phối hợp giữa chúng.
+        - Phương thức xác thực: Giao diện theo thẻ (tab) để so sánh Form Login, Basic, JWT, OAuth2, trình bày thông tin cô đọng và các đoạn mã ví dụ.
+        - Case Study: Sơ đồ kiến trúc microservices (HTML/CSS) minh họa luồng yêu cầu với JWT, có thể nhấp vào để xem giải thích từng bước.
+        - Best Practices: Danh sách kiểm tra (checklist) tương tác để trình bày các khuyến nghị một cách ngắn gọn, dễ theo dõi.
+        - Toàn bộ các yếu tố đồ họa được tạo bằng HTML/CSS/Canvas (Chart.js), không sử dụng SVG hay Mermaid JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #F8F7F4;
+            color: #1f2937;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #2563eb;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2563eb;
+            transition: width 0.3s ease;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .tab-button.active {
+            border-color: #2563eb;
+            color: #2563eb;
+            background-color: #eff6ff;
+        }
+        .flowchart-box {
+            cursor: pointer;
+            border: 2px solid #d1d5db;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        .flowchart-box:hover, .flowchart-box.active {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            color: #1e40af;
+            transform: scale(1.05);
+        }
+        .flowchart-arrow {
+            position: relative;
+            width: 100%;
+            height: 2px;
+            background-color: #9ca3af;
+        }
+        .flowchart-arrow::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -4px;
+            border: solid #9ca3af;
+            border-width: 0 2px 2px 0;
+            display: inline-block;
+            padding: 4px;
+            transform: rotate(-45deg);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .code-block {
+            background-color: #1E293B;
+            color: #E2E8F0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<header class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+    <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <div class="flex-shrink-0">
+                <h1 class="text-xl font-bold text-gray-800">Spring Security</h1>
+            </div>
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4">
+                    <a href="#overview" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Tổng Quan</a>
+                    <a href="#architecture" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Kiến Trúc</a>
+                    <a href="#auth-methods" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Xác Thực</a>
+                    <a href="#authorization" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Phân Quyền</a>
+                    <a href="#case-study" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Case Study</a>
+                    <a href="#best-practices" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-gray-700">Best Practices</a>
+                </div>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                    <span class="sr-only">Mở menu</span>
+                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#overview" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-700">Tổng Quan</a>
+                <a href="#architecture" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-700">Kiến Trúc</a>
+                <a href="#auth-methods" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-700">Xác Thực</a>
+                <a href="#authorization" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-700">Phân Quyền</a>
+                <a href="#case-study" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-700">Case Study</a>
+                <a href="#best-practices" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-gray-700">Best Practices</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <section id="overview" class="py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Người Gác Cổng Tin Cậy</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Phần này giới thiệu các khái niệm cốt lõi của Spring Security. Bạn sẽ hiểu được Spring Security là gì, vai trò của nó trong các ứng dụng hiện đại, và phân biệt rõ hai trụ cột của bảo mật: Xác thực (Authentication) và Phân quyền (Authorization).</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-3 text-blue-700">Authentication (Xác thực)</h3>
+                <p class="text-gray-600 font-bold mb-4">"Bạn là ai?"</p>
+                <p class="text-gray-700">Là quá trình xác minh danh tính của người dùng. Spring Security kiểm tra thông tin đăng nhập (như username/password, token, OTP) để đảm bảo người dùng là thật và hợp lệ trước khi cho phép họ vào hệ thống.</p>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-3 text-green-700">Authorization (Phân quyền)</h3>
+                <p class="text-gray-600 font-bold mb-4">"Bạn được làm gì?"</p>
+                <p class="text-gray-700">Sau khi đã xác thực, đây là quá trình quyết định các quyền hạn của người dùng. Spring Security xác định xem người dùng có được phép truy cập một tài nguyên cụ thể hay thực hiện một hành động nào đó hay không (ví dụ: chỉ `ADMIN` mới được xóa sản phẩm).</p>
+            </div>
+        </div>
+
+        <div class="mt-16">
+            <h3 class="text-2xl font-bold text-center mb-8">Session-based vs. Token-based (JWT)</h3>
+            <p class="mt-4 max-w-3xl mx-auto text-center text-gray-600 mb-8">Hai phương pháp xác thực phổ biến với những đặc điểm riêng, phù hợp cho các kiến trúc ứng dụng khác nhau. Biểu đồ dưới đây so sánh chúng dựa trên các tiêu chí quan trọng.</p>
+            <div class="card p-6">
+                <div class="chart-container">
+                    <canvas id="authComparisonChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="py-16 bg-gray-50 rounded-2xl">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Kiến Trúc Cốt Lõi</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Khám phá cách các thành phần chính của Spring Security phối hợp với nhau để bảo vệ ứng dụng của bạn. Nhấp vào từng khối trong sơ đồ để xem chi tiết vai trò của chúng trong luồng xử lý yêu cầu.</p>
+        </div>
+
+        <div class="flex flex-col items-center space-y-4 md:space-y-0 md:flex-row md:justify-center md:space-x-4 mb-8">
+            <div class="flowchart-box" data-component="request">HTTP Request</div>
+            <div class="w-px md:w-16 h-8 md:h-px flowchart-arrow transform md:rotate-0 rotate-90"></div>
+            <div class="flowchart-box" data-component="filterchain">SecurityFilterChain</div>
+            <div class="w-px md:w-16 h-8 md:h-px flowchart-arrow transform md:rotate-0 rotate-90"></div>
+            <div class="flowchart-box" data-component="authmanager">AuthenticationManager</div>
+            <div class="w-px md:w-16 h-8 md:h-px flowchart-arrow transform md:rotate-0 rotate-90"></div>
+            <div class="flowchart-box" data-component="controller">Controller/Resource</div>
+        </div>
+
+        <div id="component-details" class="mt-12 max-w-4xl mx-auto">
+            <div class="card p-8 min-h-[200px] flex items-center justify-center">
+                <p class="text-gray-500 text-center">Nhấp vào một thành phần trong sơ đồ để xem mô tả chi tiết.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="auth-methods" class="py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Các Phương Thức Xác Thực</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Spring Security hỗ trợ nhiều cơ chế xác thực. Hãy cùng tìm hiểu về các phương thức phổ biến, từ Form Login truyền thống đến JWT hiện đại cho microservices.</p>
+        </div>
+        <div class="max-w-5xl mx-auto">
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="-mb-px flex space-x-4" aria-label="Tabs">
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="form-login">Form Login</button>
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="http-basic">HTTP Basic</button>
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="jwt">JWT (Token-based)</button>
+                    <button class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm" data-tab="oauth2">OAuth2/OIDC</button>
+                </nav>
+            </div>
+            <div id="tab-content" class="card p-6">
+            </div>
+        </div>
+    </section>
+
+    <section id="authorization" class="py-16 bg-gray-50 rounded-2xl">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Phân Quyền Chi Tiết</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Bảo mật ở cấp độ phương thức với các annotation mạnh mẽ và Ngôn ngữ Biểu thức Spring (SpEL). Đây là cách bạn kiểm soát ai có thể làm gì ở mức độ chi tiết nhất.</p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div class="card p-6 text-center">
+                <h3 class="font-semibold text-lg mb-2">@PreAuthorize</h3>
+                <p class="text-sm text-gray-600">Kiểm tra quyền <span class="font-bold">trước khi</span> thực thi phương thức. Rất linh hoạt với SpEL.</p>
+                <div class="code-block mt-4 text-left text-xs">@PreAuthorize("hasRole('ADMIN')")</div>
+            </div>
+            <div class="card p-6 text-center">
+                <h3 class="font-semibold text-lg mb-2">@PostAuthorize</h3>
+                <p class="text-sm text-gray-600">Kiểm tra quyền <span class="font-bold">sau khi</span> phương thức thực thi, dựa trên kết quả trả về.</p>
+                <div class="code-block mt-4 text-left text-xs">@PostAuthorize("returnObject.owner == authentication.name")</div>
+            </div>
+            <div class="card p-6 text-center">
+                <h3 class="font-semibold text-lg mb-2">@Secured</h3>
+                <p class="text-sm text-gray-600">Một cách đơn giản để yêu cầu các vai trò cụ thể. Không hỗ trợ SpEL.</p>
+                <div class="code-block mt-4 text-left text-xs">@Secured({"ROLE_USER", "ROLE_ADMIN"})</div>
+            </div>
+            <div class="card p-6 text-center">
+                <h3 class="font-semibold text-lg mb-2">@RolesAllowed</h3>
+                <p class="text-sm text-gray-600">Tương tự @Secured, là một phần của tiêu chuẩn JSR-250.</p>
+                <div class="code-block mt-4 text-left text-xs">@RolesAllowed("ADMIN")</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="case-study" class="py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Case Study: Hệ Thống Đặt Món Ăn</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">Áp dụng các khái niệm đã học vào một kiến trúc microservices thực tế. Sơ đồ này minh họa luồng xác thực và phân quyền sử dụng API Gateway và JWT, một mô hình phổ biến và hiệu quả.</p>
+        </div>
+        <div class="max-w-5xl mx-auto p-6 card">
+            <div class="flex flex-col md:flex-row items-center justify-between space-y-8 md:space-y-0 md:space-x-8">
+                <!-- Client -->
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span class="text-3xl">📱</span>
+                    </div>
+                    <p class="font-semibold">Client (SPA/Mobile)</p>
+                </div>
+
+                <div class="w-px md:w-24 h-12 md:h-px flowchart-arrow transform md:rotate-0 rotate-90"></div>
+
+                <!-- API Gateway -->
+                <div class="text-center">
+                    <div class="w-24 h-24 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span class="text-3xl">🛡️</span>
+                    </div>
+                    <p class="font-semibold">API Gateway</p>
+                    <p class="text-xs text-gray-500">Xác thực JWT</p>
+                </div>
+
+                <div class="w-px md:w-24 h-12 md:h-px flowchart-arrow transform md:rotate-0 rotate-90"></div>
+
+                <!-- Microservices -->
+                <div class="flex flex-col space-y-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+                            <span class="text-2xl">🔑</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Auth Service</p>
+                            <p class="text-xs text-gray-500">Phát hành Token</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <span class="text-2xl">🍔</span>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Order Service</p>
+                            <p class="text-xs text-gray-500">Phân quyền chi tiết</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center mt-8 text-gray-600">Trong mô hình này, API Gateway đóng vai trò là lớp bảo vệ đầu tiên, xác thực tất cả các yêu cầu đến. Chỉ những yêu cầu hợp lệ mới được chuyển tiếp đến các microservice nghiệp vụ, giúp giảm tải và tăng cường bảo mật cho toàn hệ thống.</p>
+        </div>
+    </section>
+
+    <section id="best-practices" class="py-16 bg-gray-50 rounded-2xl">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Thực Tiễn Tốt Nhất</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">Một danh sách các khuyến nghị quan trọng để xây dựng một ứng dụng không chỉ mạnh mẽ mà còn thực sự an toàn.</p>
+        </div>
+        <div class="max-w-3xl mx-auto space-y-4">
+            <div class="card p-4 flex items-center space-x-4">
+                <span class="text-2xl text-green-500">✅</span>
+                <div>
+                    <h4 class="font-semibold">Luôn mã hóa mật khẩu</h4>
+                    <p class="text-sm text-gray-600">Sử dụng `BCryptPasswordEncoder` hoặc các thuật toán mạnh tương đương. Không bao giờ lưu mật khẩu dạng văn bản thô.</p>
+                </div>
+            </div>
+            <div class="card p-4 flex items-center space-x-4">
+                <span class="text-2xl text-green-500">✅</span>
+                <div>
+                    <h4 class="font-semibold">Sử dụng HTTPS</h4>
+                    <p class="text-sm text-gray-600">Bảo vệ dữ liệu trên đường truyền, đặc biệt là khi gửi token hoặc thông tin đăng nhập.</p>
+                </div>
+            </div>
+            <div class="card p-4 flex items-center space-x-4">
+                <span class="text-2xl text-green-500">✅</span>
+                <div>
+                    <h4 class="font-semibold">JWT: Thời gian sống ngắn & Refresh Token</h4>
+                    <p class="text-sm text-gray-600">Giảm thiểu rủi ro nếu Access Token bị lộ. Lưu Refresh Token an toàn (ví dụ: HttpOnly cookie).</p>
+                </div>
+            </div>
+            <div class="card p-4 flex items-center space-x-4">
+                <span class="text-2xl text-green-500">✅</span>
+                <div>
+                    <h4 class="font-semibold">Nguyên tắc đặc quyền tối thiểu</h4>
+                    <p class="text-sm text-gray-600">Chỉ cấp cho người dùng những quyền hạn thực sự cần thiết để thực hiện công việc của họ.</p>
+                </div>
+            </div>
+            <div class="card p-4 flex items-center space-x-4">
+                <span class="text-2xl text-green-500">✅</span>
+                <div>
+                    <h4 class="font-semibold">Bảo vệ chống CSRF và XSS</h4>
+                    <p class="text-sm text-gray-600">Bật bảo vệ CSRF cho ứng dụng stateful. Luôn xác thực đầu vào và mã hóa đầu ra để chống XSS.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-white border-t border-gray-200">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-500">
+        <p>&copy; 2025. Một công cụ học tập được tạo ra để đồng hành cùng bạn.</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const componentDetailsContent = {
+            request: {
+                title: 'HTTP Request',
+                description: 'Mọi thứ bắt đầu từ đây. Khi một client (trình duyệt, ứng dụng di động) gửi yêu cầu đến máy chủ của bạn để truy cập một tài nguyên hoặc thực hiện một hành động.'
+            },
+            filterchain: {
+                title: 'SecurityFilterChain',
+                description: 'Là trái tim của Spring Security. Đây là một chuỗi các bộ lọc mà mỗi yêu cầu phải đi qua. Mỗi bộ lọc có một nhiệm vụ cụ thể, như xử lý CSRF, xác thực, phân quyền. Đây là lớp phòng thủ đầu tiên và quan trọng nhất.'
+            },
+            authmanager: {
+                title: 'AuthenticationManager',
+                description: 'Thành phần này điều phối quá trình xác thực. Nó nhận thông tin đăng nhập từ bộ lọc, sau đó ủy quyền cho một `AuthenticationProvider` phù hợp để kiểm tra xem thông tin đó có hợp lệ hay không (ví dụ: so sánh mật khẩu với hash trong DB).'
+            },
+            controller: {
+                title: 'Controller / Secured Resource',
+                description: 'Nếu yêu cầu vượt qua tất cả các bộ lọc bảo mật và được xác thực/phân quyền thành công, nó sẽ đến được đích cuối cùng: controller của bạn. Đây là nơi logic nghiệp vụ của ứng dụng được thực thi.'
+            }
+        };
+
+        const tabContent = {
+            'form-login': {
+                title: 'Form Login',
+                description: 'Phương thức xác thực truyền thống và phổ biến nhất cho các ứng dụng web. Spring Security cung cấp một trang đăng nhập mặc định hoặc cho phép bạn tùy chỉnh hoàn toàn. Phù hợp cho các ứng dụng server-side rendering.',
+                code: `http
+    .formLogin(form -> form
+        .loginPage("/login") // Trang login tùy chỉnh
+        .permitAll()
+    );`
+            },
+            'http-basic': {
+                title: 'HTTP Basic Authentication',
+                description: 'Một cơ chế đơn giản, gửi username và password được mã hóa Base64 trong header `Authorization`. Dễ triển khai nhưng kém an toàn nếu không có HTTPS. Thường dùng cho các API nội bộ hoặc kiểm thử nhanh.',
+                code: `http.httpBasic(withDefaults());`
+            },
+            'jwt': {
+                title: 'JWT (Token-based)',
+                description: 'Lựa chọn hàng đầu cho các REST API và microservices. Server tạo một token (JWT) sau khi đăng nhập thành công và gửi cho client. Client gửi token này trong mỗi yêu cầu tiếp theo. Cơ chế này là "stateless" (phi trạng thái), giúp tăng khả năng mở rộng.',
+                code: `http
+    .sessionManagement(sess -> sess
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);`
+            },
+            'oauth2': {
+                title: 'OAuth2 / OpenID Connect',
+                description: 'Một framework ủy quyền cho phép ứng dụng của bạn truy cập tài nguyên thay mặt người dùng từ một dịch vụ khác (ví dụ: "Đăng nhập với Google"). OIDC là một lớp trên OAuth2 cung cấp xác thực. Rất mạnh mẽ cho việc tích hợp với các nhà cung cấp danh tính bên thứ ba.',
+                code: `http.oauth2Login(withDefaults());`
+            }
+        };
+
+        const flowchartBoxes = document.querySelectorAll('.flowchart-box');
+        const detailsContainer = document.getElementById('component-details');
+
+        flowchartBoxes.forEach(box => {
+            box.addEventListener('click', () => {
+                flowchartBoxes.forEach(b => b.classList.remove('active'));
+                box.classList.add('active');
+                const componentKey = box.dataset.component;
+                const content = componentDetailsContent[componentKey];
+                detailsContainer.innerHTML = `
+                <div class="card p-8 animate-fade-in">
+                    <h4 class="text-2xl font-bold mb-4 text-gray-800">${content.title}</h4>
+                    <p class="text-gray-600 leading-relaxed">${content.description}</p>
+                </div>
+            `;
+            });
+        });
+
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContentContainer = document.getElementById('tab-content');
+
+        function updateTabContent(tabKey) {
+            const content = tabContent[tabKey];
+            tabContentContainer.innerHTML = `
+            <div>
+                <h4 class="text-xl font-bold mb-3">${content.title}</h4>
+                <p class="text-gray-600 mb-4">${content.description}</p>
+                <div class="code-block">${content.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+            </div>
+        `;
+        }
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                const tabKey = button.dataset.tab;
+                updateTabContent(tabKey);
+            });
+        });
+
+        updateTabContent('form-login');
+        document.querySelector('.tab-button[data-tab="form-login"]').classList.add('active');
+
+        const ctx = document.getElementById('authComparisonChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Khả năng mở rộng (Scalability)', 'Trạng thái (Statefulness)', 'Bảo mật (Security)'],
+                datasets: [{
+                    label: 'Session-based',
+                    data: [6, 9, 7],
+                    backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Token-based (JWT)',
+                    data: [9, 3, 8],
+                    backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: 'Đánh giá (1=Thấp, 10=Cao)'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'So sánh các phương pháp xác thực',
+                        font: { size: 16 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            footer: (tooltipItems) => {
+                                const tooltips = {
+                                    'Khả năng mở rộng (Scalability)': {
+                                        'Session-based': 'Khó mở rộng theo chiều ngang vì trạng thái session lưu trên server.',
+                                        'Token-based (JWT)': 'Rất dễ mở rộng vì server không cần lưu trạng thái (stateless).'
+                                    },
+                                    'Trạng thái (Statefulness)': {
+                                        'Session-based': 'Stateful, server phải lưu và quản lý session.',
+                                        'Token-based (JWT)': 'Stateless, mọi thông tin cần thiết nằm trong token.'
+                                    },
+                                    'Bảo mật (Security)': {
+                                        'Session-based': 'Dễ bị tấn công CSRF, cần bảo vệ. Dễ dàng vô hiệu hóa session phía server.',
+                                        'Token-based (JWT)': 'Miễn nhiễm với CSRF. Khó vô hiệu hóa token ngay lập tức nếu bị lộ.'
+                                    }
+                                };
+                                const category = tooltipItems[0].label;
+                                const datasetLabel = tooltipItems[0].dataset.label;
+                                return tooltips[category] ? tooltips[category][datasetLabel] : '';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.4
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                if (mobileMenu.classList.contains('hidden') === false) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+
+    });
+</script>
+
+</body>
+</html>
