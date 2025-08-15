@@ -31,6 +31,12 @@ It includes both **theory (in markdown)** and **interactive visualizations (HTML
 
 ---
 
+### 🗃️ Stored Procedure
+- **Theory**: [Stored Procedure](StoredProcedure/StoredProcedure.markdown)
+- **Visualize**: [Stored Procedure Visualization](https://chipper-sopapillas-7b23db.netlify.app/StoredProcedure/StoredProcedure.html)
+
+---
+
 ### 📨 Kafka
 - **Theory**: Coming soon  
 - **Visualize**: Coming soon
