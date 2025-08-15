@@ -9,24 +9,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Calm Harmony -->
-    <!-- Application Structure Plan: The SPA is designed with a thematic, non-linear structure using a sidebar for navigation. This allows users with different goals (e.g., a developer needing implementation details vs. a DBA focusing on performance) to directly access relevant information. The structure includes: 1. Overview (landing page with key concepts), 2. Architecture & Syntax (interactive diagrams and code toggles), 3. Spring Boot Integration (practical code examples and comparison charts), 4. Optimization & Best Practices (actionable checklists in accordions), and 5. Case Study (visualizing the microservices architecture). This user-centric design prioritizes ease of navigation and comprehension over mirroring the report's linear format. -->
-    <!-- Visualization & Content Choices: 1. Overview: Goal: Inform. Method: Icon-driven cards for scannability. Interaction: Hover effects. Justification: Visual and quick. 2. Architecture: Goal: Explain. Method: HTML/CSS diagram and code toggles. Interaction: Clickable steps, language switching. Justification: Interactive learning is more engaging. 3. Integration: Goal: Compare/Demonstrate. Method: Tabbed code examples, Chart.js radar chart. Interaction: Tabs, chart tooltips. Justification: Organizes complex info and makes comparisons memorable. 4. Best Practices: Goal: Advise. Method: Accordions with checklists. Interaction: Expand/collapse. Justification: Prevents information overload. 5. Case Study: Goal: Contextualize. Method: HTML/CSS architectural diagram. Interaction: Hover highlights. Justification: Visual context is powerful. Library: Chart.js for canvas-based charts. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: #F8F7F4;
-            color: #4A4A4A;
+            background-color: #1A1A1A;
+            color: #E0E0E0;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
         }
         .sidebar-link {
             transition: all 0.3s ease;
             border-left: 3px solid transparent;
         }
         .sidebar-link.active, .sidebar-link:hover {
-            background-color: #EFEBE5;
-            color: #A0522D;
-            border-left-color: #A0522D;
+            background-color: #2A2A2A;
+            color: #F28C38;
+            border-left-color: #F28C38;
         }
         .content-section {
             display: none;
@@ -35,33 +38,33 @@
             display: block;
         }
         .card {
-            background-color: #FFFFFF;
-            border: 1px solid #EAEAEA;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            background-color: #2A2A2A;
+            border: 1px solid #3A3A3A;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.15), 0 4px 6px -4px rgb(0 0 0 / 0.15);
         }
         .code-block {
-            background-color: #2d2d2d;
-            color: #f8f8f2;
+            background-color: #1E1E1E;
+            color: #F8F8F2;
             padding: 1rem;
             border-radius: 0.5rem;
             overflow-x: auto;
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.875rem;
         }
-        .code-block .keyword { color: #ff79c6; }
-        .code-block .type { color: #8be9fd; }
-        .code-block .string { color: #f1fa8c; }
-        .code-block .comment { color: #6272a4; }
-        .code-block .function { color: #50fa7b; }
-        .code-block .variable { color: #bd93f9; }
+        .code-block .keyword { color: #FF79C6; }
+        .code-block .type { color: #8BE9FD; }
+        .code-block .string { color: #F1FA8C; }
+        .code-block .comment { color: #6272A4; }
+        .code-block .function { color: #50FA7B; }
+        .code-block .variable { color: #BD93F9; }
         .tab.active {
-            border-bottom-color: #A0522D;
-            color: #A0522D;
+            border-bottom-color: #F28C38;
+            color: #F28C38;
             font-weight: 600;
         }
         .chart-container {
@@ -81,124 +84,133 @@
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
+            visibility: hidden;
+            transition: max-height 0.5s ease-in-out, visibility 0.5s ease-in-out;
+        }
+        .accordion-content.open {
+            max-height: 500px; /* Adjust as needed */
+            visibility: visible;
+        }
+        .accordion-item {
+            background-color: #2A2A2A;
+            border: 1px solid #3A3A3A;
         }
     </style>
 </head>
 <body class="antialiased">
 
 <div class="flex flex-col md:flex-row min-h-screen">
-    <aside class="w-full md:w-64 bg-white border-r border-gray-200 flex-shrink-0">
+    <aside class="sidebar w-full md:w-64 bg-[#1E1E1E] border-r border-[#3A3A3A] flex-shrink-0">
         <div class="p-6">
-            <h1 class="text-xl font-bold text-[#A0522D]">Stored Procedure</h1>
-            <p class="text-sm text-gray-500">và Spring Boot</p>
+            <h1 class="text-xl font-bold text-[#F28C38]">Stored Procedure</h1>
+            <p class="text-sm text-gray-400">và Spring Boot</p>
         </div>
         <nav class="mt-2">
-            <a href="#overview" class="sidebar-link active flex items-center px-6 py-3 text-gray-700">
+            <a href="#overview" class="sidebar-link active flex items-center px-6 py-3 text-gray-300">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Tổng Quan
             </a>
-            <a href="#architecture" class="sidebar-link flex items-center px-6 py-3 text-gray-700">
+            <a href="#architecture" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 Kiến trúc & Cú pháp
             </a>
-            <a href="#integration" class="sidebar-link flex items-center px-6 py-3 text-gray-700">
+            <a href="#integration" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
                 Tích hợp Spring Boot
             </a>
-            <a href="#optimization" class="sidebar-link flex items-center px-6 py-3 text-gray-700">
+            <a href="#optimization" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 Tối ưu & Thực hành
             </a>
-            <a href="#casestudy" class="sidebar-link flex items-center px-6 py-3 text-gray-700">
+            <a href="#casestudy" class="sidebar-link flex items-center px-6 py-3 text-gray-300">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 Case Study
             </a>
         </nav>
     </aside>
 
-    <main class="flex-1 p-6 sm:p-8 md:p-10">
+    <main class="flex-1 p-6 sm:p-8 md:p-10 md:ml-64">
         <div id="overview" class="content-section active">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4">Stored Procedure là gì?</h2>
-            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+            <h2 class="text-3xl font-bold text-gray-100 mb-4">Stored Procedure là gì?</h2>
+            <p class="text-lg text-gray-400 mb-8 leading-relaxed">
                 Stored Procedure (SP) là một tập hợp các câu lệnh SQL được đặt tên và lưu trữ sẵn trên máy chủ cơ sở dữ liệu. Nó hoạt động như một hàm có thể tái sử dụng, giúp đóng gói logic nghiệp vụ, tăng cường hiệu năng và cải thiện bảo mật bằng cách thực thi các tác vụ phức tạp ngay tại nơi dữ liệu được lưu trữ.
             </p>
 
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">Các Vấn Đề Cốt Lõi Được Giải Quyết</h3>
+            <h3 class="text-2xl font-bold text-gray-100 mb-6">Các Vấn Đề Cốt Lõi Được Giải Quyết</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="card p-6 rounded-lg">
                     <div class="flex items-center mb-4">
-                        <div class="p-3 rounded-full bg-orange-100 text-orange-600 mr-4">
+                        <div class="p-3 rounded-full bg-orange-900 text-orange-400 mr-4">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-800">Tăng Hiệu Năng</h4>
+                        <h4 class="text-lg font-semibold text-gray-100">Tăng Hiệu Năng</h4>
                     </div>
-                    <p class="text-gray-600">SP được biên dịch sẵn và lưu vào cache, giúp giảm thời gian thực thi truy vấn và giảm tải lưu lượng mạng đáng kể.</p>
+                    <p class="text-gray-400">SP được biên dịch sẵn và lưu vào cache, giúp giảm thời gian thực thi truy vấn và giảm tải lưu lượng mạng đáng kể.</p>
                 </div>
                 <div class="card p-6 rounded-lg">
                     <div class="flex items-center mb-4">
-                        <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                        <div class="p-3 rounded-full bg-green-900 text-green-400 mr-4">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-800">Cải Thiện Bảo Mật</h4>
+                        <h4 class="text-lg font-semibold text-gray-100">Cải Thiện Bảo Mật</h4>
                     </div>
-                    <p class="text-gray-600">Giới hạn quyền truy cập trực tiếp vào bảng, chỉ cho phép thực thi SP, giúp ngăn chặn SQL Injection và kiểm soát dữ liệu.</p>
+                    <p class="text-gray-400">Giới hạn quyền truy cập trực tiếp vào bảng, chỉ cho phép thực thi SP, giúp ngăn chặn SQL Injection và kiểm soát dữ liệu.</p>
                 </div>
                 <div class="card p-6 rounded-lg">
                     <div class="flex items-center mb-4">
-                        <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+                        <div class="p-3 rounded-full bg-blue-900 text-blue-400 mr-4">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-800">Logic Nhất Quán</h4>
+                        <h4 class="text-lg font-semibold text-gray-100">Logic Nhất Quán</h4>
                     </div>
-                    <p class="text-gray-600">Tập trung logic nghiệp vụ tại một nơi, đảm bảo tính nhất quán và dễ bảo trì trên các môi trường và ứng dụng khác nhau.</p>
+                    <p class="text-gray-400">Tập trung logic nghiệp vụ tại một nơi, đảm bảo tính nhất quán và dễ bảo trì trên các môi trường và ứng dụng khác nhau.</p>
                 </div>
             </div>
         </div>
 
         <div id="architecture" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4">Kiến trúc & Cú pháp</h2>
-            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+            <h2 class="text-3xl font-bold text-gray-100 mb-4">Kiến trúc & Cú pháp</h2>
+            <p class="text-lg text-gray-400 mb-8 leading-relaxed">
                 Hiểu cách Stored Procedure được biên dịch, lưu trữ và thực thi là chìa khóa để tận dụng sức mạnh của chúng. Cú pháp có thể khác nhau giữa các hệ quản trị cơ sở dữ liệu, nhưng các thành phần cốt lõi vẫn tương tự.
             </p>
 
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">Vòng Đời Thực Thi</h3>
-            <div class="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 class="text-2xl font-bold text-gray-100 mb-6">Vòng Đời Thực Thi</h3>
+            <div class="bg-[#2A2A2A] p-6 rounded-lg border border-[#3A3A3A]">
                 <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4 text-center">
                     <div class="flex-1">
-                        <div class="p-3 bg-gray-100 rounded-full inline-block text-gray-600">1</div>
-                        <p class="mt-2 font-semibold">Tạo SP</p>
-                        <p class="text-sm text-gray-500">Mã nguồn được lưu trong DB.</p>
+                        <div class="p-3 bg-gray-700 rounded-full inline-block text-gray-300">1</div>
+                        <p class="mt-2 font-semibold text-gray-100">Tạo SP</p>
+                        <p class="text-sm text-gray-400">Mã nguồn được lưu trong DB.</p>
                     </div>
-                    <div class="text-gray-300 text-2xl font-light">→</div>
+                    <div class="text-gray-500 text-2xl font-light">→</div>
                     <div class="flex-1">
-                        <div class="p-3 bg-blue-100 rounded-full inline-block text-blue-600">2</div>
-                        <p class="mt-2 font-semibold">Thực thi lần đầu</p>
-                        <p class="text-sm text-gray-500">Biên dịch & tạo Kế hoạch thực thi.</p>
+                        <div class="p-3 bg-blue-900 rounded-full inline-block text-blue-400">2</div>
+                        <p class="mt-2 font-semibold text-gray-100">Thực thi lần đầu</p>
+                        <p class="text-sm text-gray-400">Biên dịch & tạo Kế hoạch thực thi.</p>
                     </div>
-                    <div class="text-gray-300 text-2xl font-light">→</div>
+                    <div class="text-gray-500 text-2xl font-light">→</div>
                     <div class="flex-1">
-                        <div class="p-3 bg-purple-100 rounded-full inline-block text-purple-600">3</div>
-                        <p class="mt-2 font-semibold">Lưu vào Cache</p>
-                        <p class="text-sm text-gray-500">Kế hoạch được lưu trong Plan Cache.</p>
+                        <div class="p-3 bg-purple-900 rounded-full inline-block text-purple-400">3</div>
+                        <p class="mt-2 font-semibold text-gray-100">Lưu vào Cache</p>
+                        <p class="text-sm text-gray-400">Kế hoạch được lưu trong Plan Cache.</p>
                     </div>
-                    <div class="text-gray-300 text-2xl font-light">→</div>
+                    <div class="text-gray-500 text-2xl font-light">→</div>
                     <div class="flex-1">
-                        <div class="p-3 bg-green-100 rounded-full inline-block text-green-600">4</div>
-                        <p class="mt-2 font-semibold">Thực thi lần sau</p>
-                        <p class="text-sm text-gray-500">Tái sử dụng kế hoạch từ cache.</p>
+                        <div class="p-3 bg-green-900 rounded-full inline-block text-green-400">4</div>
+                        <p class="mt-2 font-semibold text-gray-100">Thực thi lần sau</p>
+                        <p class="text-sm text-gray-400">Tái sử dụng kế hoạch từ cache.</p>
                     </div>
                 </div>
             </div>
 
-            <h3 class="text-2xl font-bold text-gray-800 mt-10 mb-6">So Sánh Cú Pháp</h3>
-            <div class="bg-white rounded-lg border border-gray-200">
-                <div class="p-4 border-b">
-                    <p class="font-semibold">Ví dụ: Tính tổng doanh thu theo trạng thái đơn hàng.</p>
+            <h3 class="text-2xl font-bold text-gray-100 mt-10 mb-6">So Sánh Cú Pháp</h3>
+            <div class="bg-[#2A2A2A] rounded-lg border border-[#3A3A3A]">
+                <div class="p-4 border-b border-[#3A3A3A]">
+                    <p class="font-semibold text-gray-100">Ví dụ: Tính tổng doanh thu theo trạng thái đơn hàng.</p>
                 </div>
-                <div class="flex border-b">
-                    <button class="syntax-tab tab active p-4 flex-1 text-center" data-target="mssql-syntax">MSSQL (T-SQL)</button>
-                    <button class="syntax-tab tab p-4 flex-1 text-center" data-target="pgsql-syntax">PostgreSQL (PL/pgSQL)</button>
+                <div class="flex border-b border-[#3A3A3A]">
+                    <button class="syntax-tab tab active p-4 flex-1 text-center text-gray-300" data-target="mssql-syntax">MSSQL (T-SQL)</button>
+                    <button class="syntax-tab tab p-4 flex-1 text-center text-gray-300" data-target="pgsql-syntax">PostgreSQL (PL/pgSQL)</button>
                 </div>
                 <div id="mssql-syntax" class="syntax-content p-4">
 <pre class="code-block"><span class="keyword">CREATE PROCEDURE</span> <span class="function">GetTotalRevenueByStatus</span>
@@ -229,20 +241,20 @@ $$;</pre>
         </div>
 
         <div id="integration" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4">Tích hợp với Spring Boot</h2>
-            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+            <h2 class="text-3xl font-bold text-gray-100 mb-4">Tích hợp với Spring Boot</h2>
+            <p class="text-lg text-gray-400 mb-8 leading-relaxed">
                 Spring Boot cung cấp nhiều cơ chế mạnh mẽ để gọi Stored Procedure, cho phép kết hợp sự tiện lợi của JPA với hiệu năng và bảo mật của logic phía database.
             </p>
 
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">Các Phương Pháp Gọi SP</h3>
-            <div class="bg-white rounded-lg border border-gray-200">
-                <div class="flex border-b">
-                    <button class="integration-tab tab active p-4 flex-1 text-center" data-target="native-query">@Query (nativeQuery)</button>
-                    <button class="integration-tab tab p-4 flex-1 text-center" data-target="procedure-annotation">@Procedure</button>
-                    <button class="integration-tab tab p-4 flex-1 text-center" data-target="jdbc-template">JdbcTemplate</button>
+            <h3 class="text-2xl font-bold text-gray-100 mb-6">Các Phương Pháp Gọi SP</h3>
+            <div class="bg-[#2A2A2A] rounded-lg border border-[#3A3A3A]">
+                <div class="flex border-b border-[#3A3A3A]">
+                    <button class="integration-tab tab active p-4 flex-1 text-center text-gray-300" data-target="native-query">@Query (nativeQuery)</button>
+                    <button class="integration-tab tab p-4 flex-1 text-center text-gray-300" data-target="procedure-annotation">@Procedure</button>
+                    <button class="integration-tab tab p-4 flex-1 text-center text-gray-300" data-target="jdbc-template">JdbcTemplate</button>
                 </div>
                 <div id="native-query" class="integration-content p-4">
-                    <p class="mb-4">Sử dụng truy vấn SQL gốc, linh hoạt nhất để thực thi bất kỳ lệnh nào, bao gồm cả `EXEC` hoặc `CALL`.</p>
+                    <p class="mb-4 text-gray-400">Sử dụng truy vấn SQL gốc, linh hoạt nhất để thực thi bất kỳ lệnh nào, bao gồm cả `EXEC` hoặc `CALL`.</p>
                     <pre class="code-block"><span class="comment">// Trong OrderRepository.java</span>
 <span class="keyword">@Query</span>(value = <span class="string">"EXEC CreateOrder :customerId, :productId, :quantity, :total"</span>, nativeQuery = <span class="keyword">true</span>)
 <span class="type">void</span> <span class="function">createOrderSP</span>(
@@ -253,13 +265,13 @@ $$;</pre>
 );</pre>
                 </div>
                 <div id="procedure-annotation" class="integration-content p-4 hidden">
-                    <p class="mb-4">Ánh xạ trực tiếp một phương thức trong repository tới một SP, giúp mã nguồn gọn gàng và tích hợp chặt chẽ với Spring Data JPA.</p>
+                    <p class="mb-4 text-gray-400">Ánh xạ trực tiếp một phương thức trong repository tới một SP, giúp mã nguồn gọn gàng và tích hợp chặt chẽ với Spring Data JPA.</p>
                     <pre class="code-block"><span class="comment">// Trong ProductRepository.java</span>
 <span class="keyword">@Procedure</span>(procedureName = <span class="string">"GetProductCountByCategory"</span>)
 <span class="type">Integer</span> <span class="function">getProductCountByCategory</span>(<span class="keyword">@Param</span>(<span class="string">"categoryName"</span>) <span class="type">String</span> categoryName);</pre>
                 </div>
                 <div id="jdbc-template" class="integration-content p-4 hidden">
-                    <p class="mb-4">Cung cấp mức độ kiểm soát cao nhất, phù hợp cho các kịch bản phức tạp cần xử lý tham số IN/OUT và kết quả trả về đa dạng.</p>
+                    <p class="mb-4 text-gray-400">Cung cấp mức độ kiểm soát cao nhất, phù hợp cho các kịch bản phức tạp cần xử lý tham số IN/OUT và kết quả trả về đa dạng.</p>
                     <pre class="code-block"><span class="comment">// Trong một Service</span>
 SimpleJdbcCall jdbcCall = <span class="keyword">new</span> <span class="function">SimpleJdbcCall</span>(dataSource)
     .withProcedureName(<span class="string">"GetEmployeeById"</span>);
@@ -272,27 +284,27 @@ Map&lt;<span class="type">String</span>, <span class="type">Object</span>&gt; ou
                 </div>
             </div>
 
-            <h3 class="text-2xl font-bold text-gray-800 mt-10 mb-6">So Sánh: Stored Procedure vs. JPA</h3>
-            <p class="text-center text-gray-600 mb-4">Lựa chọn giữa hai phương pháp là một quyết định kiến trúc quan trọng, phụ thuộc vào yêu cầu cụ thể của tác vụ.</p>
+            <h3 class="text-2xl font-bold text-gray-100 mt-10 mb-6">So Sánh: Stored Procedure vs. JPA</h3>
+            <p class="text-center text-gray-400 mb-4">Lựa chọn giữa hai phương pháp là một quyết định kiến trúc quan trọng, phụ thuộc vào yêu cầu cụ thể của tác vụ.</p>
             <div class="chart-container">
                 <canvas id="jpaVsSpChart"></canvas>
             </div>
         </div>
 
         <div id="optimization" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4">Tối ưu & Thực hành tốt nhất</h2>
-            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+            <h2 class="text-3xl font-bold text-gray-100 mb-4">Tối ưu & Thực hành tốt nhất</h2>
+            <p class="text-lg text-gray-400 mb-8 leading-relaxed">
                 Áp dụng các thực hành tốt nhất về bảo mật, hiệu năng và phát triển là yếu tố then chốt để xây dựng các Stored Procedure an toàn, hiệu quả và dễ bảo trì trong các hệ thống doanh nghiệp.
             </p>
 
             <div class="space-y-4">
-                <div class="accordion-item bg-white border border-gray-200 rounded-lg">
-                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                <div class="accordion-item bg-[#2A2A2A] border border-[#3A3A3A] rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center text-gray-100">
                         <span>🔒 Security Best Practices</span>
                         <span class="transform transition-transform duration-300">▼</span>
                     </button>
                     <div class="accordion-content px-4 pb-4">
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <ul class="list-disc list-inside space-y-2 text-gray-400">
                             <li><strong>Nguyên tắc đặc quyền tối thiểu (PoLP):</strong> Chỉ cấp quyền `EXECUTE` trên SP, không cấp quyền truy cập trực tiếp vào bảng.</li>
                             <li><strong>Truy vấn tham số hóa:</strong> Luôn sử dụng tham số để truyền dữ liệu, tránh nối chuỗi SQL động để chống SQL Injection.</li>
                             <li><strong>Mã hóa dữ liệu:</strong> Bảo vệ dữ liệu nhạy cảm bằng các tính năng mã hóa của database (TDE, Always Encrypted).</li>
@@ -300,13 +312,13 @@ Map&lt;<span class="type">String</span>, <span class="type">Object</span>&gt; ou
                         </ul>
                     </div>
                 </div>
-                <div class="accordion-item bg-white border border-gray-200 rounded-lg">
-                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                <div class="accordion-item bg-[#2A2A2A] border border-[#3A3A3A] rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center text-gray-100">
                         <span>⚡ Performance Optimization</span>
                         <span class="transform transition-transform duration-300">▼</span>
                     </button>
                     <div class="accordion-content px-4 pb-4">
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <ul class="list-disc list-inside space-y-2 text-gray-400">
                             <li><strong>Tối ưu hóa Index:</strong> Đảm bảo các bảng có index phù hợp trên các cột được dùng trong `WHERE`, `JOIN`, `ORDER BY`.</li>
                             <li><strong>Tránh Logic Phức Tạp:</strong> Giữ SP đơn giản, ưu tiên các thao tác dựa trên tập hợp (set-based) thay vì cursors hoặc vòng lặp.</li>
                             <li><strong>Xử lý theo lô (Batch Processing):</strong> Chia nhỏ các thao tác DML lớn thành các lô nhỏ hơn để giảm khóa (locking) và tải cho transaction log.</li>
@@ -314,13 +326,13 @@ Map&lt;<span class="type">String</span>, <span class="type">Object</span>&gt; ou
                         </ul>
                     </div>
                 </div>
-                <div class="accordion-item bg-white border border-gray-200 rounded-lg">
-                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center">
+                <div class="accordion-item bg-[#2A2A2A] border border-[#3A3A3A] rounded-lg">
+                    <button class="accordion-header w-full text-left p-4 font-semibold text-lg flex justify-between items-center text-gray-100">
                         <span>🛠️ Development Best Practices</span>
                         <span class="transform transition-transform duration-300">▼</span>
                     </button>
                     <div class="accordion-content px-4 pb-4">
-                        <ul class="list-disc list-inside space-y-2 text-gray-600">
+                        <ul class="list-disc list-inside space-y-2 text-gray-400">
                             <li><strong>Quản lý phiên bản (Version Control):</strong> Lưu trữ mã nguồn SP trong Git và sử dụng các công cụ di trú (migration tools) để triển khai.</li>
                             <li><strong>Tài liệu hóa:</strong> Viết tài liệu rõ ràng về mục đích, tham số và logic của mỗi SP.</li>
                             <li><strong>Kiểm thử (Testing):</strong> Viết unit test và integration test để xác minh SP hoạt động đúng như mong đợi.</li>
@@ -332,39 +344,39 @@ Map&lt;<span class="type">String</span>, <span class="type">Object</span>&gt; ou
         </div>
 
         <div id="casestudy" class="content-section">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4">Case Study: Nền tảng E-commerce</h2>
-            <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+            <h2 class="text-3xl font-bold text-gray-100 mb-4">Case Study: Nền tảng E-commerce</h2>
+            <p class="text-lg text-gray-400 mb-8 leading-relaxed">
                 Minh họa cách Stored Procedure được áp dụng chiến lược trong kiến trúc microservices để giải quyết các vấn đề về hiệu năng và tính nhất quán dữ liệu trong một hệ thống thương mại điện tử.
             </p>
 
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">Kiến trúc Microservices</h3>
-            <div class="bg-white p-6 rounded-lg border border-gray-200">
+            <h3 class="text-2xl font-bold text-gray-100 mb-6">Kiến trúc Microservices</h3>
+            <div class="bg-[#2A2A2A] p-6 rounded-lg border border-[#3A3A3A]">
                 <div class="flex flex-wrap items-center justify-center gap-4 text-center">
-                    <div class="p-4 border rounded-lg w-40">
-                        <p class="font-bold">User Service</p>
-                        <p class="text-sm text-gray-500">Quản lý người dùng</p>
+                    <div class="p-4 border rounded-lg w-40 border-[#3A3A3A] bg-[#2A2A2A]">
+                        <p class="font-bold text-gray-100">User Service</p>
+                        <p class="text-sm text-gray-400">Quản lý người dùng</p>
                     </div>
-                    <div class="text-gray-400">↔</div>
-                    <div class="p-4 border-2 border-orange-400 rounded-lg bg-orange-50 w-48 shadow-lg">
-                        <p class="font-bold text-orange-700">Order Service</p>
-                        <p class="text-sm text-orange-600">SP: CreateOrder (Giao dịch nguyên tử)</p>
+                    <div class="text-gray-500">↔</div>
+                    <div class="p-4 border-2 border-orange-600 rounded-lg bg-orange-950 w-48 shadow-lg">
+                        <p class="font-bold text-orange-400">Order Service</p>
+                        <p class="text-sm text-orange-500">SP: CreateOrder (Giao dịch nguyên tử)</p>
                     </div>
-                    <div class="text-gray-400">↔</div>
-                    <div class="p-4 border rounded-lg w-40">
-                        <p class="font-bold">Payment Service</p>
-                        <p class="text-sm text-gray-500">SP: Tính phí</p>
+                    <div class="text-gray-500">↔</div>
+                    <div class="p-4 border rounded-lg w-40 border-[#3A3A3A] bg-[#2A2A2A]">
+                        <p class="font-bold text-gray-100">Payment Service</p>
+                        <p class="text-sm text-gray-400">SP: Tính phí</p>
                     </div>
-                    <div class="text-gray-400">↔</div>
-                    <div class="p-4 border-2 border-blue-400 rounded-lg bg-blue-50 w-48 shadow-lg">
-                        <p class="font-bold text-blue-700">Reporting Service</p>
-                        <p class="text-sm text-blue-600">SP: Tổng hợp báo cáo</p>
+                    <div class="text-gray-500">↔</div>
+                    <div class="p-4 border-2 border-blue-600 rounded-lg bg-blue-950 w-48 shadow-lg">
+                        <p class="font-bold text-blue-400">Reporting Service</p>
+                        <p class="text-sm text-blue-500">SP: Tổng hợp báo cáo</p>
                     </div>
                 </div>
-                <div class="text-center mt-4 text-gray-500">Giao tiếp bất đồng bộ qua <span class="font-semibold text-green-600">RabbitMQ</span></div>
+                <div class="text-center mt-4 text-gray-400">Giao tiếp bất đồng bộ qua <span class="font-semibold text-green-400">RabbitMQ</span></div>
             </div>
 
-            <h3 class="text-2xl font-bold text-gray-800 mt-10 mb-6">Ví dụ SP then chốt: `CreateOrder`</h3>
-            <p class="mb-4">SP này đảm bảo việc kiểm tra tồn kho, tạo đơn hàng và cập nhật số lượng là một giao dịch nguyên tử, ngăn chặn tình trạng bán quá số lượng hàng có sẵn (overselling).</p>
+            <h3 class="text-2xl font-bold text-gray-100 mt-10 mb-6">Ví dụ SP then chốt: `CreateOrder`</h3>
+            <p class="mb-4 text-gray-400">SP này đảm bảo việc kiểm tra tồn kho, tạo đơn hàng và cập nhật số lượng là một giao dịch nguyên tử, ngăn chặn tình trạng bán quá số lượng hàng có sẵn (overselling).</p>
             <pre class="code-block"><span class="keyword">CREATE PROCEDURE</span> <span class="function">CreateOrder</span>
     <span class="variable">@CustomerId</span> <span class="type">INT</span>, <span class="variable">@ProductId</span> <span class="type">INT</span>, <span class="variable">@Quantity</span> <span class="type">INT</span>
 <span class="keyword">AS</span>
@@ -442,17 +454,33 @@ Map&lt;<span class="type">String</span>, <span class="type">Object</span>&gt; ou
         handleTabClick(integrationTabs, '.integration-content');
 
         accordionHeaders.forEach(header => {
-            header.addEventListener('click', () => {
-                const content = header.nextElementSibling;
-                const icon = header.querySelector('span:last-child');
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('span:last-child');
 
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                    icon.style.transform = 'rotate(0deg)';
-                } else {
-                    document.querySelectorAll('.accordion-content').forEach(c => c.style.maxHeight = null);
-                    document.querySelectorAll('.accordion-header span:last-child').forEach(i => i.style.transform = 'rotate(0deg)');
-                    content.style.maxHeight = content.scrollHeight + "px";
+            // Initialize all accordions as closed
+            content.style.maxHeight = '0';
+            content.classList.remove('open');
+            content.style.visibility = 'hidden';
+            icon.style.transform = 'rotate(0deg)';
+
+            header.addEventListener('click', () => {
+                const isOpen = content.classList.contains('open');
+
+                // Close all accordions
+                document.querySelectorAll('.accordion-content').forEach(c => {
+                    c.style.maxHeight = '0';
+                    c.classList.remove('open');
+                    c.style.visibility = 'hidden';
+                });
+                document.querySelectorAll('.accordion-header span:last-child').forEach(i => {
+                    i.style.transform = 'rotate(0deg)';
+                });
+
+                // Toggle the clicked accordion
+                if (!isOpen) {
+                    content.classList.add('open');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    content.style.visibility = 'visible';
                     icon.style.transform = 'rotate(180deg)';
                 }
             });
@@ -467,21 +495,21 @@ Map&lt;<span class="type">String</span>, <span class="type">Object</span>&gt; ou
                     datasets: [{
                         label: 'Stored Procedure',
                         data: [9, 9, 3, 5, 6, 9],
-                        backgroundColor: 'rgba(160, 82, 45, 0.2)',
-                        borderColor: 'rgba(160, 82, 45, 1)',
-                        pointBackgroundColor: 'rgba(160, 82, 45, 1)',
+                        backgroundColor: 'rgba(242, 140, 56, 0.2)',
+                        borderColor: 'rgba(242, 140, 56, 1)',
+                        pointBackgroundColor: 'rgba(242, 140, 56, 1)',
                         pointBorderColor: '#fff',
                         pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(160, 82, 45, 1)'
+                        pointHoverBorderColor: 'rgba(242, 140, 56, 1)'
                     }, {
                         label: 'JPA / Application Logic',
                         data: [6, 7, 9, 9, 8, 6],
-                        backgroundColor: 'rgba(74, 74, 74, 0.2)',
-                        borderColor: 'rgba(74, 74, 74, 1)',
-                        pointBackgroundColor: 'rgba(74, 74, 74, 1)',
+                        backgroundColor: 'rgba(100, 100, 100, 0.2)',
+                        borderColor: 'rgba(100, 100, 100, 1)',
+                        pointBackgroundColor: 'rgba(100, 100, 100, 1)',
                         pointBorderColor: '#fff',
                         pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(74, 74, 74, 1)'
+                        pointHoverBorderColor: 'rgba(100, 100, 100, 1)'
                     }]
                 },
                 options: {
@@ -489,21 +517,21 @@ Map&lt;<span class="type">String</span>, <span class="type">Object</span>&gt; ou
                     scales: {
                         r: {
                             angleLines: {
-                                color: '#e2e8f0'
+                                color: '#3A3A3A'
                             },
                             grid: {
-                                color: '#e2e8f0'
+                                color: '#3A3A3A'
                             },
                             pointLabels: {
                                 font: {
                                     size: 12,
                                     family: "'Be Vietnam Pro', sans-serif"
                                 },
-                                color: '#4A4A4A'
+                                color: '#E0E0E0'
                             },
                             ticks: {
-                                backdropColor: 'rgba(248, 247, 244, 0.75)',
-                                color: '#6b7280',
+                                backdropColor: 'rgba(26, 26, 26, 0.75)',
+                                color: '#A0A0A0',
                                 stepSize: 2
                             },
                             suggestedMin: 0,
@@ -517,7 +545,8 @@ Map&lt;<span class="type">String</span>, <span class="type">Object</span>&gt; ou
                                 font: {
                                     size: 14,
                                     family: "'Be Vietnam Pro', sans-serif"
-                                }
+                                },
+                                color: '#E0E0E0'
                             }
                         },
                         tooltip: {
