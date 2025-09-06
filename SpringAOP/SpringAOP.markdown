@@ -291,13 +291,82 @@ Các advice trong Spring AOP xác định hành động được thực hiện b
 
 #### Bảng chi tiết các loại Advice:
 
-| **Loại Advice**       | **Cú pháp**                                      | **Use Cases & Best Practices**                                                                 | **Ví dụ Code**                                                                                         |
-|-----------------------|------------------------------------------------|-----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------|
-| **@Before**           | `@Before("pointcut()")`                        | Được thực thi trước khi phương thức đích được gọi. Thường dùng để ghi log đầu phương thức, kiểm tra quyền truy cập hoặc xác thực. Nên dùng cho các hành vi không ảnh hưởng đến luồng chính của phương thức. | ```java<br>@Before("execution(* com.example.service.*.*(..))")<br>public void logMethodEntry(JoinPoint jp) {<br>    System.out.println("Entering method: " + jp.getSignature().getName());<br>}<br>``` |
-| **@After**            | `@After("pointcut()")`                         | Được thực thi sau khi phương thức đích hoàn thành, bất kể thành công hay thất bại. Thường dùng để dọn dẹp tài nguyên (ví dụ: đóng luồng), ghi log cuối cùng, hoặc xử lý các sự kiện sau khi phương thức kết thúc. | ```java<br>@After("execution(* com.example.service.*.*(..))")<br>public void logMethodExit(JoinPoint jp) {<br>    System.out.println("Exiting method: " + jp.getSignature().getName());<br>}<br>``` |
-| **@AfterReturning**   | `@AfterReturning(value = "pointcut()", returning = "result")` | Được thực thi chỉ khi phương thức đích hoàn thành thành công (trả về giá trị mà không có ngoại lệ). Rất hữu ích để ghi log giá trị trả về, xử lý kết quả, hoặc caching. | ```java<br>@AfterReturning(value = "execution(* com.example.service.*.*(..))", returning = "result")<br>public void handleResult(JoinPoint jp, Object result) {<br>    System.out.println("Method " + jp.getSignature().getName() + " returned: " + result);<br>}<br>``` |
-| **@AfterThrowing**    | `@AfterThrowing(value = "pointcut()", throwing = "ex")` | Được thực thi chỉ khi phương thức đích ném ra một ngoại lệ. Thường được dùng để xử lý lỗi tập trung, ghi log lỗi, hoặc rollback một giao dịch. | ```java<br>@AfterThrowing(value = "execution(* com.example.service.*.*(..))", throwing = "ex")<br>public void handleException(JoinPoint jp, Throwable ex) {<br>    System.out.println("Method " + jp.getSignature().getName() + " threw an exception: " + ex.getMessage());<br>}<br>``` |
-| **@Around**           | `@Around("pointcut()")`                        | Là loại advice mạnh mẽ nhất, bao bọc toàn bộ phương thức đích. Nó cho phép kiểm soát hoàn toàn luồng thực thi, có thể thực hiện logic trước và sau phương thức, thậm chí có thể không gọi phương thức gốc. Thường dùng cho các tác vụ phức tạp như quản lý giao dịch, caching, và giám sát hiệu năng. | ```java<br>@Around("execution(* com.example.service.*.*(..))")<br>public Object profileMethod(ProceedingJoinPoint pjp) throws Throwable {<br>    long start = System.currentTimeMillis();<br>    Object result = pjp.proceed();<br>    long duration = System.currentTimeMillis() - start;<br>    System.out.println("Method took " + duration + "ms to execute.");<br>    return result;<br>}<br>``` |
+## 1. @Before
+**Cú pháp:** `@Before("pointcut()")`
+
+**Use Cases & Best Practices:** Được thực thi trước khi phương thức đích được gọi. Thường dùng để ghi log đầu phương thức, kiểm tra quyền truy cập hoặc xác thực. Nên dùng cho các hành vi không ảnh hưởng đến luồng chính của phương thức.
+
+**Ví dụ Code:**
+```java
+@Before("execution(* com.example.service.*.*(..))")
+public void logMethodEntry(JoinPoint jp) {
+    System.out.println("Entering method: " + jp.getSignature().getName());
+}
+```
+
+---
+
+## 2. @After
+**Cú pháp:** `@After("pointcut()")`
+
+**Use Cases & Best Practices:** Được thực thi sau khi phương thức đích hoàn thành, bất kể thành công hay thất bại. Thường dùng để dọn dẹp tài nguyên (ví dụ: đóng luồng), ghi log cuối cùng, hoặc xử lý các sự kiện sau khi phương thức kết thúc.
+
+**Ví dụ Code:**
+```java
+@After("execution(* com.example.service.*.*(..))")
+public void logMethodExit(JoinPoint jp) {
+    System.out.println("Exiting method: " + jp.getSignature().getName());
+}
+```
+
+---
+
+## 3. @AfterReturning
+**Cú pháp:** `@AfterReturning(value = "pointcut()", returning = "result")`
+
+**Use Cases & Best Practices:** Được thực thi chỉ khi phương thức đích hoàn thành thành công (trả về giá trị mà không có ngoại lệ). Rất hữu ích để ghi log giá trị trả về, xử lý kết quả, hoặc caching.
+
+**Ví dụ Code:**
+```java
+@AfterReturning(value = "execution(* com.example.service.*.*(..))", returning = "result")
+public void handleResult(JoinPoint jp, Object result) {
+    System.out.println("Method " + jp.getSignature().getName() + " returned: " + result);
+}
+```
+
+---
+
+## 4. @AfterThrowing
+**Cú pháp:** `@AfterThrowing(value = "pointcut()", throwing = "ex")`
+
+**Use Cases & Best Practices:** Được thực thi chỉ khi phương thức đích ném ra một ngoại lệ. Thường được dùng để xử lý lỗi tập trung, ghi log lỗi, hoặc rollback một giao dịch.
+
+**Ví dụ Code:**
+```java
+@AfterThrowing(value = "execution(* com.example.service.*.*(..))", throwing = "ex")
+public void handleException(JoinPoint jp, Throwable ex) {
+    System.out.println("Method " + jp.getSignature().getName() + " threw an exception: " + ex.getMessage());
+}
+```
+
+---
+
+## 5. @Around
+**Cú pháp:** `@Around("pointcut()")`
+
+**Use Cases & Best Practices:** Là loại advice mạnh mẽ nhất, bao bọc toàn bộ phương thức đích. Nó cho phép kiểm soát hoàn toàn luồng thực thi, có thể thực hiện logic trước và sau phương thức, thậm chí có thể không gọi phương thức gốc. Thường dùng cho các tác vụ phức tạp như quản lý giao dịch, caching, và giám sát hiệu năng.
+
+**Ví dụ Code:**
+```java
+@Around("execution(* com.example.service.*.*(..))")
+public Object profileMethod(ProceedingJoinPoint pjp) throws Throwable {
+    long start = System.currentTimeMillis();
+    Object result = pjp.proceed();
+    long duration = System.currentTimeMillis() - start;
+    System.out.println("Method took " + duration + "ms to execute.");
+    return result;
+}
+```
 
 ### 2.4 Pointcut Expressions chi tiết
 
