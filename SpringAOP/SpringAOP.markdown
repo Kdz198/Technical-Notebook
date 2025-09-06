@@ -291,7 +291,7 @@ Các advice trong Spring AOP xác định hành động được thực hiện b
 
 #### Bảng chi tiết các loại Advice:
 
-## 1. @Before
+##### 1. @Before
 **Cú pháp:** `@Before("pointcut()")`
 
 **Use Cases & Best Practices:** Được thực thi trước khi phương thức đích được gọi. Thường dùng để ghi log đầu phương thức, kiểm tra quyền truy cập hoặc xác thực. Nên dùng cho các hành vi không ảnh hưởng đến luồng chính của phương thức.
@@ -304,9 +304,7 @@ public void logMethodEntry(JoinPoint jp) {
 }
 ```
 
----
-
-## 2. @After
+##### 2. @After
 **Cú pháp:** `@After("pointcut()")`
 
 **Use Cases & Best Practices:** Được thực thi sau khi phương thức đích hoàn thành, bất kể thành công hay thất bại. Thường dùng để dọn dẹp tài nguyên (ví dụ: đóng luồng), ghi log cuối cùng, hoặc xử lý các sự kiện sau khi phương thức kết thúc.
@@ -319,9 +317,7 @@ public void logMethodExit(JoinPoint jp) {
 }
 ```
 
----
-
-## 3. @AfterReturning
+##### 3. @AfterReturning
 **Cú pháp:** `@AfterReturning(value = "pointcut()", returning = "result")`
 
 **Use Cases & Best Practices:** Được thực thi chỉ khi phương thức đích hoàn thành thành công (trả về giá trị mà không có ngoại lệ). Rất hữu ích để ghi log giá trị trả về, xử lý kết quả, hoặc caching.
@@ -334,9 +330,7 @@ public void handleResult(JoinPoint jp, Object result) {
 }
 ```
 
----
-
-## 4. @AfterThrowing
+##### 4. @AfterThrowing
 **Cú pháp:** `@AfterThrowing(value = "pointcut()", throwing = "ex")`
 
 **Use Cases & Best Practices:** Được thực thi chỉ khi phương thức đích ném ra một ngoại lệ. Thường được dùng để xử lý lỗi tập trung, ghi log lỗi, hoặc rollback một giao dịch.
@@ -349,9 +343,7 @@ public void handleException(JoinPoint jp, Throwable ex) {
 }
 ```
 
----
-
-## 5. @Around
+##### 5. @Around
 **Cú pháp:** `@Around("pointcut()")`
 
 **Use Cases & Best Practices:** Là loại advice mạnh mẽ nhất, bao bọc toàn bộ phương thức đích. Nó cho phép kiểm soát hoàn toàn luồng thực thi, có thể thực hiện logic trước và sau phương thức, thậm chí có thể không gọi phương thức gốc. Thường dùng cho các tác vụ phức tạp như quản lý giao dịch, caching, và giám sát hiệu năng.
