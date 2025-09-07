@@ -9,42 +9,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Warm Neutrals -->
-    <!-- Application Structure Plan: Một SPA hai cột với thanh điều hướng bên trái cố định để truy cập nhanh đến các chủ đề và khu vực nội dung chính ở bên phải. Cấu trúc này được chọn vì khả năng quét và điều hướng thông tin kỹ thuật dày đặc tuyệt vời, vượt trội hơn so với một tài liệu tuyến tính đơn giản. Tính tương tác được giới thiệu thông qua các tab để so sánh các khái niệm (ví dụ: các mẫu caching, ngôn ngữ code) và các accordion để xem chi tiết (ví dụ: các best practices), ngăn chặn tình trạng quá tải thông tin và khuyến khích người dùng khám phá. Người dùng có thể đọc nội dung một cách tuần tự hoặc chuyển thẳng đến các phần, tạo ra một lộ trình học tập linh hoạt. -->
-    <!-- Visualization & Content Choices:
-        - Bảng so sánh (Redis vs Memcached): Mục tiêu=So sánh, Phương pháp=Bảng HTML, Tương tác=Tĩnh, Lý do=So sánh các tính năng một cách rõ ràng, trực tiếp.
-        - Sơ đồ Mẫu Caching: Mục tiêu=Tổ chức, Phương pháp=Các thẻ div HTML/Tailwind, Tương tác=Các tab để chuyển đổi giữa các mẫu, Lý do=Tách biệt các mẫu phức tạp một cách trực quan để dễ hiểu hơn.
-        - Biểu đồ cột Hiệu suất: Mục tiêu=So sánh, Phương pháp=Canvas Chart.js, Tương tác=Tooltips khi di chuột, Lý do=Thể hiện sự khác biệt về hiệu suất một cách trực quan và ấn tượng.
-        - Ví dụ Code Use Case: Mục tiêu=Thông báo, Phương pháp=Các khối <pre> được tô màu cú pháp, Tương tác=Các tab để chuyển đổi ngôn ngữ (Java/Python/Node.js) & nút sao chép, Lý do=Cung cấp các ví dụ thực tế, đa ngôn ngữ cho lập trình viên.
-        - Best Practices/Cạm bẫy: Mục tiêu=Thông báo, Phương pháp=Accordion HTML, Tương tác=Nhấp để mở/đóng, Lý do=Giảm sự lộn xộn và cho phép người dùng tập trung vào các điểm quan tâm cụ thể. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
-            background-color: #FDFBF8;
-            color: #4A4A4A;
+            background-color: #1A1A1A;
+            color: #E5E5E5;
         }
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #FDFBF8;
+            background: #2D2D2D;
         }
         ::-webkit-scrollbar-thumb {
-            background: #D1C7B9;
+            background: #4A5568;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #B9AD9D;
+            background: #718096;
         }
         .active-nav {
-            background-color: #EAE3D9;
-            color: #A37F5A;
+            background-color: #2D3748;
+            color: #F6AD55;
             font-weight: 600;
         }
         .code-block {
-            background-color: #2d2d2d;
-            color: #f2f2f2;
+            background-color: #2D2D2D;
+            color: #F2F2F2;
             border-radius: 8px;
             padding: 1rem;
             position: relative;
@@ -57,8 +48,8 @@
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            background-color: #4a5568;
-            color: white;
+            background-color: #4A5568;
+            color: #F2F2F2;
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -66,34 +57,40 @@
             transition: background-color 0.2s;
         }
         .copy-btn:hover {
-            background-color: #2d3748;
+            background-color: #718096;
         }
         .tab-btn {
             transition: all 0.2s;
         }
         .tab-btn-active {
-            background-color: #A37F5A;
-            color: white;
-            border-bottom: 2px solid #A37F5A;
+            background-color: #F6AD55;
+            color: #1A1A1A;
+            border-bottom: 2px solid #F6AD55;
         }
         .tab-btn-inactive {
-            background-color: #EAE3D9;
-            color: #4A4A4A;
+            background-color: #2D3748;
+            color: #E5E5E5;
         }
         .accordion-header {
             cursor: pointer;
             transition: background-color 0.2s;
         }
         .accordion-header:hover {
-            background-color: #F5F1EB;
+            background-color: #2D3748;
         }
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-in-out;
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            display: none;
+        }
+        .accordion-content.open {
+            opacity: 1;
+            display: block;
         }
         h1, h2, h3 {
-            color: #333;
+            color: #F6AD55;
         }
         .chart-container {
             position: relative;
@@ -107,60 +104,63 @@
                 height: 300px;
             }
         }
+        code {
+            background-color: #4A5568;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body class="antialiased">
 <div class="flex flex-col lg:flex-row">
-    <!-- Sidebar Navigation -->
-    <aside class="w-full lg:w-1/5 lg:min-w-[280px] lg:h-screen lg:sticky top-0 bg-[#F5F1EB] p-4 lg:p-6 shadow-md z-10">
-        <h1 class="text-2xl font-bold text-[#A37F5A] mb-6">Redis Caching</h1>
+    <aside class="w-full lg:w-1/5 lg:min-w-[280px] lg:h-screen lg:sticky top-0 bg-[#2D2D2D] p-4 lg:p-6 shadow-md z-10">
+        <h1 class="text-2xl font-bold text-[#F6AD55] mb-6">Redis Caching</h1>
         <nav id="navigation" class="space-y-2">
-            <a href="#intro" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#EAE3D9] text-gray-700">Giới thiệu Caching</a>
-            <a href="#core-concepts" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#EAE3D9] text-gray-700">Khái niệm Cốt lõi</a>
-            <a href="#redis-overview" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#EAE3D9] text-gray-700">Tổng quan về Redis</a>
-            <a href="#use-cases" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#EAE3D9] text-gray-700">Ứng dụng Thực tế</a>
-            <a href="#best-practices" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#EAE3D9] text-gray-700">Best Practices</a>
-            <a href="#comparison" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#EAE3D9] text-gray-700">So sánh</a>
-            <a href="#advanced" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#EAE3D9] text-gray-700">Chủ đề Nâng cao</a>
-            <a href="#resources" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#EAE3D9] text-gray-700">Tài nguyên & Lời kết</a>
+            <a href="#intro" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#2D3748] text-gray-300">Giới thiệu Caching</a>
+            <a href="#core-concepts" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#2D3748] text-gray-300">Khái niệm Cốt lõi</a>
+            <a href="#redis-overview" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#2D3748] text-gray-300">Tổng quan về Redis</a>
+            <a href="#use-cases" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#2D3748] text-gray-300">Ứng dụng Thực tế</a>
+            <a href="#best-practices" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#2D3748] text-gray-300">Best Practices</a>
+            <a href="#comparison" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#2D3748] text-gray-300">So sánh</a>
+            <a href="#advanced" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#2D3748] text-gray-300">Chủ đề Nâng cao</a>
+            <a href="#resources" class="block px-4 py-2 rounded-md transition-colors duration-200 hover:bg-[#2D3748] text-gray-300">Tài nguyên & Lời kết</a>
         </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="w-full lg:w-4/5 p-6 md:p-10 lg:p-12 overflow-y-auto">
         <header class="mb-12 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">Toàn tập về Redis Caching</h1>
-            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Một tài liệu nghiên cứu sâu, toàn diện và có cấu trúc về việc sử dụng Redis làm hệ thống caching hiệu năng cao.</p>
+            <p class="text-lg text-gray-400 max-w-3xl mx-auto">Một tài liệu nghiên cứu sâu, toàn diện và có cấu trúc về việc sử dụng Redis làm hệ thống caching hiệu năng cao.</p>
         </header>
 
-        <!-- 1. Giới thiệu Caching -->
         <section id="intro" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold border-b-2 border-[#A37F5A] pb-2 mb-6">1. Giới thiệu về Caching tổng quát</h2>
-            <div class="space-y-6 text-gray-700 text-base leading-relaxed">
+            <h2 class="text-3xl font-bold border-b-2 border-[#F6AD55] pb-2 mb-6">1. Giới thiệu về Caching tổng quát</h2>
+            <div class="space-y-6 text-gray-300 text-base leading-relaxed">
                 <p>Caching là một kỹ thuật tối ưu hóa hiệu năng hệ thống bằng cách lưu trữ tạm thời các bản sao của dữ liệu ở một vị trí truy cập nhanh hơn. Mục tiêu chính là giảm độ trễ khi truy xuất dữ liệu, giảm tải cho các tài nguyên tính toán chậm hơn (như database hoặc các dịch vụ bên ngoài), và cải thiện trải nghiệm người dùng.</p>
                 <p>Trong một ứng dụng web điển hình, các yêu cầu đọc dữ liệu thường xuyên hơn nhiều so với ghi. Nếu mỗi yêu cầu đọc đều phải truy vấn vào database, hệ thống sẽ nhanh chóng gặp phải tình trạng quá tải (database overload) và hiệu năng suy giảm (performance bottleneck). Caching giải quyết vấn đề này bằng cách phục vụ các yêu cầu đọc từ bộ nhớ cache (thường là RAM), nhanh hơn hàng nghìn lần so với việc đọc từ đĩa cứng của database.</p>
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h3 class="text-xl font-semibold mb-4">So sánh Caching và các kỹ thuật khác</h3>
                     <table class="w-full text-left border-collapse">
                         <thead>
                         <tr>
-                            <th class="border-b-2 p-2 font-semibold text-gray-800">Kỹ thuật</th>
-                            <th class="border-b-2 p-2 font-semibold text-gray-800">Mục đích</th>
-                            <th class="border-b-2 p-2 font-semibold text-gray-800">Phạm vi</th>
+                            <th class="border-b-2 p-2 font-semibold text-gray-200">Kỹ thuật</th>
+                            <th class="border-b-2 p-2 font-semibold text-gray-200">Mục đích</th>
+                            <th class="border-b-2 p-2 font-semibold text-gray-200">Phạm vi</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-800">
                             <td class="border-b p-2 font-medium">Caching</td>
                             <td class="border-b p-2">Tăng tốc độ truy xuất dữ liệu thường xuyên truy cập.</td>
                             <td class="border-b p-2">Hệ thống, phân tán (API responses, DB queries).</td>
                         </tr>
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-800">
                             <td class="border-b p-2 font-medium">Memoization</td>
                             <td class="border-b p-2">Tăng tốc độ hàm bằng cách cache kết quả của các lần gọi với cùng tham số.</td>
                             <td class="border-b p-2">Cục bộ (trong một hàm hoặc một tiến trình).</td>
                         </tr>
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-800">
                             <td class="border-b p-2 font-medium">Buffering</td>
                             <td class="border-b p-2">Tạm trữ dữ liệu để xử lý sự chênh lệch tốc độ giữa hai thành phần (I/O).</td>
                             <td class="border-b p-2">Giao tiếp giữa các thành phần (ví dụ: streaming video).</td>
@@ -171,32 +171,31 @@
             </div>
         </section>
 
-        <!-- 2. Khái niệm Cốt lõi -->
         <section id="core-concepts" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold border-b-2 border-[#A37F5A] pb-2 mb-6">2. Ý tưởng cốt lõi và khái niệm cơ bản</h2>
+            <h2 class="text-3xl font-bold border-b-2 border-[#F6AD55] pb-2 mb-6">2. Ý tưởng cốt lõi và khái niệm cơ bản</h2>
             <p class="mb-6">Để triển khai caching hiệu quả, chúng ta cần nắm vững các khái niệm nền tảng. Các khái niệm này quyết định cách dữ liệu được lưu trữ, truy xuất, và duy trì tính nhất quán.</p>
             <div class="grid md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h3 class="text-xl font-semibold mb-2">Cache Hit & Miss</h3>
                     <p><strong>Cache Hit:</strong> Yêu cầu dữ liệu được tìm thấy và trả về từ cache. Đây là trường hợp lý tưởng, giúp tăng tốc độ đáng kể.</p>
                     <p class="mt-2"><strong>Cache Miss:</strong> Yêu cầu dữ liệu không có trong cache. Ứng dụng phải truy xuất dữ liệu từ nguồn gốc (database), sau đó thường sẽ lưu vào cache cho các lần gọi sau.</p>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h3 class="text-xl font-semibold mb-2">Cache Invalidation</h3>
-                    <p>Là quá trình xóa hoặc đánh dấu dữ liệu trong cache là "cũ" (stale). Đây là một trong những bài toán khó nhất trong khoa học máy tính. Các chiến lược phổ biến bao gồm Time-based (TTL) và Event-based (xóa cache khi dữ liệu gốc thay đổi).</p>
+                    <p>Là quá trình xóa hoặc đánh dấu dữ liệu trong cache là "cũ" (stale). Đây là một trong những bài toán khó nhất trong khoa học máy tính. Các chiến lược phổ biến bao gồm Time-based (<code>TTL</code>) và Event-based (xóa cache khi dữ liệu gốc thay đổi).</p>
                 </div>
             </div>
 
             <div>
                 <h3 class="text-2xl font-semibold mb-4">Chiến lược Caching (Caching Patterns)</h3>
                 <div id="caching-patterns-tabs">
-                    <div class="flex border-b border-gray-300 mb-4">
+                    <div class="flex border-b border-gray-700 mb-4">
                         <button data-tab="cache-aside" class="tab-btn px-4 py-2 font-semibold tab-btn-active">Cache-Aside</button>
                         <button data-tab="read-through" class="tab-btn px-4 py-2 font-semibold tab-btn-inactive">Read-Through</button>
                         <button data-tab="write-through" class="tab-btn px-4 py-2 font-semibold tab-btn-inactive">Write-Through</button>
                         <button data-tab="write-behind" class="tab-btn px-4 py-2 font-semibold tab-btn-inactive">Write-Behind</button>
                     </div>
-                    <div class="p-4 bg-white rounded-lg shadow-inner border">
+                    <div class="p-4 bg-[#2D2D2D] rounded-lg shadow-inner border border-gray-700">
                         <div id="cache-aside-content" class="tab-content">
                             <h4 class="font-bold text-lg mb-2">Cache-Aside (Lazy Loading)</h4>
                             <p>Đây là chiến lược phổ biến nhất. Ứng dụng chịu trách nhiệm trực tiếp quản lý cache.</p>
@@ -238,40 +237,37 @@
             </div>
         </section>
 
-        <!-- 3. Tổng quan về Redis -->
         <section id="redis-overview" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold border-b-2 border-[#A37F5A] pb-2 mb-6">3. Redis Caching cụ thể</h2>
+            <h2 class="text-3xl font-bold border-b-2 border-[#F6AD55] pb-2 mb-6">3. Redis Caching cụ thể</h2>
             <p class="mb-6">Redis (<strong>RE</strong>mote <strong>DI</strong>ctionary <strong>S</strong>erver) là một hệ quản trị cơ sở dữ liệu key-value trong bộ nhớ (in-memory) mã nguồn mở, nổi tiếng với hiệu năng cực cao. Mặc dù có thể được sử dụng như một database, message broker, hay queue, Redis tỏa sáng nhất trong vai trò là một hệ thống caching phân tán.</p>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-md border">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h4 class="font-bold text-lg mb-2">Đa dạng cấu trúc dữ liệu</h4>
-                    <p>Không chỉ là key-value đơn giản, Redis hỗ trợ Strings, Hashes, Lists, Sets, Sorted Sets, giúp mô hình hóa dữ liệu phức tạp trong cache.</p>
+                    <p>Không chỉ là key-value đơn giản, Redis hỗ trợ <code>Strings</code>, <code>Hashes</code>, <code>Lists</code>, <code>Sets</code>, <code>Sorted Sets</code>, giúp mô hình hóa dữ liệu phức tạp trong cache.</p>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md border">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h4 class="font-bold text-lg mb-2">Độ bền (Persistence)</h4>
-                    <p>Redis cung cấp tùy chọn lưu dữ liệu xuống đĩa (RDB snapshots, AOF logs), giúp phục hồi dữ liệu sau khi khởi động lại, điều mà Memcached không có.</p>
+                    <p>Redis cung cấp tùy chọn lưu dữ liệu xuống đĩa (<code>RDB snapshots</code>, <code>AOF logs</code>), giúp phục hồi dữ liệu sau khi khởi động lại, điều mà Memcached không có.</p>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md border">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h4 class="font-bold text-lg mb-2">Tính sẵn sàng cao & Mở rộng</h4>
-                    <p>Với Redis Sentinel cho high availability và Redis Cluster cho sharding, Redis có thể dễ dàng mở rộng để xử lý hàng triệu requests mỗi giây.</p>
+                    <p>Với <code>Redis Sentinel</code> cho high availability và <code>Redis Cluster</code> cho sharding, Redis có thể dễ dàng mở rộng để xử lý hàng triệu requests mỗi giây.</p>
                 </div>
             </div>
         </section>
 
-        <!-- 4. Ứng dụng Thực tế -->
         <section id="use-cases" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold border-b-2 border-[#A37F5A] pb-2 mb-6">4. Công dụng và Ứng dụng thực tế</h2>
+            <h2 class="text-3xl font-bold border-b-2 border-[#F6AD55] pb-2 mb-6">4. Công dụng và Ứng dụng thực tế</h2>
             <p class="mb-6">Redis không chỉ dùng để cache query database. Sự đa dạng về cấu trúc dữ liệu của nó mở ra nhiều kịch bản ứng dụng mạnh mẽ trong các hệ thống hiện đại.</p>
 
             <div id="use-cases-tabs">
-                <div class="flex flex-wrap border-b border-gray-300 mb-4">
+                <div class="flex flex-wrap border-b border-gray-700 mb-4">
                     <button data-tab="db-cache" class="use-case-tab-btn px-4 py-2 font-semibold tab-btn-active">Database Caching</button>
                     <button data-tab="session-store" class="use-case-tab-btn px-4 py-2 font-semibold tab-btn-inactive">Session Store</button>
                     <button data-tab="rate-limiting" class="use-case-tab-btn px-4 py-2 font-semibold tab-btn-inactive">Rate Limiting</button>
                     <button data-tab="leaderboards" class="use-case-tab-btn px-4 py-2 font-semibold tab-btn-inactive">Leaderboards</button>
                 </div>
-                <div class="bg-white p-4 rounded-lg shadow-inner border">
-                    <!-- Database Caching Content -->
+                <div class="bg-[#2D2D2D] p-4 rounded-lg shadow-inner border border-gray-700">
                     <div id="db-cache-content" class="use-case-tab-content">
                         <h4 class="font-bold text-lg mb-2">Database Query Caching</h4>
                         <p>Đây là ứng dụng phổ biến nhất. Kết quả của các query tốn kém được lưu vào Redis. Ví dụ, cache thông tin sản phẩm trên một trang thương mại điện tử.</p>
@@ -280,7 +276,6 @@
                             <div class="code-block">
                                 <button class="copy-btn">Copy</button>
                                 <pre><code class="language-java">
-// Bật tính năng caching trong ứng dụng Spring Boot
 @Configuration
 @EnableCaching
 public class RedisConfig {
@@ -293,15 +288,11 @@ public class ProductService {
     @Autowired
     private ProductRepository repository;
 
-    // Tự động cache kết quả của method này
-    // Key cache sẽ là 'products::123'
     @Cacheable(value = "products", key = "#id")
     public Product getProductById(String id) {
-        // Logic sẽ chỉ chạy nếu không có trong cache
         return repository.findById(id).orElse(null);
     }
 
-    // Xóa cache khi sản phẩm được cập nhật
     @CacheEvict(value = "products", key = "#product.id")
     public Product updateProduct(Product product) {
         return repository.save(product);
@@ -311,115 +302,153 @@ public class ProductService {
                             </div>
                         </div>
                     </div>
-                    <!-- Session Store Content -->
                     <div id="session-store-content" class="use-case-tab-content hidden">
                         <h4 class="font-bold text-lg mb-2">Quản lý Session (Session Store)</h4>
                         <p>Trong các hệ thống phân tán, việc lưu session trên server cục bộ sẽ không hoạt động khi request được điều phối đến các server khác nhau. Redis cung cấp một kho lưu trữ session tập trung, tốc độ cao và đáng tin cậy.</p>
                         <div class="mt-4">
-                            <h5 class="font-semibold mb-2">Ví dụ với Node.js (Express):</h5>
+                            <h5 class="font-semibold mb-2">Ví dụ với Spring Boot:</h5>
                             <div class="code-block">
                                 <button class="copy-btn">Copy</button>
-                                <pre><code class="language-javascript">
-const express = require('express');
-const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
-const { createClient } = require('redis');
-
-const app = express();
-const redisClient = createClient({ url: 'redis://localhost:6379' });
-redisClient.connect().catch(console.error);
-
-app.use(session({
-    store: new RedisStore({ client: redisClient }),
-    secret: 'my-secret',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: false, maxAge: 86400000 }
-}));
-
-app.get('/', (req, res) => {
-    if (req.session.views) {
-        req.session.views++;
-        res.send(`You visited this page ${req.session.views} times`);
-    } else {
-        req.session.views = 1;
-        res.send('Welcome to this page for the first time!');
+                                <pre><code class="language-java">
+@Configuration
+@EnableRedisHttpSession
+public class SessionConfig {
+    @Bean
+    public LettuceConnectionFactory connectionFactory() {
+        return new LettuceConnectionFactory();
     }
-});
+}
 
-app.listen(3000);
+@RestController
+public class SessionController {
+
+    @GetMapping("/session")
+    public String handleSession(HttpSession session) {
+        Integer views = (Integer) session.getAttribute("views");
+        if (views == null) {
+            views = 0;
+            session.setAttribute("views", 1);
+            return "Welcome to this page for the first time!";
+        } else {
+            session.setAttribute("views", views + 1);
+            return "You visited this page " + views + " times";
+        }
+    }
+}
                                     </code></pre>
                             </div>
                         </div>
                     </div>
-                    <!-- Rate Limiting Content -->
                     <div id="rate-limiting-content" class="use-case-tab-content hidden">
                         <h4 class="font-bold text-lg mb-2">Giới hạn Tần suất (Rate Limiting)</h4>
-                        <p>Để bảo vệ API khỏi bị lạm dụng, Redis có thể được dùng để theo dõi số lượng request từ một IP hoặc user trong một khoảng thời gian nhất định. Các lệnh INCR và EXPIRE rất lý tưởng cho việc này.</p>
+                        <p>Để bảo vệ API khỏi bị lạm dụng, Redis có thể được dùng để theo dõi số lượng request từ một IP hoặc user trong một khoảng thời gian nhất định. Các lệnh <code>INCR</code> và <code>EXPIRE</code> rất lý tưởng cho việc này.</p>
                         <div class="mt-4">
-                            <h5 class="font-semibold mb-2">Ví dụ với Python (redis-py):</h5>
+                            <h5 class="font-semibold mb-2">Ví dụ với Spring Boot:</h5>
                             <div class="code-block">
                                 <button class="copy-btn">Copy</button>
-                                <pre><code class="language-python">
-import redis
-import time
+                                <pre><code class="language-java">
+@Service
+public class RateLimiterService {
 
-r = redis.Redis()
-LIMIT = 10  # 10 requests
-PERIOD = 60 # per 60 seconds
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
-def is_rate_limited(user_id):
-    key = f"rate_limit:{user_id}"
+    private static final int LIMIT = 10; // 10 requests
+    private static final int PERIOD = 60; // per 60 seconds
 
-    # Sử dụng pipeline để thực hiện các lệnh một cách nguyên tử
-    pipe = r.pipeline()
-    pipe.incr(key)
-    pipe.expire(key, PERIOD)
-    count, _ = pipe.execute()
+    public boolean isRateLimited(String userId) {
+        String key = "rate_limit:" + userId;
+        String count = redisTemplate.opsForValue().get(key);
 
-    if count > LIMIT:
-        return True # Bị giới hạn
-    return False # Cho phép
+        if (count == null) {
+            redisTemplate.opsForValue().set(key, "1", PERIOD, TimeUnit.SECONDS);
+            return false;
+        }
 
-# Cách sử dụng
-user_id = "user123"
-for i in range(15):
-    if is_rate_limited(user_id):
-        print(f"Request {i+1}: Rate limited!")
-    else:
-        print(f"Request {i+1}: Allowed.")
-    time.sleep(1)
+        Long currentCount = Long.parseLong(count);
+        if (currentCount >= LIMIT) {
+            return true; // Bị giới hạn
+        }
+
+        redisTemplate.opsForValue().increment(key, 1);
+        return false; // Cho phép
+    }
+}
+
+@RestController
+public class RateLimitController {
+
+    @Autowired
+    private RateLimiterService rateLimiterService;
+
+    @GetMapping("/api")
+    public ResponseEntity<String> accessApi(@RequestParam String userId) {
+        if (rateLimiterService.isRateLimited(userId)) {
+            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .body("Rate limit exceeded for user: " + userId);
+        }
+        return ResponseEntity.ok("Request allowed for user: " + userId);
+    }
+}
                                     </code></pre>
                             </div>
                         </div>
                     </div>
-                    <!-- Leaderboards Content -->
                     <div id="leaderboards-content" class="use-case-tab-content hidden">
                         <h4 class="font-bold text-lg mb-2">Bảng xếp hạng (Leaderboards)</h4>
-                        <p>Cấu trúc dữ liệu Sorted Set của Redis là công cụ hoàn hảo để xây dựng các bảng xếp hạng thời gian thực. Mỗi thành viên có một điểm số, và Redis tự động duy trì thứ hạng.</p>
+                        <p>Cấu trúc dữ liệu <code>Sorted Set</code> của Redis là công cụ hoàn hảo để xây dựng các bảng xếp hạng thời gian thực. Mỗi thành viên có một điểm số, và Redis tự động duy trì thứ hạng.</p>
                         <div class="mt-4">
-                            <h5 class="font-semibold mb-2">Ví dụ lệnh Redis CLI:</h5>
+                            <h5 class="font-semibold mb-2">Ví dụ với Spring Boot:</h5>
                             <div class="code-block">
                                 <button class="copy-btn">Copy</button>
-                                <pre><code class="language-bash">
-# Thêm điểm cho người chơi
-# ZADD leaderboard_key score member
-ZADD game:leaderboard 1500 "user:1"
-ZADD game:leaderboard 2300 "user:2"
-ZADD game:leaderboard 1800 "user:3"
+                                <pre><code class="language-java">
+@Service
+public class LeaderboardService {
 
-# Lấy top 2 người chơi (điểm cao nhất)
-# ZREVRANGE leaderboard_key start stop WITHSCORES
-ZREVRANGE game:leaderboard 0 1 WITHSCORES
-# 1) "user:2"
-# 2) "2300"
-# 3) "user:3"
-# 4) "1800"
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
-# Lấy thứ hạng của một người chơi
-# ZREVRANK leaderboard_key member
-ZREVRANK game:leaderboard "user:1"
-# (integer) 2  (hạng 3, vì index bắt đầu từ 0)
+    private static final String LEADERBOARD_KEY = "game:leaderboard";
+
+    public void addScore(String userId, double score) {
+        redisTemplate.opsForZSet().add(LEADERBOARD_KEY, userId, score);
+    }
+
+    public List<String> getTopPlayers(int limit) {
+        Set<String> topPlayers = redisTemplate.opsForZSet()
+                .reverseRange(LEADERBOARD_KEY, 0, limit - 1);
+        return new ArrayList<>(topPlayers);
+    }
+
+    public Long getRank(String userId) {
+        return redisTemplate.opsForZSet().reverseRank(LEADERBOARD_KEY, userId);
+    }
+}
+
+@RestController
+@RequestMapping("/leaderboard")
+public class LeaderboardController {
+
+    @Autowired
+    private LeaderboardService leaderboardService;
+
+    @PostMapping("/score")
+    public ResponseEntity<String> addScore(@RequestParam String userId, @RequestParam double score) {
+        leaderboardService.addScore(userId, score);
+        return ResponseEntity.ok("Score added for user: " + userId);
+    }
+
+    @GetMapping("/top")
+    public ResponseEntity<List<String>> getTopPlayers(@RequestParam(defaultValue = "10") int limit) {
+        return ResponseEntity.ok(leaderboardService.getTopPlayers(limit));
+    }
+
+    @GetMapping("/rank")
+    public ResponseEntity<Long> getRank(@RequestParam String userId) {
+        Long rank = leaderboardService.getRank(userId);
+        return ResponseEntity.ok(rank != null ? rank : -1);
+    }
+}
                                     </code></pre>
                             </div>
                         </div>
@@ -428,48 +457,46 @@ ZREVRANK game:leaderboard "user:1"
             </div>
         </section>
 
-        <!-- 5. Best Practices -->
         <section id="best-practices" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold border-b-2 border-[#A37F5A] pb-2 mb-6">5. Best Practices khi sử dụng Redis Caching</h2>
+            <h2 class="text-3xl font-bold border-b-2 border-[#F6AD55] pb-2 mb-6">5. Best Practices khi sử dụng Redis Caching</h2>
             <div class="space-y-4" id="accordion-container">
-                <div class="accordion-item bg-white border rounded-lg">
+                <div class="accordion-item bg-[#2D2D2D] border border-gray-700 rounded-lg">
                     <div class="accordion-header p-4 flex justify-between items-center">
                         <h3 class="font-semibold text-lg">Quy ước đặt tên Key (Key Naming Conventions)</h3>
-                        <span>&#9660;</span>
+                        <span class="accordion-icon">▼</span>
                     </div>
-                    <div class="accordion-content px-4 pb-4 text-gray-700">
-                        <p>Sử dụng một quy ước đặt tên nhất quán và có cấu trúc, ví dụ: `object-type:id:field`. Điều này giúp dễ dàng gỡ lỗi và quản lý key. Ví dụ: `user:123:profile`, `product:456:details`.</p>
+                    <div class="accordion-content px-4 pb-4 text-gray-300" style="display: none;">
+                        <p>Sử dụng một quy ước đặt tên nhất quán và có cấu trúc, ví dụ: <code>object-type:id:field</code>. Điều này giúp dễ dàng gỡ lỗi và quản lý key. Ví dụ: <code>user:123:profile</code>, <code>product:456:details</code>.</p>
                     </div>
                 </div>
-                <div class="accordion-item bg-white border rounded-lg">
+                <div class="accordion-item bg-[#2D2D2D] border border-gray-700 rounded-lg">
                     <div class="accordion-header p-4 flex justify-between items-center">
                         <h3 class="font-semibold text-lg">Đặt thời gian hết hạn (TTL) cho mọi Key</h3>
-                        <span>&#9660;</span>
+                        <span class="accordion-icon">▼</span>
                     </div>
-                    <div class="accordion-content px-4 pb-4 text-gray-700">
-                        <p>Luôn đặt `EXPIRE` cho các key cache. Điều này ngăn chặn việc dữ liệu cũ chiếm dụng bộ nhớ vô thời hạn, tránh rò rỉ bộ nhớ (memory leaks) và tự động làm mới dữ liệu.</p>
+                    <div class="accordion-content px-4 pb-4 text-gray-300" style="display: none;">
+                        <p>Luôn đặt <code>EXPIRE</code> cho các key cache. Điều này ngăn chặn việc dữ liệu cũ chiếm dụng bộ nhớ vô thời hạn, tránh rò rỉ bộ nhớ (memory leaks) và tự động làm mới dữ liệu.</p>
                     </div>
                 </div>
-                <div class="accordion-item bg-white border rounded-lg">
+                <div class="accordion-item bg-[#2D2D2D] border border-gray-700 rounded-lg">
                     <div class="accordion-header p-4 flex justify-between items-center">
                         <h3 class="font-semibold text-lg">Xử lý các vấn đề phổ biến</h3>
-                        <span>&#9660;</span>
+                        <span class="accordion-icon">▼</span>
                     </div>
-                    <div class="accordion-content px-4 pb-4 text-gray-700">
+                    <div class="accordion-content px-4 pb-4 text-gray-300" style="display: none;">
                         <ul class="list-disc list-inside space-y-2">
-                            <li><strong>Cache Stampede / Thundering Herd:</strong> Khi một key phổ biến hết hạn, nhiều tiến trình cùng lúc cố gắng tái tạo cache, gây quá tải cho database. Giải pháp: Sử dụng cơ chế locking (ví dụ: `SETNX`) để chỉ một tiến trình được phép tái tạo cache, hoặc làm mới cache một cách chủ động trước khi nó hết hạn.</li>
-                            <li><strong>Dữ liệu cũ (Stale Data):</strong> Dữ liệu trong cache không còn khớp với database. Giải pháp: Sử dụng TTL hợp lý và chiến lược cache invalidation hiệu quả (ví dụ: xóa cache khi có sự kiện ghi vào database).</li>
+                            <li><strong>Cache Stampede / Thundering Herd:</strong> Khi một key phổ biến hết hạn, nhiều tiến trình cùng lúc cố gắng tái tạo cache, gây quá tải cho database. Giải pháp: Sử dụng cơ chế locking (ví dụ: <code>SETNX</code>) để chỉ một tiến trình được phép tái tạo cache, hoặc làm mới cache một cách chủ động trước khi nó hết hạn.</li>
+                            <li><strong>Dữ liệu cũ (Stale Data):</strong> Dữ liệu trong cache không còn khớp với database. Giải pháp: Sử dụng <code>TTL</code> hợp lý và chiến lược cache invalidation hiệu quả (ví dụ: xóa cache khi có sự kiện ghi vào database).</li>
                         </ul>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 6. So sánh -->
         <section id="comparison" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold border-b-2 border-[#A37F5A] pb-2 mb-6">6. So sánh Redis với các giải pháp khác</h2>
+            <h2 class="text-3xl font-bold border-b-2 border-[#F6AD55] pb-2 mb-6">6. So sánh Redis với các giải pháp khác</h2>
             <p class="mb-6">Lựa chọn công cụ caching phù hợp phụ thuộc vào yêu cầu cụ thể của dự án. Dưới đây là so sánh giữa Redis và một đối thủ cạnh tranh phổ biến là Memcached.</p>
-            <div class="bg-white p-6 rounded-lg shadow-md border">
+            <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                 <h3 class="text-xl font-semibold mb-4 text-center">Redis vs. Memcached (2025)</h3>
                 <div class="chart-container">
                     <canvas id="redisVsMemcachedChart"></canvas>
@@ -478,33 +505,33 @@ ZREVRANK game:leaderboard "user:1"
                     <table class="w-full min-w-full text-left border-collapse">
                         <thead>
                         <tr>
-                            <th class="border-b-2 p-2 font-semibold">Tính năng</th>
+                            <th class="border-b-2 p-2 font-semibold text-gray-200">Tính năng</th>
                             <th class="border-b-2 p-2 font-semibold text-center">Redis</th>
                             <th class="border-b-2 p-2 font-semibold text-center">Memcached</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-800">
                             <td class="border-b p-2 font-medium">Cấu trúc dữ liệu</td>
-                            <td class="border-b p-2 text-center">Phong phú (Strings, Hashes, Lists, Sets...)</td>
-                            <td class="border-b p-2 text-center">Chỉ Strings (key-value đơn giản)</td>
+                            <td class="border-b p-2 text-center">Phong phú (<code>Strings</code>, <code>Hashes</code>, <code>Lists</code>, <code>Sets</code>...)</td>
+                            <td class="border-b p-2 text-center">Chỉ <code>Strings</code> (key-value đơn giản)</td>
                         </tr>
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-800">
                             <td class="border-b p-2 font-medium">Độ bền (Persistence)</td>
-                            <td class="border-b p-2 text-center">Có (RDB, AOF)</td>
+                            <td class="border-b p-2 text-center">Có (<code>RDB</code>, <code>AOF</code>)</td>
                             <td class="border-b p-2 text-center">Không (chỉ trong bộ nhớ)</td>
                         </tr>
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-800">
                             <td class="border-b p-2 font-medium">Replication</td>
-                            <td class="border-b p-2 text-center">Hỗ trợ (Master-Slave)</td>
+                            <td class="border-b p-2 text-center">Hỗ trợ (<code>Master-Slave</code>)</td>
                             <td class="border-b p-2 text-center">Không có sẵn</td>
                         </tr>
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-800">
                             <td class="border-b p-2 font-medium">Hiệu năng</td>
                             <td class="border-b p-2 text-center">Rất cao, đơn luồng</td>
                             <td class="border-b p-2 text-center">Rất cao, đa luồng (có thể tốt hơn cho nhiều kết nối)</td>
                         </tr>
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-gray-800">
                             <td class="border-b p-2 font-medium">Trường hợp sử dụng</td>
                             <td class="border-b p-2 text-center">Caching phức tạp, session, leaderboard, pub/sub</td>
                             <td class="border-b p-2 text-center">Caching đơn giản, cache các đối tượng nhỏ</td>
@@ -515,15 +542,14 @@ ZREVRANK game:leaderboard "user:1"
             </div>
         </section>
 
-        <!-- 7. Chủ đề Nâng cao -->
         <section id="advanced" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl font-bold border-b-2 border-[#A37F5A] pb-2 mb-6">7. Chủ đề Nâng cao và Xu hướng tương lai</h2>
+            <h2 class="text-3xl font-bold border-b-2 border-[#F6AD55] pb-2 mb-6">7. Chủ đề Nâng cao và Xu hướng tương lai</h2>
             <div class="space-y-6">
-                <div class="bg-white p-6 rounded-lg shadow-md border">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h3 class="text-xl font-semibold mb-2">Redis Stack</h3>
                     <p>Redis Stack là một bộ sản phẩm mở rộng dựa trên Redis mã nguồn mở, cung cấp các khả năng mạnh mẽ hơn. Nó bao gồm Redis server và:</p>
                     <ul class="list-disc list-inside mt-2 space-y-1">
-                        <li><strong>RedisJSON:</strong> Hỗ trợ kiểu dữ liệu JSON gốc.</li>
+                        <li><strong>RedisJSON:</strong> Hỗ trợ kiểu dữ liệu <code>JSON</code> gốc.</li>
                         <li><strong>RediSearch:</strong> Cung cấp khả năng tìm kiếm full-text.</li>
                         <li><strong>RedisGraph:</strong> Cơ sở dữ liệu đồ thị.</li>
                         <li><strong>RedisTimeSeries:</strong> Cơ sở dữ liệu chuỗi thời gian.</li>
@@ -531,42 +557,41 @@ ZREVRANK game:leaderboard "user:1"
                     </ul>
                     <p class="mt-2">Đây là hướng đi của Redis để trở thành một "primary database" đa mô hình, không chỉ là một cache.</p>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md border">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h3 class="text-xl font-semibold mb-2">Redis và Lập trình Bất đồng bộ (Reactive)</h3>
-                    <p>Với sự phát triển của các framework như Spring WebFlux, Project Reactor, việc sử dụng các client Redis bất đồng bộ như Lettuce trở nên phổ biến. Lettuce cho phép ứng dụng xử lý nhiều request Redis đồng thời trên một kết nối duy nhất, tối ưu hóa tài nguyên và tăng thông lượng (throughput) một cách đáng kể.</p>
+                    <p>Với sự phát triển của các framework như <code>Spring WebFlux</code>, <code>Project Reactor</code>, việc sử dụng các client Redis bất đồng bộ như <code>Lettuce</code> trở nên phổ biến. <code>Lettuce</code> cho phép ứng dụng xử lý nhiều request Redis đồng thời trên một kết nối duy nhất, tối ưu hóa tài nguyên và tăng thông lượng (throughput) một cách đáng kể.</p>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-md border">
+                <div class="bg-[#2D2D2D] p-6 rounded-lg shadow-md border border-gray-700">
                     <h3 class="text-xl font-semibold mb-2">Xu hướng tương lai</h3>
-                    <p>Các xu hướng mới nổi bao gồm việc tích hợp Redis vào kiến trúc Edge Computing để giảm độ trễ hơn nữa, sử dụng AI để tạo ra các chính sách loại bỏ (eviction policies) thông minh hơn, và sự phát triển của các dịch vụ Serverless Redis giúp đơn giản hóa việc quản lý và vận hành.</p>
+                    <p>Các xu hướng mới nổi bao gồm việc tích hợp Redis vào kiến trúc <code>Edge Computing</code> để giảm độ trễ hơn nữa, sử dụng AI để tạo ra các chính sách loại bỏ (eviction policies) thông minh hơn, và sự phát triển của các dịch vụ <code>Serverless Redis</code> giúp đơn giản hóa việc quản lý và vận hành.</p>
                 </div>
             </div>
         </section>
 
-        <!-- 8. Tài nguyên & Lời kết -->
         <section id="resources" class="scroll-mt-20">
-            <h2 class="text-3xl font-bold border-b-2 border-[#A37F5A] pb-2 mb-6">8. Tài nguyên & Lời kết</h2>
+            <h2 class="text-3xl font-bold border-b-2 border-[#F6AD55] pb-2 mb-6">8. Tài nguyên & Lời kết</h2>
             <div class="grid md:grid-cols-2 gap-8">
                 <div>
                     <h3 class="text-xl font-semibold mb-4">Tài liệu tham khảo</h3>
                     <ul class="list-disc list-inside space-y-2">
-                        <li><a href="https://redis.io/docs/" target="_blank" class="text-[#A37F5A] hover:underline">Trang tài liệu chính thức của Redis</a></li>
-                        <li><a href="https://redis.com/blog/" target="_blank" class="text-[#A37F5A] hover:underline">Blog của Redis Inc.</a></li>
-                        <li><a href="https://www.baeldung.com/spring-boot-redis-cache" target="_blank" class="text-[#A37F5A] hover:underline">Hướng dẫn Redis Cache với Spring Boot - Baeldung</a></li>
+                        <li><a href="https://redis.io/docs/" target="_blank" class="text-[#F6AD55] hover:underline">Trang tài liệu chính thức của Redis</a></li>
+                        <li><a href="https://redis.com/blog/" target="_blank" class="text-[#F6AD55] hover:underline">Blog của Redis Inc.</a></li>
+                        <li><a href="https://www.baeldung.com/spring-boot-redis-cache" target="_blank" class="text-[#F6AD55] hover:underline">Hướng dẫn Redis Cache với Spring Boot - Baeldung</a></li>
                         <li>Sách: "Redis in Action" của Josiah L. Carlson.</li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-xl font-semibold mb-4">Lời khuyên cho người mới bắt đầu</h3>
                     <ol class="list-decimal list-inside space-y-2">
-                        <li><strong>Cài đặt Redis:</strong> Sử dụng Docker để chạy một instance Redis cục bộ một cách nhanh chóng: `docker run -d -p 6379:6379 redis`.</li>
-                        <li><strong>Thực hành với CLI:</strong> Dùng `redis-cli` để làm quen với các lệnh cơ bản như `SET`, `GET`, `EXPIRE`, `INCR`, `HSET`.</li>
+                        <li><strong>Cài đặt Redis:</strong> Sử dụng Docker để chạy một instance Redis cục bộ một cách nhanh chóng: <code>docker run -d -p 6379:6379 redis</code>.</li>
+                        <li><strong>Thực hành với CLI:</strong> Dùng <code>redis-cli</code> để làm quen với các lệnh cơ bản như <code>SET</code>, <code>GET</code>, <code>EXPIRE</code>, <code>INCR</code>, <code>HSET</code>.</li>
                         <li><strong>Xây dựng dự án nhỏ:</strong> Tạo một REST API đơn giản (sử dụng framework bạn quen thuộc) và thêm lớp caching cho các endpoint đọc dữ liệu. Đây là cách tốt nhất để hiểu rõ các khái niệm trong thực tế.</li>
                     </ol>
                 </div>
             </div>
-            <div class="mt-10 p-6 bg-gradient-to-r from-[#EAE3D9] to-[#F5F1EB] rounded-lg text-center">
+            <div class="mt-10 p-6 bg-gradient-to-r from-[#2D3748] to-[#4A5568] rounded-lg text-center">
                 <h3 class="text-2xl font-bold mb-2">Kết luận</h3>
-                <p class="text-gray-800">Redis Caching không chỉ là một công cụ giúp tăng tốc ứng dụng, mà còn là một thành phần kiến trúc quan trọng trong các hệ thống hiện đại. Bằng cách hiểu rõ các khái niệm cốt lõi, áp dụng các best practices, và tận dụng sức mạnh của các cấu trúc dữ liệu đa dạng, bạn có thể xây dựng các ứng dụng nhanh hơn, linh hoạt hơn và có khả năng mở rộng tốt hơn. Hy vọng tài liệu này đã cung cấp cho bạn một cái nhìn toàn diện và sâu sắc về thế giới của Redis Caching.</p>
+                <p class="text-gray-300">Redis Caching không chỉ là một công cụ giúp tăng tốc ứng dụng, mà còn là một thành phần kiến trúc quan trọng trong các hệ thống hiện đại. Bằng cách hiểu rõ các khái niệm cốt lõi, áp dụng các best practices, và tận dụng sức mạnh của các cấu trúc dữ liệu đa dạng, bạn có thể xây dựng các ứng dụng nhanh hơn, linh hoạt hơn và có khả năng mở rộng tốt hơn. Hy vọng tài liệu này đã cung cấp cho bạn một cái nhìn toàn diện và sâu sắc về thế giới của Redis Caching.</p>
             </div>
         </section>
     </main>
@@ -574,7 +599,6 @@ ZREVRANK game:leaderboard "user:1"
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Navigation scroll highlighting
         const sections = document.querySelectorAll('section');
         const navLinks = document.querySelectorAll('#navigation a');
 
@@ -595,7 +619,6 @@ ZREVRANK game:leaderboard "user:1"
             observer.observe(section);
         });
 
-        // Tab functionality for caching patterns
         const patternTabsContainer = document.getElementById('caching-patterns-tabs');
         const patternTabButtons = patternTabsContainer.querySelectorAll('.tab-btn');
         const patternTabContents = patternTabsContainer.querySelectorAll('.tab-content');
@@ -620,7 +643,6 @@ ZREVRANK game:leaderboard "user:1"
             });
         });
 
-        // Tab functionality for use cases
         const useCasesTabsContainer = document.getElementById('use-cases-tabs');
         const useCasesTabButtons = useCasesTabsContainer.querySelectorAll('.use-case-tab-btn');
         const useCasesTabContents = useCasesTabsContainer.querySelectorAll('.use-case-tab-content');
@@ -645,26 +667,43 @@ ZREVRANK game:leaderboard "user:1"
             });
         });
 
-        // Accordion functionality
         const accordionItems = document.querySelectorAll('.accordion-item');
         accordionItems.forEach(item => {
             const header = item.querySelector('.accordion-header');
             const content = item.querySelector('.accordion-content');
-            const icon = header.querySelector('span');
+            const icon = header.querySelector('.accordion-icon');
 
             header.addEventListener('click', () => {
-                const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+                const isOpen = content.classList.contains('open');
+                accordionItems.forEach(otherItem => {
+                    const otherContent = otherItem.querySelector('.accordion-content');
+                    const otherIcon = otherItem.querySelector('.accordion-icon');
+                    if (otherItem !== item) {
+                        otherContent.classList.remove('open');
+                        otherContent.style.maxHeight = '0';
+                        otherContent.style.opacity = '0';
+                        otherContent.style.display = 'none';
+                        otherIcon.style.transform = 'rotate(0deg)';
+                    }
+                });
+
                 if (isOpen) {
-                    content.style.maxHeight = '0px';
-                    icon.style.transform = 'rotate(0deg)';
+                    content.classList.remove('open');
+                    content.style.maxHeight = '0';
+                    content.style.opacity = '0';
+                    setTimeout(() => {
+                        content.style.display = 'none';
+                    }, 300); // Match transition duration
                 } else {
+                    content.classList.add('open');
+                    content.style.display = 'block';
                     content.style.maxHeight = content.scrollHeight + 'px';
+                    content.style.opacity = '1';
                     icon.style.transform = 'rotate(180deg)';
                 }
             });
         });
 
-        // Copy button functionality
         document.querySelectorAll('.copy-btn').forEach(button => {
             button.addEventListener('click', () => {
                 const codeBlock = button.closest('.code-block');
@@ -678,7 +717,6 @@ ZREVRANK game:leaderboard "user:1"
             });
         });
 
-        // Chart.js: Redis vs Memcached
         const ctx = document.getElementById('redisVsMemcachedChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
@@ -687,14 +725,14 @@ ZREVRANK game:leaderboard "user:1"
                 datasets: [{
                     label: 'Redis',
                     data: [9, 8, 9, 8.5, 9],
-                    backgroundColor: 'rgba(163, 127, 90, 0.7)',
-                    borderColor: 'rgba(163, 127, 90, 1)',
+                    backgroundColor: 'rgba(246, 173, 85, 0.7)',
+                    borderColor: 'rgba(246, 173, 85, 1)',
                     borderWidth: 1
                 }, {
                     label: 'Memcached',
                     data: [3, 1, 2, 9, 7],
-                    backgroundColor: 'rgba(210, 210, 210, 0.7)',
-                    borderColor: 'rgba(150, 150, 150, 1)',
+                    backgroundColor: 'rgba(113, 128, 150, 0.7)',
+                    borderColor: 'rgba(113, 128, 150, 1)',
                     borderWidth: 1
                 }]
             },
@@ -707,7 +745,22 @@ ZREVRANK game:leaderboard "user:1"
                         max: 10,
                         title: {
                             display: true,
-                            text: 'Điểm đánh giá (trên 10)'
+                            text: 'Điểm đánh giá (trên 10)',
+                            color: '#E5E5E5'
+                        },
+                        ticks: {
+                            color: '#E5E5E5'
+                        },
+                        grid: {
+                            color: '#4A5568'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#E5E5E5'
+                        },
+                        grid: {
+                            color: '#4A5568'
                         }
                     }
                 },
@@ -717,7 +770,8 @@ ZREVRANK game:leaderboard "user:1"
                         text: 'So sánh tương đối các tính năng',
                         font: {
                             size: 16
-                        }
+                        },
+                        color: '#F6AD55'
                     },
                     tooltip: {
                         callbacks: {
@@ -731,6 +785,14 @@ ZREVRANK game:leaderboard "user:1"
                                 }
                                 return label;
                             }
+                        },
+                        backgroundColor: '#2D3748',
+                        titleColor: '#F6AD55',
+                        bodyColor: '#E5E5E5'
+                    },
+                    legend: {
+                        labels: {
+                            color: '#E5E5E5'
                         }
                     }
                 }
