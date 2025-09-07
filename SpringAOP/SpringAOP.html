@@ -11,22 +11,22 @@
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f8fafc; /* slate-50 */
-      color: #1e293b; /* slate-800 */
+      background-color: #111827; /* gray-900 */
+      color: #e5e7eb; /* gray-200 */
     }
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Fira+Code&display=swap');
 
     /* Code block styling with Prism.js */
     .code-block {
-      background-color: #1e293b; /* slate-800 */
-      color: #e2e8f0; /* slate-200 */
+      background-color: #1f2937; /* gray-800 */
+      color: #e5e7eb; /* gray-200 */
       padding: 1.5rem;
       border-radius: 0.5rem;
       overflow-x: auto;
       position: relative;
       margin-top: 1rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
     .code-block pre {
       margin: 0;
@@ -38,8 +38,8 @@
       position: absolute;
       top: 0.75rem;
       right: 0.75rem;
-      background-color: #475569; /* slate-600 */
-      color: #e2e8f0;
+      background-color: #4b5563; /* gray-600 */
+      color: #e5e7eb;
       border: none;
       padding: 0.3rem 0.8rem;
       border-radius: 0.25rem;
@@ -48,7 +48,7 @@
       transition: background-color 0.3s;
     }
     .copy-btn:hover {
-      background-color: #64748b; /* slate-500 */
+      background-color: #6b7280; /* gray-500 */
     }
 
     /* Navigation styling */
@@ -58,9 +58,10 @@
       border-radius: 0.375rem;
       transition: all 0.3s ease;
       font-weight: 500;
+      color: #e5e7eb; /* gray-200 */
     }
     .nav-link:hover {
-      background-color: #e2e8f0; /* slate-200 */
+      background-color: #374151; /* gray-700 */
     }
     .nav-link.active {
       background-color: #0ea5e9; /* sky-500 */
@@ -70,43 +71,45 @@
     .sub-nav-link {
       padding-left: 2.5rem;
       font-size: 0.85rem;
-      color: #475569; /* slate-600 */
+      color: #9ca3af; /* gray-400 */
     }
     .sub-nav-link:hover {
       color: #0ea5e9; /* sky-500 */
     }
     .nav-toggle {
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 1.2rem; /* Increased size for better balance */
+      font-weight: bold;
       color: #0ea5e9;
+      margin-right: 0.5rem; /* Added margin for balance */
     }
     .nav-toggle:hover {
-      color: #0369a1; /* sky-700 */
+      color: #38bdf8; /* sky-400 */
     }
 
     /* Typography */
     h2 {
       font-size: 2rem;
       font-weight: 700;
-      border-bottom: 2px solid #e2e8f0;
+      border-bottom: 2px solid #374151; /* gray-700 */
       padding-bottom: 0.5rem;
       margin-top: 2rem;
       margin-bottom: 1.5rem;
-      color: #0f172a; /* slate-900 */
+      color: #f9fafb; /* gray-50 */
     }
     h3 {
       font-size: 1.5rem;
       font-weight: 600;
       margin-top: 1.75rem;
       margin-bottom: 1rem;
-      color: #1e293b; /* slate-800 */
+      color: #e5e7eb; /* gray-200 */
     }
     h4 {
       font-size: 1.25rem;
       font-weight: 600;
       margin-top: 1.5rem;
       margin-bottom: 0.75rem;
-      color: #334155; /* slate-700 */
+      color: #d1d5db; /* gray-300 */
     }
     p, li {
       line-height: 1.8;
@@ -121,8 +124,8 @@
     .term:hover::after {
       content: attr(data-tooltip);
       position: absolute;
-      background-color: #1e293b;
-      color: white;
+      background-color: #1f2937; /* gray-800 */
+      color: #e5e7eb; /* gray-200 */
       padding: 0.5rem;
       border-radius: 0.25rem;
       font-size: 0.8rem;
@@ -139,34 +142,35 @@
       width: 100%;
       margin: 1.5rem 0;
       border-collapse: collapse;
-      background-color: white;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      background-color: #1f2937; /* gray-800 */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
     th, td {
-      border: 1px solid #e2e8f0;
+      border: 1px solid #374151; /* gray-700 */
       padding: 1rem;
       text-align: left;
     }
     th {
-      background-color: #f1f5f9; /* slate-100 */
+      background-color: #374151; /* gray-700 */
       font-weight: 600;
+      color: #e5e7eb; /* gray-200 */
     }
 
     /* Diagrams */
     .diagram-box {
-      border: 2px solid #94a3b8; /* slate-400 */
+      border: 2px solid #6b7280; /* gray-500 */
       padding: 1.25rem;
       border-radius: 0.5rem;
       text-align: center;
-      background-color: white;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      background-color: #1f2937; /* gray-800 */
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
       transition: transform 0.3s ease;
     }
     .diagram-box:hover {
       transform: scale(1.05);
     }
     .arrow {
-      color: #475569; /* slate-600 */
+      color: #9ca3af; /* gray-400 */
       font-weight: bold;
       font-size: 1.5rem;
     }
@@ -179,7 +183,7 @@
       transition: background-color 0.3s ease, transform 0.2s ease;
     }
     .accordion-toggle:hover {
-      background-color: #d1d5db; /* slate-300 */
+      background-color: #4b5563; /* gray-600 */
     }
     .accordion-content {
       transition: max-height 0.3s ease, opacity 0.3s ease;
@@ -191,7 +195,7 @@
       position: fixed;
       bottom: 2rem;
       right: 2rem;
-      background-color: #0ea5e9;
+      background-color: #0ea5e9; /* sky-500 */
       color: white;
       padding: 0.75rem 1.25rem;
       border-radius: 0.5rem;
@@ -203,28 +207,28 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-gray-900 text-gray-200">
 <div class="flex min-h-screen">
   <!-- Sidebar Navigation -->
-  <aside id="sidebar" class="fixed top-0 left-0 h-screen w-80 bg-white border-r border-slate-200 p-6 transition-transform -translate-x-full md:translate-x-0 overflow-y-auto z-30">
-    <h1 class="text-2xl font-bold text-slate-900 mb-8">Spring AOP</h1>
+  <aside id="sidebar" class="fixed top-0 left-0 h-screen w-80 bg-gray-900 border-r border-gray-700 p-6 transition-transform -translate-x-full md:translate-x-0 overflow-y-auto z-30">
+    <h1 class="text-2xl font-bold text-gray-100 mb-8">Spring AOP</h1>
     <nav id="table-of-contents">
       <ul class="space-y-2"></ul>
     </nav>
   </aside>
 
   <!-- Mobile Menu Button -->
-  <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-40 p-3 bg-white rounded-lg shadow-lg">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <button id="menu-toggle" class="md:hidden fixed top-4 left-4 z-40 p-3 bg-gray-900 rounded-lg shadow-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke="white">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
     </svg>
   </button>
 
   <!-- Main Content -->
-  <main class="w-full md:ml-80 p-6 md:p-10">
-    <header class="sticky top-0 bg-white py-6 mb-8 shadow-sm z-20">
-      <h1 class="text-4xl font-extrabold text-slate-900">Nghiên cứu Spring AOP Toàn diện</h1>
-      <p class="text-lg text-slate-600 mt-3">Hướng dẫn chi tiết về Lập trình hướng khía cạnh với Spring Framework, từ lý thuyết đến thực tiễn.</p>
+  <main class="w-full md:ml-80 p-6 md:p-10 pt-32 md:pt-32"> <!-- Added pt-32 to account for fixed header height -->
+    <header class="fixed top-0 left-0 md:left-80 right-0 bg-gray-900 py-6 mb-8 shadow-sm z-20"> <!-- Changed to fixed, adjusted positioning -->
+      <h1 class="text-4xl font-extrabold text-gray-100">Nghiên cứu Spring AOP Toàn diện</h1>
+      <p class="text-lg text-gray-400 mt-3">Hướng dẫn chi tiết về Lập trình hướng khía cạnh với Spring Framework, từ lý thuyết đến thực tiễn.</p>
     </header>
     <div id="content-container" class="space-y-10"></div>
     <a href="#" class="back-to-top hidden">Quay lại đầu trang</a>
@@ -243,7 +247,7 @@
           { id: 'p1_3', title: '1.3 Core Concepts của AOP' }
         ],
         content: `
-            <div id="p1_1" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p1_1" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>1.1 AOP là gì?</h3>
               <h4>Định nghĩa chi tiết về <span class="term" data-tooltip="Lập trình hướng khía cạnh: Một mô hình lập trình tách biệt các mối quan tâm xuyên suốt.">Aspect-Oriented Programming</span></h4>
               <p><strong>Aspect-Oriented Programming (AOP)</strong> - Lập trình hướng khía cạnh, là một mô hình lập trình (programming paradigm) nhằm mục đích tăng tính modularity bằng cách cho phép tách biệt các <strong><span class="term" data-tooltip="Các chức năng cắt ngang qua nhiều module, như logging hoặc security.">cross-cutting concerns</span></strong>. Nó thực hiện điều này bằng cách thêm hành vi bổ sung vào code hiện có mà không sửa đổi chính code đó. Thay vào đó, bạn có thể khai báo một cách riêng biệt logic sẽ được áp dụng tại các điểm cụ thể trong chương trình.</p>
@@ -261,7 +265,7 @@
               <p>AOP cho phép chúng ta tách biệt các cross-cutting concerns này ra khỏi logic nghiệp vụ và đóng gói chúng vào các module riêng biệt gọi là <strong><span class="term" data-tooltip="Module chứa logic của cross-cutting concern.">Aspects</span></strong>. Sau đó, chúng ta có thể "dệt" (weave) các aspect này vào ứng dụng tại các điểm cần thiết một cách khai báo.</p>
             </div>
 
-            <div id="p1_2" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p1_2" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>1.2 So sánh AOP vs OOP</h3>
               <h4>Điểm khác biệt cốt lõi</h4>
               <p>OOP tập trung vào việc phân rã một ứng dụng thành một hệ thống các đối tượng, mỗi đối tượng có trách nhiệm riêng. Đơn vị cơ bản của modularity là <strong>class</strong>. AOP tập trung vào việc phân rã một ứng dụng thành các khía cạnh (aspects), mỗi aspect đóng gói một cross-cutting concern. Đơn vị cơ bản của modularity là <strong>aspect</strong>.</p>
@@ -351,7 +355,7 @@ public void someMethod() {
               <p class="mt-3 italic">Ưu điểm: Hoàn toàn tách biệt. <code>ProductService</code> không hề biết về việc nó đang được giám sát hiệu năng. Logic giám sát được tập trung tại một nơi duy nhất và có thể dễ dàng áp dụng cho các phương thức khác.</p>
             </div>
 
-            <div id="p1_3" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p1_3" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>1.3 Core Concepts của AOP</h3>
               <p>Để hiểu AOP, bạn cần nắm vững các khái niệm cốt lõi sau. Chúng ta có thể hình dung mối quan hệ của chúng qua sơ đồ sau:</p>
               <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-6 my-8">
@@ -394,7 +398,7 @@ public void someMethod() {
           { id: 'p2_4', title: '2.4 Pointcut Expressions' }
         ],
         content: `
-            <div id="p2_1" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p2_1" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>2.1 Spring AOP Overview</h3>
               <h4>Spring AOP khác gì với AspectJ thuần?</h4>
               <p>Spring AOP được xây dựng để cung cấp các giải pháp AOP cơ bản cho các vấn đề phổ biến trong ứng dụng Spring, đặc biệt là các cross-cutting concerns như transaction management, security. Nó đơn giản hơn và dễ sử dụng hơn AspectJ.</p>
@@ -438,33 +442,33 @@ public void someMethod() {
               </ul>
               <p>Trong Spring Boot, CGLIB là mặc định ngay cả khi bạn có interface. Bạn có thể thay đổi hành vi này bằng cách set thuộc tính <code>spring.aop.proxy-target-class=false</code>.</p>
             </div>
-            <div id="p2_2" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p2_2" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>2.2 Cách Spring AOP hoạt động under the hood</h3>
               <p>Quá trình AOP trong Spring diễn ra khi Spring container khởi tạo các beans. Đây là một flow đơn giản:</p>
-              <div class="bg-white p-6 rounded-lg shadow-md my-6">
+              <div class="bg-gray-900 p-6 rounded-lg shadow-md my-6">
                 <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4">
                   <div class="text-center">
-                    <div class="text-xl font-bold bg-sky-100 text-sky-800 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">1</div>
+                    <div class="text-xl font-bold bg-sky-900 text-sky-200 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">1</div>
                     <p>Spring Container quét các beans.</p>
                   </div>
                   <div class="arrow hidden md:flex"></div>
                   <div class="text-center">
-                    <div class="text-xl font-bold bg-sky-100 text-sky-800 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">2</div>
+                    <div class="text-xl font-bold bg-sky-900 text-sky-200 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">2</div>
                     <p>Tìm thấy các Aspects (@Aspect) và Pointcuts.</p>
                   </div>
                   <div class="arrow hidden md:flex"></div>
                   <div class="text-center">
-                    <div class="text-xl font-bold bg-sky-100 text-sky-800 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">3</div>
+                    <div class="text-xl font-bold bg-sky-900 text-sky-200 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">3</div>
                     <p>Kiểm tra xem bean có khớp với Pointcut nào không.</p>
                   </div>
                   <div class="arrow hidden md:flex"></div>
                   <div class="text-center">
-                    <div class="text-xl font-bold bg-sky-100 text-sky-800 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">4</div>
+                    <div class="text-xl font-bold bg-sky-900 text-sky-200 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">4</div>
                     <p>Nếu khớp, Spring tạo một <strong>Proxy Object</strong>.</p>
                   </div>
                   <div class="arrow hidden md:flex"></div>
                   <div class="text-center">
-                    <div class="text-xl font-bold bg-sky-100 text-sky-800 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">5</div>
+                    <div class="text-xl font-bold bg-sky-900 text-sky-200 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3">5</div>
                     <p>Proxy được đưa vào container thay cho bean gốc.</p>
                   </div>
                 </div>
@@ -477,28 +481,26 @@ public void someMethod() {
               </ol>
               <p><strong>Performance implications:</strong> Vì có thêm một lớp proxy, sẽ có một chút overhead về hiệu năng. Tuy nhiên, trong hầu hết các ứng dụng, overhead này là không đáng kể so với lợi ích về kiến trúc và bảo trì. CGLIB thường nhanh hơn một chút so với JDK proxy.</p>
             </div>
-            <div id="p2_3" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p2_3" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>2.3 Các loại Advice trong Spring AOP</h3>
               <p>Spring AOP cung cấp 5 loại advice, mỗi loại phục vụ một mục đích khác nhau. Thứ tự thực thi của chúng quanh một join point (method execution) là rất quan trọng.</p>
-              <div class="relative p-6 my-6 border-2 border-dashed border-slate-400 rounded-lg">
+              <div class="relative p-6 my-6 border-2 border-dashed border-gray-600 rounded-lg">
                 <div class="text-center font-bold text-lg mb-4">Method Execution Flow</div>
                 <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
-                  <div class="diagram-box bg-lime-100 border-lime-400">@Before</div>
+                  <div class="diagram-box bg-lime-900 border-lime-600">@Before</div>
                   <div class="arrow hidden md:flex"></div>
-                  <div class="relative diagram-box bg-amber-100 border-amber-400 p-8">
-                    @Around (before proceed)
-                    <div class="absolute inset-2 border-2 border-slate-500 rounded flex items-center justify-center">
-                      <div class="diagram-box bg-sky-100 border-sky-400">Target Method</div>
-                    </div>
-                    @Around (after proceed)
+                  <div class="diagram-box bg-amber-900 border-amber-600 flex flex-col items-center justify-center space-y-2">
+                    <div>@Around (before proceed)</div>
+                    <div class="diagram-box bg-sky-900 border-sky-600">Target Method</div>
+                    <div>@Around (after proceed)</div>
                   </div>
                   <div class="arrow hidden md:flex"></div>
                   <div class="flex flex-col space-y-2">
-                    <div class="diagram-box bg-green-100 border-green-400">@AfterReturning</div>
-                    <div class="diagram-box bg-red-100 border-red-400">@AfterThrowing</div>
+                    <div class="diagram-box bg-green-900 border-green-600">@AfterReturning</div>
+                    <div class="diagram-box bg-red-900 border-red-600">@AfterThrowing</div>
                   </div>
                   <div class="arrow hidden md:flex"></div>
-                  <div class="diagram-box bg-indigo-100 border-indigo-400">@After</div>
+                  <div class="diagram-box bg-indigo-900 border-indigo-600">@After</div>
                 </div>
               </div>
               <h4>@Before</h4>
@@ -575,7 +577,7 @@ public Object profileExecutionTime(ProceedingJoinPoint joinPoint) throws Throwab
               </div>
               <p class="mt-3"><strong>Use cases:</strong> Caching, transaction management, performance monitoring, retry logic.</p>
             </div>
-            <div id="p2_4" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p2_4" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>2.4 Pointcut Expressions chi tiết</h3>
               <p>Pointcut expression là một chuỗi xác định các join point mà advice sẽ được áp dụng. Spring AOP sử dụng ngôn ngữ biểu thức của AspectJ.</p>
               <h4><code>execution()</code></h4>
@@ -646,7 +648,7 @@ public void logLayers() { ... }
           { id: 'p3_2', title: '3.2 Real-world Use Cases' }
         ],
         content: `
-            <div id="p3_1" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p3_1" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>3.1 Setup và Configuration</h3>
               <h4>Maven Dependency</h4>
               <p>Để sử dụng Spring AOP, bạn cần dependency <code>spring-boot-starter-aop</code>.</p>
@@ -674,17 +676,17 @@ public class AppConfig {
                 </code></pre>
               </div>
             </div>
-            <div id="p3_2" class="bg-white p-6 rounded-lg shadow-md">
+            <div id="p3_2" class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>3.2 Real-world Use Cases với code đầy đủ</h3>
               <p>Dưới đây là một số ví dụ thực tế về cách áp dụng AOP. Mỗi ví dụ là một collapsible section.</p>
               <div class="space-y-4" data-accordion>
                 <div>
-                  <button class="accordion-toggle w-full text-left p-4 bg-slate-200 rounded-lg font-bold flex justify-between items-center">
+                  <button class="accordion-toggle w-full text-left p-4 bg-gray-700 rounded-lg font-bold flex justify-between items-center">
                     <span>Logging Aspect</span>
                     <span class="transform transition-transform duration-200">+</span>
                   </button>
                   <div class="accordion-content max-h-0 opacity-0">
-                    <div class="p-4 bg-white border border-t-0 border-slate-200 rounded-b-lg">
+                    <div class="p-4 bg-gray-900 border border-t-0 border-gray-700 rounded-b-lg">
                       <p>Đây là một trong những ứng dụng phổ biến nhất. Aspect này sẽ ghi log chi tiết về việc thực thi các phương thức trong layer service và repository.</p>
                       <div class="code-block">
                         <button class="copy-btn">Copy</button>
@@ -729,12 +731,12 @@ public class LoggingAspect {
                   </div>
                 </div>
                 <div>
-                  <button class="accordion-toggle w-full text-left p-4 bg-slate-200 rounded-lg font-bold flex justify-between items-center">
+                  <button class="accordion-toggle w-full text-left p-4 bg-gray-700 rounded-lg font-bold flex justify-between items-center">
                     <span>Security Aspect</span>
                     <span class="transform transition-transform duration-200">+</span>
                   </button>
                   <div class="accordion-content max-h-0 opacity-0">
-                    <div class="p-4 bg-white border border-t-0 border-slate-200 rounded-b-lg">
+                    <div class="p-4 bg-gray-900 border border-t-0 border-gray-700 rounded-b-lg">
                       <p>Sử dụng AOP để kiểm tra quyền của người dùng trước khi thực thi một phương thức. Chúng ta sẽ tạo một custom annotation <code>@CheckRole</code>.</p>
                       <div class="code-block">
                         <button class="copy-btn">Copy</button>
@@ -778,12 +780,12 @@ public class AdminController {
                   </div>
                 </div>
                 <div>
-                  <button class="accordion-toggle w-full text-left p-4 bg-slate-200 rounded-lg font-bold flex justify-between items-center">
+                  <button class="accordion-toggle w-full text-left p-4 bg-gray-700 rounded-lg font-bold flex justify-between items-center">
                     <span>Performance Monitoring</span>
                     <span class="transform transition-transform duration-200">+</span>
                   </button>
                   <div class="accordion-content max-h-0 opacity-0">
-                    <div class="p-4 bg-white border border-t-0 border-slate-200 rounded-b-lg">
+                    <div class="p-4 bg-gray-900 border border-t-0 border-gray-700 rounded-b-lg">
                       <p>Tự động theo dõi thời gian thực thi của các phương thức và cảnh báo nếu một phương thức chạy quá chậm.</p>
                       <div class="code-block">
                         <button class="copy-btn">Copy</button>
@@ -824,28 +826,28 @@ public class PerformanceAspect {
         id: 'part9',
         title: 'PHẦN 9: INTERVIEW QUESTIONS',
         content: `
-            <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="bg-gray-900 p-6 rounded-lg shadow-md">
               <h3>Top 10 câu hỏi phỏng vấn về Spring AOP</h3>
               <p>Dưới đây là danh sách các câu hỏi thường gặp về Spring AOP, từ cơ bản đến nâng cao. Nhấp vào câu hỏi để xem câu trả lời.</p>
               <div class="space-y-4" data-accordion>
                 <div>
-                  <button class="accordion-toggle w-full text-left p-4 bg-slate-200 rounded-lg font-bold flex justify-between items-center">
+                  <button class="accordion-toggle w-full text-left p-4 bg-gray-700 rounded-lg font-bold flex justify-between items-center">
                     <span>1. AOP là gì và nó giải quyết vấn đề gì?</span>
                     <span class="transform transition-transform duration-200">+</span>
                   </button>
                   <div class="accordion-content max-h-0 opacity-0">
-                    <div class="p-4 bg-white border border-t-0 border-slate-200 rounded-b-lg">
+                    <div class="p-4 bg-gray-900 border border-t-0 border-gray-700 rounded-b-lg">
                       <p><strong>Trả lời:</strong> AOP (Aspect-Oriented Programming) là một mô hình lập trình cho phép tách biệt các mối quan tâm xuyên suốt (cross-cutting concerns) như logging, security, transaction management... ra khỏi logic nghiệp vụ chính. Nó giải quyết vấn đề code bị lặp lại (code duplication) và code bị rối (code tangling), giúp mã nguồn trở nên sạch sẽ, modular và dễ bảo trì hơn.</p>
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button class="accordion-toggle w-full text-left p-4 bg-slate-200 rounded-lg font-bold flex justify-between items-center">
+                  <button class="accordion-toggle w-full text-left p-4 bg-gray-700 rounded-lg font-bold flex justify-between items-center">
                     <span>2. Sự khác biệt giữa Spring AOP và AspectJ là gì?</span>
                     <span class="transform transition-transform duration-200">+</span>
                   </button>
                   <div class="accordion-content max-h-0 opacity-0">
-                    <div class="p-4 bg-white border border-t-0 border-slate-200 rounded-b-lg">
+                    <div class="p-4 bg-gray-900 border border-t-0 border-gray-700 rounded-b-lg">
                       <p><strong>Trả lời:</strong></p>
                       <ul class="list-disc pl-6">
                         <li><strong>Spring AOP:</strong> Sử dụng runtime weaving thông qua proxy (JDK Dynamic Proxy hoặc CGLIB). Nó đơn giản hơn và chỉ hỗ trợ method execution join points. Nó được tích hợp sẵn và đủ dùng cho hầu hết các trường hợp trong Spring.</li>
@@ -855,12 +857,12 @@ public class PerformanceAspect {
                   </div>
                 </div>
                 <div>
-                  <button class="accordion-toggle w-full text-left p-4 bg-slate-200 rounded-lg font-bold flex justify-between items-center">
+                  <button class="accordion-toggle w-full text-left p-4 bg-gray-700 rounded-lg font-bold flex justify-between items-center">
                     <span>3. Giải thích các khái niệm: Aspect, Join Point, Advice, Pointcut.</span>
                     <span class="transform transition-transform duration-200">+</span>
                   </button>
                   <div class="accordion-content max-h-0 opacity-0">
-                    <div class="p-4 bg-white border border-t-0 border-slate-200 rounded-b-lg">
+                    <div class="p-4 bg-gray-900 border border-t-0 border-gray-700 rounded-b-lg">
                       <ul class="list-disc pl-6">
                         <li><strong>Aspect:</strong> Một module (class) chứa logic cho một cross-cutting concern.</li>
                         <li><strong>Join Point:</strong> Một điểm trong quá trình thực thi chương trình, ví dụ như một method execution.</li>
@@ -871,12 +873,12 @@ public class PerformanceAspect {
                   </div>
                 </div>
                 <div>
-                  <button class="accordion-toggle w-full text-left p-4 bg-slate-200 rounded-lg font-bold flex justify-between items-center">
+                  <button class="accordion-toggle w-full text-left p-4 bg-gray-700 rounded-lg font-bold flex justify-between items-center">
                     <span>4. @Around advice khác gì so với các advice khác?</span>
                     <span class="transform transition-transform duration-200">+</span>
                   </button>
                   <div class="accordion-content max-h-0 opacity-0">
-                    <div class="p-4 bg-white border border-t-0 border-slate-200 rounded-b-lg">
+                    <div class="p-4 bg-gray-900 border border-t-0 border-gray-700 rounded-b-lg">
                       <p><strong>Trả lời:</strong> <code>@Around</code> là advice mạnh mẽ nhất. Nó "bao bọc" hoàn toàn một join point. Nó có thể:</p>
                       <ul class="list-disc pl-6">
                         <li>Thực thi logic cả trước và sau khi phương thức gốc chạy.</li>
@@ -888,12 +890,12 @@ public class PerformanceAspect {
                   </div>
                 </div>
                 <div>
-                  <button class="accordion-toggle w-full text-left p-4 bg-slate-200 rounded-lg font-bold flex justify-between items-center">
+                  <button class="accordion-toggle w-full text-left p-4 bg-gray-700 rounded-lg font-bold flex justify-between items-center">
                     <span>5. Vấn đề "self-invocation" trong Spring AOP là gì và tại sao nó xảy ra?</span>
                     <span class="transform transition-transform duration-200">+</span>
                   </button>
                   <div class="accordion-content max-h-0 opacity-0">
-                    <div class="p-4 bg-white border border-t-0 border-slate-200 rounded-b-lg">
+                    <div class="p-4 bg-gray-900 border border-t-0 border-gray-700 rounded-b-lg">
                       <p><strong>Trả lời:</strong> Vấn đề self-invocation xảy ra khi một phương thức có áp dụng aspect gọi một phương thức khác trong cùng một class. Lời gọi nội bộ này không đi qua proxy mà gọi trực tiếp phương thức trên đối tượng <code>this</code> (target object). Do đó, aspect sẽ không được áp dụng cho lời gọi thứ hai.</p>
                       <p><strong>Ví dụ:</strong></p>
                       <div class="code-block">
@@ -1012,14 +1014,28 @@ public class MyService {
               title: {
                 display: true,
                 text: 'Relative Overhead (ms)',
-                font: { size: 14 }
+                font: { size: 14 },
+                color: '#e5e7eb' /* gray-200 */
+              },
+              ticks: {
+                color: '#e5e7eb' /* gray-200 */
+              },
+              grid: {
+                color: '#374151' /* gray-700 */
               }
             },
             x: {
               title: {
                 display: true,
                 text: 'Proxy Type',
-                font: { size: 14 }
+                font: { size: 14 },
+                color: '#e5e7eb' /* gray-200 */
+              },
+              ticks: {
+                color: '#e5e7eb' /* gray-200 */
+              },
+              grid: {
+                color: '#374151' /* gray-700 */
               }
             }
           },
@@ -1028,12 +1044,16 @@ public class MyService {
               display: true,
               text: 'AOP Proxy Performance Comparison',
               font: { size: 16 },
+              color: '#e5e7eb' /* gray-200 */,
               padding: { top: 10, bottom: 20 }
             },
             tooltip: {
               callbacks: {
                 label: context => `${context.dataset.label}: ${context.parsed.y}ms`
-              }
+              },
+              backgroundColor: '#1f2937', /* gray-800 */
+              titleColor: '#e5e7eb', /* gray-200 */
+              bodyColor: '#e5e7eb' /* gray-200 */
             }
           }
         }
