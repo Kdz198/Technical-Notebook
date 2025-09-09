@@ -9,16 +9,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
-            color: #334155; /* slate-700 */
+            background-color: #1e293b; /* slate-800 */
+            color: #e2e8f0; /* slate-200 */
         }
         .nav-link {
             transition: all 0.3s ease;
             border-bottom: 2px solid transparent;
         }
         .nav-link.active {
-            border-bottom-color: #0ea5e9; /* sky-500 */
-            color: #0284c7; /* sky-600 */
+            border-bottom-color: #38bdf8; /* sky-400 */
+            color: #7dd3fc; /* sky-300 */
             font-weight: 600;
         }
         .content-section {
@@ -28,8 +28,8 @@
             display: block;
         }
         .code-block {
-            background-color: #1e293b; /* slate-800 */
-            color: #e2e8f0; /* slate-200 */
+            background-color: #0f172a; /* slate-900 */
+            color: #f1f5f9; /* slate-100 */
             padding: 1rem;
             border-radius: 0.5rem;
             overflow-x: auto;
@@ -50,7 +50,7 @@
         }
         .case-study-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.2);
         }
         /* Diagram styles */
         .diagram-container {
@@ -62,24 +62,24 @@
         }
         .diagram-element {
             cursor: pointer;
-            border: 2px solid #94a3b8; /* slate-400 */
+            border: 2px solid #64748b; /* slate-500 */
             border-radius: 0.5rem;
             padding: 0.75rem 1.25rem;
             text-align: center;
             transition: all 0.3s ease;
-            background-color: white;
+            background-color: #334155; /* slate-700 */
             position: relative;
         }
         .diagram-element.active, .diagram-element:hover {
-            border-color: #0ea5e9; /* sky-500 */
-            background-color: #f0f9ff; /* sky-50 */
-            color: #0284c7; /* sky-600 */
+            border-color: #38bdf8; /* sky-400 */
+            background-color: #1e3a8a; /* blue-900 */
+            color: #7dd3fc; /* sky-300 */
         }
         .arrow {
             position: relative;
             flex-grow: 1;
             height: 2px;
-            background-color: #64748b; /* slate-500 */
+            background-color: #94a3b8; /* slate-400 */
             min-width: 50px;
         }
         .arrow::after {
@@ -91,7 +91,7 @@
             height: 0;
             border-top: 5px solid transparent;
             border-bottom: 5px solid transparent;
-            border-left: 10px solid #64748b; /* slate-500 */
+            border-left: 10px solid #94a3b8; /* slate-400 */
         }
         /* Simulator styles */
         .message {
@@ -106,12 +106,12 @@
 </head>
 <body class="antialiased">
 <div class="min-h-screen">
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+    <header class="bg-slate-900 shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <h1 class="text-2xl sm:text-3xl font-bold text-slate-800">Phân Tích Kỹ Thuật Toàn Diện: RabbitMQ 🐇</h1>
-            <p class="text-slate-500 mt-1">Một ứng dụng tương tác để khám phá thế giới Message Brokering.</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-100">Phân Tích Kỹ Thuật Toàn Diện: RabbitMQ 🐇</h1>
+            <p class="text-slate-400 mt-1">Một ứng dụng tương tác để khám phá thế giới Message Brokering.</p>
         </div>
-        <nav class="bg-slate-100">
+        <nav class="bg-slate-800">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-center sm:justify-start space-x-4 sm:space-x-8 overflow-x-auto py-2">
                     <a href="#concept" class="nav-link py-2 px-1 text-sm sm:text-base whitespace-nowrap">🧐 Tổng quan</a>
@@ -128,51 +128,51 @@
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Section 1: Concept -->
         <section id="concept" class="content-section space-y-8">
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-bold text-sky-700 mb-4">RabbitMQ là gì?</h2>
-                <p class="mb-4">RabbitMQ là một <strong class="text-teal-600">message broker</strong> mã nguồn mở, nổi tiếng và được sử dụng rộng rãi. Nó tiếp nhận, lưu trữ và chuyển tiếp các thông điệp (messages). Bạn có thể hình dung nó như một bưu điện cho ứng dụng của bạn: nó nhận thư từ người gửi (producers), đảm bảo chúng được cất giữ an toàn, và sau đó giao đến đúng người nhận (consumers).</p>
-                <p>Về mặt kỹ thuật, nó thuộc danh mục phần mềm <strong class="text-teal-600">Message-Oriented Middleware (MOM)</strong>. RabbitMQ được phát triển ban đầu bởi Rabbit Technologies Ltd., sau đó được mua lại bởi SpringSource (một bộ phận của VMware). Nó được viết bằng ngôn ngữ Erlang, vốn được thiết kế để xây dựng các hệ thống có tính sẵn sàng cao và khả năng chịu lỗi tốt.</p>
+            <div class="bg-slate-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-sky-300 mb-4">RabbitMQ là gì?</h2>
+                <p class="mb-4">RabbitMQ là một <strong class="text-teal-400">message broker</strong> mã nguồn mở, nổi tiếng và được sử dụng rộng rãi. Nó tiếp nhận, lưu trữ và chuyển tiếp các thông điệp (messages). Bạn có thể hình dung nó như một bưu điện cho ứng dụng của bạn: nó nhận thư từ người gửi (producers), đảm bảo chúng được cất giữ an toàn, và sau đó giao đến đúng người nhận (consumers).</p>
+                <p>Về mặt kỹ thuật, nó thuộc danh mục phần mềm <strong class="text-teal-400">Message-Oriented Middleware (MOM)</strong>. RabbitMQ được phát triển ban đầu bởi Rabbit Technologies Ltd., sau đó được mua lại bởi SpringSource (một bộ phận của VMware). Nó được viết bằng ngôn ngữ Erlang, vốn được thiết kế để xây dựng các hệ thống có tính sẵn sàng cao và khả năng chịu lỗi tốt.</p>
             </div>
 
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-bold text-sky-700 mb-4">Bài toán được giải quyết</h2>
+            <div class="bg-slate-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-sky-300 mb-4">Bài toán được giải quyết</h2>
                 <p class="mb-4">RabbitMQ giúp tách rời (decouple) các thành phần trong một hệ thống phần mềm, cho phép chúng giao tiếp một cách bất đồng bộ và hiệu quả. Dưới đây là kiến trúc so sánh:</p>
                 <div class="grid md:grid-cols-2 gap-8 mt-6">
                     <div>
-                        <h3 class="font-semibold text-lg text-center mb-2 text-red-600">Trước khi có RabbitMQ (Coupled)</h3>
-                        <div class="border-2 border-red-200 bg-red-50 p-4 rounded-lg text-center">
-                            <div class="font-bold bg-red-200 p-2 rounded">Dịch vụ A (VD: Tạo đơn hàng)</div>
+                        <h3 class="font-semibold text-lg text-center mb-2 text-red-400">Trước khi có RabbitMQ (Coupled)</h3>
+                        <div class="border-2 border-red-700 bg-red-900/50 p-4 rounded-lg text-center">
+                            <div class="font-bold bg-red-800 p-2 rounded">Dịch vụ A (VD: Tạo đơn hàng)</div>
                             <div class="my-2 text-2xl">⬇️</div>
-                            <div class="font-mono text-sm text-red-700">Gọi trực tiếp API</div>
+                            <div class="font-mono text-sm text-red-300">Gọi trực tiếp API</div>
                             <div class="my-2 text-2xl">⬇️</div>
-                            <div class="font-bold bg-red-200 p-2 rounded">Dịch vụ B (VD: Gửi Email)</div>
-                            <p class="text-xs mt-3 text-red-500">Nếu Dịch vụ B lỗi, Dịch vụ A cũng bị ảnh hưởng. Phải chờ Dịch vụ B xử lý xong.</p>
+                            <div class="font-bold bg-red-800 p-2 rounded">Dịch vụ B (VD: Gửi Email)</div>
+                            <p class="text-xs mt-3 text-red-400">Nếu Dịch vụ B lỗi, Dịch vụ A cũng bị ảnh hưởng. Phải chờ Dịch vụ B xử lý xong.</p>
                         </div>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-lg text-center mb-2 text-green-600">Sau khi có RabbitMQ (Decoupled)</h3>
-                        <div class="border-2 border-green-200 bg-green-50 p-4 rounded-lg text-center">
+                        <h3 class="font-semibold text-lg text-center mb-2 text-green-400">Sau khi có RabbitMQ (Decoupled)</h3>
+                        <div class="border-2 border-green-700 bg-green-900/50 p-4 rounded-lg text-center">
                             <div class="flex justify-around items-center">
-                                <div class="font-bold bg-green-200 p-2 rounded">Dịch vụ A</div>
-                                <div class="font-bold bg-green-200 p-2 rounded">Dịch vụ B</div>
+                                <div class="font-bold bg-green-800 p-2 rounded">Dịch vụ A</div>
+                                <div class="font-bold bg-green-800 p-2 rounded">Dịch vụ B</div>
                             </div>
                             <div class="my-2 text-2xl">↘️ ↗️</div>
-                            <div class="font-bold bg-teal-200 p-3 rounded-full my-2 inline-block">🐇 RabbitMQ</div>
+                            <div class="font-bold bg-teal-800 p-3 rounded-full my-2 inline-block">🐇 RabbitMQ</div>
                             <div class="my-2 text-2xl">↙️ ↖️</div>
                             <div class="flex justify-around items-center">
-                                <div class="font-bold bg-green-200 p-2 rounded">Dịch vụ C</div>
-                                <div class="font-bold bg-green-200 p-2 rounded">Dịch vụ D</div>
+                                <div class="font-bold bg-green-800 p-2 rounded">Dịch vụ C</div>
+                                <div class="font-bold bg-green-800 p-2 rounded">Dịch vụ D</div>
                             </div>
-                            <p class="text-xs mt-3 text-green-500">Các dịch vụ giao tiếp gián tiếp, không phụ thuộc vào nhau. Hệ thống linh hoạt và bền bỉ hơn.</p>
+                            <p class="text-xs mt-3 text-green-400">Các dịch vụ giao tiếp gián tiếp, không phụ thuộc vào nhau. Hệ thống linh hoạt và bền bỉ hơn.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-bold text-sky-700 mb-4">Giao thức AMQP 0-9-1</h2>
-                <p>RabbitMQ được xây dựng dựa trên <strong class="text-teal-600">Advanced Message Queuing Protocol (AMQP)</strong>, phiên bản 0-9-1. Đây là một giao thức chuẩn mở cho việc truyền tin nhắn. Việc tuân thủ một tiêu chuẩn mang lại nhiều lợi ích:</p>
-                <ul class="list-disc list-inside space-y-2 mt-4 text-slate-600">
+            <div class="bg-slate-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-sky-300 mb-4">Giao thức AMQP 0-9-1</h2>
+                <p>RabbitMQ được xây dựng dựa trên <strong class="text-teal-400">Advanced Message Queuing Protocol (AMQP)</strong>, phiên bản 0-9-1. Đây là một giao thức chuẩn mở cho việc truyền tin nhắn. Việc tuân thủ một tiêu chuẩn mang lại nhiều lợi ích:</p>
+                <ul class="list-disc list-inside space-y-2 mt-4 text-slate-300">
                     <li><strong>Tính tương tác (Interoperability):</strong> Các ứng dụng được viết bằng các ngôn ngữ khác nhau, trên các nền tảng khác nhau có thể giao tiếp với nhau miễn là chúng cùng tuân thủ giao thức AMQP.</li>
                     <li><strong>Độ tin cậy:</strong> AMQP định nghĩa rõ ràng các cơ chế đảm bảo việc gửi và nhận tin nhắn, như xác nhận (acknowledgements), độ bền (durability), và các quy tắc định tuyến.</li>
                     <li><strong>Linh hoạt:</strong> Giao thức này định nghĩa các thành phần như Exchange, Queue, và Binding, tạo ra một mô hình định tuyến message rất mạnh mẽ và linh hoạt.</li>
@@ -182,11 +182,11 @@
 
         <!-- Section 2: Core Components -->
         <section id="components" class="content-section space-y-8">
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-bold text-sky-700 mb-4">Kiến trúc và các thành phần cốt lõi</h2>
-                <p class="mb-6 text-slate-600">Đây là trái tim của RabbitMQ. Luồng đi của một message bắt đầu từ Producer, đi qua Exchange, được định tuyến tới Queue thông qua Binding, và cuối cùng được Consumer tiếp nhận. Hãy nhấp vào từng thành phần trong sơ đồ bên dưới để tìm hiểu chi tiết.</p>
+            <div class="bg-slate-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-sky-300 mb-4">Kiến trúc và các thành phần cốt lõi</h2>
+                <p class="mb-6 text-slate-300">Đây là trái tim của RabbitMQ. Luồng đi của một message bắt đầu từ Producer, đi qua Exchange, được định tuyến tới Queue thông qua Binding, và cuối cùng được Consumer tiếp nhận. Hãy nhấp vào từng thành phần trong sơ đồ bên dưới để tìm hiểu chi tiết.</p>
 
-                <div class="diagram-container p-4 bg-slate-50 rounded-lg border border-dashed">
+                <div class="diagram-container p-4 bg-slate-700 rounded-lg border border-dashed border-slate-600">
                     <div id="diag-producer" class="diagram-element">👨‍💻<br>Producer</div>
                     <div class="arrow"></div>
                     <div id="diag-exchange" class="diagram-element">
@@ -201,26 +201,26 @@
                     <div class="arrow"></div>
                     <div id="diag-consumer" class="diagram-element">🖥️<br>Consumer</div>
                 </div>
-                <p class="text-center text-sm text-slate-500 mt-2">Binding (liên kết) và Routing Key (khóa định tuyến) là các quy tắc kết nối Exchange và Queue.</p>
+                <p class="text-center text-sm text-slate-400 mt-2">Binding (liên kết) và Routing Key (khóa định tuyến) là các quy tắc kết nối Exchange và Queue.</p>
 
-                <div id="component-details" class="mt-6 bg-sky-50 p-6 rounded-lg border border-sky-200 min-h-[200px]">
-                    <p class="text-slate-500">Chọn một thành phần trên sơ đồ để xem mô tả chi tiết...</p>
+                <div id="component-details" class="mt-6 bg-blue-900 p-6 rounded-lg border border-blue-800 min-h-[200px]">
+                    <p class="text-slate-400">Chọn một thành phần trên sơ đồ để xem mô tả chi tiết...</p>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h3 class="text-xl font-bold text-sky-700 mb-4">Connection & Channel</h3>
+            <div class="bg-slate-800 p-6 rounded-lg shadow-sm">
+                <h3 class="text-xl font-bold text-sky-300 mb-4">Connection & Channel</h3>
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <h4 class="font-semibold text-lg">🔗 Connection</h4>
-                        <p class="text-slate-600">Là một kết nối TCP vật lý giữa ứng dụng của bạn và RabbitMQ server. Việc thiết lập một kết nối là một quá trình tốn kém tài nguyên (liên quan đến quá trình bắt tay TCP, xác thực, ...).</p>
+                        <p class="text-slate-300">Là một kết nối TCP vật lý giữa ứng dụng của bạn và RabbitMQ server. Việc thiết lập một kết nối là một quá trình tốn kém tài nguyên (liên quan đến quá trình bắt tay TCP, xác thực, ...).</p>
                     </div>
                     <div>
                         <h4 class="font-semibold text-lg">multiplexed_connection ➡️ Channel</h4>
-                        <p class="text-slate-600">Là một kết nối logic, ảo bên trong một Connection. Hầu hết các hoạt động liên quan đến message (publishing, subscribing,...) đều diễn ra trên một Channel. Một Connection có thể có nhiều Channel.</p>
+                        <p class="text-slate-300">Là một kết nối logic, ảo bên trong một Connection. Hầu hết các hoạt động liên quan đến message (publishing, subscribing,...) đều diễn ra trên một Channel. Một Connection có thể có nhiều Channel.</p>
                     </div>
                 </div>
-                <p class="mt-4 p-4 bg-teal \n -50 border-l-4 border-teal-500 rounded-r-lg">
+                <p class="mt-4 p-4 bg-teal-900 border-l-4 border-teal-400 rounded-r-lg">
                     <strong>Tại sao nên dùng nhiều Channel?</strong> Việc mở một kết nối TCP cho mỗi luồng (thread) trong ứng dụng là rất không hiệu quả. Thay vào đó, ta nên mở một Connection duy nhất và trong đó mở nhiều Channel cho mỗi luồng. Điều này giúp giảm đáng kể lượng tài nguyên hệ thống sử dụng.
                 </p>
             </div>
@@ -228,12 +228,12 @@
 
         <!-- Section 3: Implementation -->
         <section id="implementation" class="content-section space-y-8">
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-bold text-sky-700 mb-4">Triển khai với Java Spring Boot ☕</h2>
-                <p class="mb-6 text-slate-600">Tích hợp RabbitMQ vào một ứng dụng Spring Boot là một quá trình tương đối đơn giản nhờ vào sự hỗ trợ mạnh mẽ từ Spring AMQP. Dưới đây là các bước hướng dẫn cơ bản.</p>
+            <div class="bg-slate-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-sky-300 mb-4">Triển khai với Java Spring Boot ☕</h2>
+                <p class="mb-6 text-slate-300">Tích hợp RabbitMQ vào một ứng dụng Spring Boot là một quá trình tương đối đơn giản nhờ vào sự hỗ trợ mạnh mẽ từ Spring AMQP. Dưới đây là các bước hướng dẫn cơ bản.</p>
 
                 <div class="code-tabs">
-                    <div class="border-b border-gray-200">
+                    <div class="border-b border-slate-600">
                         <nav class="-mb-px flex space-x-8" aria-label="Tabs">
                             <button class="code-tab-button active" data-target="dep">pom.xml</button>
                             <button class="code-tab-button" data-target="config">application.yml</button>
@@ -245,44 +245,44 @@
                     <div class="mt-6">
                         <div id="tab-dep" class="code-tab-content active">
                             <h3 class="font-semibold mb-2">1. Thêm Dependency</h3>
-                            <pre class="code-block"><code><dependency>
+                            <pre class="code-block"><dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-amqp</artifactId>
-</dependency></code></pre>
+</dependency></pre>
                         </div>
                         <div id="tab-config" class="code-tab-content">
                             <h3 class="font-semibold mb-2">2. Cấu hình kết nối</h3>
-                            <pre class="code-block"><code>spring:
+                            <pre class="code-block">spring:
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
-    password: guest</code></pre>
+    password: guest</pre>
                         </div>
                         <div id="tab-producer" class="code-tab-content">
                             <h3 class="font-semibold mb-2">3. Gửi Message (Producer)</h3>
                             <p class="text-sm mb-2">Sử dụng <code>RabbitTemplate</code> để gửi message.</p>
-                            <pre class="code-block"><code>@Autowired
+                            <pre class="code-block">@Autowired
 private RabbitTemplate rabbitTemplate;
 
 public void sendOrder(Order order) {
     // Sử dụng MessageConverter để tự động chuyển đổi object thành JSON
     rabbitTemplate.convertAndSend("order.exchange", "order.routing.key", order);
-}</code></pre>
+}</pre>
                         </div>
                         <div id="tab-consumer" class="code-tab-content">
                             <h3 class="font-semibold mb-2">4. Nhận Message (Consumer)</h3>
                             <p class="text-sm mb-2">Sử dụng annotation <code>@RabbitListener</code>.</p>
-                            <pre class="code-block"><code>@RabbitListener(queues = "order.queue")
+                            <pre class="code-block">@RabbitListener(queues = "order.queue")
 public void receiveOrder(Order order) {
     System.out.println("Received order: " + order.getId());
     // Xử lý đơn hàng...
-}</code></pre>
+}</pre>
                         </div>
                         <div id="tab-declare" class="code-tab-content">
                             <h3 class="font-semibold mb-2">5. Khai báo Queues, Exchanges, Bindings</h3>
                             <p class="text-sm mb-2">Sử dụng Java Configuration để tự động tạo các thành phần khi ứng dụng khởi động.</p>
-                            <pre class="code-block"><code>@Configuration
+                            <pre class="code-block">@Configuration
 public class RabbitMQConfig {
 
     @Bean
@@ -311,7 +311,7 @@ public class RabbitMQConfig {
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
     }
-}</code></pre>
+}</pre>
                         </div>
                     </div>
                 </div>
@@ -320,17 +320,17 @@ public class RabbitMQConfig {
 
         <!-- Section 4: Best Practices -->
         <section id="best-practices" class="content-section space-y-6">
-            <h2 class="text-2xl font-bold text-sky-700 mb-4">Các Nguyên tắc Tốt nhất (Best Practices) ✨</h2>
-            <p class="mb-6 text-slate-600">Để vận hành RabbitMQ hiệu quả và đáng tin cậy trong môi trường production, việc tuân thủ các nguyên tắc tốt nhất là cực kỳ quan trọng.</p>
+            <h2 class="text-2xl font-bold text-sky-300 mb-4">Các Nguyên tắc Tốt nhất (Best Practices) ✨</h2>
+            <p class="mb-6 text-slate-300">Để vận hành RabbitMQ hiệu quả và đáng tin cậy trong môi trường production, việc tuân thủ các nguyên tắc tốt nhất là cực kỳ quan trọng.</p>
 
             <div class="accordion-container space-y-2">
-                <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="accordion-item bg-slate-800 rounded-lg shadow-sm border border-slate-600">
                     <div class="accordion-header flex justify-between items-center p-4">
-                        <h3 class="font-semibold text-lg text-slate-800">🛡️ Độ bền (Durability)</h3>
+                        <h3 class="font-semibold text-lg text-slate-100">🛡️ Độ bền (Durability)</h3>
                         <span class="transform transition-transform duration-300">▼</span>
                     </div>
                     <div class="accordion-content">
-                        <div class="p-4 border-t border-gray-200 text-slate-600 space-y-3">
+                        <div class="p-4 border-t border-slate-600 text-slate-300 space-y-3">
                             <p><strong>Mục tiêu:</strong> Đảm bảo message không bị mất khi RabbitMQ server bị khởi động lại.</p>
                             <p><strong>- Durable Queues:</strong> Khai báo queue với thuộc tính <code>durable = true</code>. Server sẽ lưu thông tin về queue này xuống đĩa.</p>
                             <p><strong>- Persistent Messages:</strong> Khi gửi message, thiết lập thuộc tính delivery mode là 2 (persistent). Server sẽ ghi message này vào đĩa.</p>
@@ -340,13 +340,13 @@ public class RabbitMQConfig {
                     </div>
                 </div>
 
-                <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="accordion-item bg-slate-800 rounded-lg shadow-sm border border-slate-600">
                     <div class="accordion-header flex justify-between items-center p-4">
-                        <h3 class="font-semibold text-lg text-slate-800">⚡ Hiệu suất (Performance)</h3>
+                        <h3 class="font-semibold text-lg text-slate-100">⚡ Hiệu suất (Performance)</h3>
                         <span class="transform transition-transform duration-300">▼</span>
                     </div>
                     <div class="accordion-content">
-                        <div class="p-4 border-t border-gray-200 text-slate-600 space-y-3">
+                        <div class="p-4 border-t border-slate-600 text-slate-300 space-y-3">
                             <p><strong>- Sử dụng Channels hiệu quả:</strong> Tái sử dụng connection và tạo channel cho mỗi thread như đã đề cập.</p>
                             <p><strong>- Prefetch Count (QoS):</strong> Thiết lập số lượng message tối đa mà consumer có thể nhận và giữ trong bộ nhớ cùng một lúc trước khi gửi ack. Giá trị này (<code>prefetch count</code>) ngăn consumer bị quá tải và giúp cân bằng tải giữa nhiều consumer. Một giá trị nhỏ (vd: 10-50) thường là khởi đầu tốt.</p>
                             <p><strong>- Lazy Queues:</strong> Là các queue tự động lưu message xuống đĩa càng sớm càng tốt và chỉ tải lên RAM khi consumer yêu cầu. Rất hữu ích cho các queue rất dài (hàng triệu message) để giảm thiểu việc sử dụng RAM.</p>
@@ -354,39 +354,39 @@ public class RabbitMQConfig {
                     </div>
                 </div>
 
-                <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="accordion-item bg-slate-800 rounded-lg shadow-sm border border-slate-600">
                     <div class="accordion-header flex justify-between items-center p-4">
-                        <h3 class="font-semibold text-lg text-slate-800">🚑 Xử lý lỗi (Error Handling)</h3>
+                        <h3 class="font-semibold text-lg text-slate-100">🚑 Xử lý lỗi (Error Handling)</h3>
                         <span class="transform transition-transform duration-300">▼</span>
                     </div>
                     <div class="accordion-content">
-                        <div class="p-4 border-t border-gray-200 text-slate-600 space-y-3">
+                        <div class="p-4 border-t border-slate-600 text-slate-300 space-y-3">
                             <p><strong>Vấn đề:</strong> Điều gì xảy ra khi một consumer không thể xử lý một message (ví dụ: dữ liệu không hợp lệ, dịch vụ bên ngoài bị lỗi)? Nếu chỉ gửi lại (nack/requeue), nó có thể tạo ra một vòng lặp vô tận.</p>
                             <p><strong>- Dead Letter Exchange (DLX):</strong> Là một exchange thông thường. Bạn có thể cấu hình một queue để khi một message bị từ chối (nack với <code>requeue=false</code>) hoặc hết hạn (TTL), nó sẽ được tự động gửi đến DLX này. Từ DLX, bạn có thể định tuyến message lỗi đến một "dead letter queue" đặc biệt để phân tích, sửa chữa hoặc bỏ qua sau này. Đây là cơ chế xử lý lỗi tiêu chuẩn và rất mạnh mẽ.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="accordion-item bg-slate-800 rounded-lg shadow-sm border border-slate-600">
                     <div class="accordion-header flex justify-between items-center p-4">
-                        <h3 class="font-semibold text-lg text-slate-800">📈 Khả năng mở rộng & Sẵn sàng cao (Scalability & HA)</h3>
+                        <h3 class="font-semibold text-lg text-slate-100">📈 Khả năng mở rộng & Sẵn sàng cao (Scalability & HA)</h3>
                         <span class="transform transition-transform duration-300">▼</span>
                     </div>
                     <div class="accordion-content">
-                        <div class="p-4 border-t border-gray-200 text-slate-600 space-y-3">
+                        <div class="p-4 border-t border-slate-600 text-slate-300 space-y-3">
                             <p><strong>- Clustering:</strong> Kết nối nhiều máy chủ RabbitMQ (nodes) lại với nhau thành một cụm (cluster). Các nodes chia sẻ thông tin về users, vhosts, queues, exchanges... giúp tăng khả năng xử lý và quản lý tập trung. Tuy nhiên, bản thân queue chỉ tồn tại trên một node duy nhất trong cluster.</p>
                             <p><strong>- Mirrored Queues:</strong> Để giải quyết vấn đề single point of failure của queue trong cluster, bạn có thể sử dụng Mirrored Queues. Một queue sẽ có một master và một hoặc nhiều bản sao (mirrors) trên các nodes khác. Nếu node chứa master bị lỗi, một trong các mirror sẽ được tự động thăng cấp thành master, đảm bảo queue vẫn hoạt động và không mất dữ liệu (nếu message là persistent).</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="accordion-item bg-white rounded-lg shadow-sm border border-gray-200">
+                <div class="accordion-item bg-slate-800 rounded-lg shadow-sm border border-slate-600">
                     <div class="accordion-header flex justify-between items-center p-4">
-                        <h3 class="font-semibold text-lg text-slate-800">📊 Giám sát (Monitoring)</h3>
+                        <h3 class="font-semibold text-lg text-slate-100">📊 Giám sát (Monitoring)</h3>
                         <span class="transform transition-transform duration-300">▼</span>
                     </div>
                     <div class="accordion-content">
-                        <div class="p-4 border-t border-gray-200 text-slate-600 space-y-3">
+                        <div class="p-4 border-t border-slate-600 text-slate-300 space-y-3">
                             <p><strong>Các chỉ số quan trọng cần theo dõi:</strong></p>
                             <ul class="list-disc list-inside space-y-1">
                                 <li><strong>Queue Depth:</strong> Số lượng message đang chờ trong queue. Nếu tăng liên tục, có thể consumer xử lý không kịp.</li>
@@ -407,79 +407,79 @@ public class RabbitMQConfig {
 
         <!-- Section 5: Case Studies -->
         <section id="case-studies" class="content-section space-y-8">
-            <h2 class="text-2xl font-bold text-sky-700 mb-4">Nghiên cứu Tình huống Thực tế 🏢</h2>
-            <p class="mb-6 text-slate-600">RabbitMQ được tin dùng bởi hàng ngàn công ty trên toàn thế giới, từ startup đến các tập đoàn lớn. Dưới đây là một vài ví dụ điển hình về cách họ tận dụng sức mạnh của message brokering.</p>
+            <h2 class="text-2xl font-bold text-sky-300 mb-4">Nghiên cứu Tình huống Thực tế 🏢</h2>
+            <p class="mb-6 text-slate-300">RabbitMQ được tin dùng bởi hàng ngàn công ty trên toàn thế giới, từ startup đến các tập đoàn lớn. Dưới đây là một vài ví dụ điển hình về cách họ tận dụng sức mạnh của message brokering.</p>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="case-study-card bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="font-bold text-xl text-slate-800">Nền tảng Thương mại Điện tử</h3>
-                    <p class="text-sm text-slate-500 mb-4">Ví dụ: Tiki, Lazada</p>
-                    <strong class="text-teal-600">Thách thức:</strong>
-                    <p class="text-slate-600 mb-3">Khi người dùng đặt hàng, hệ thống cần thực hiện nhiều tác vụ: xác nhận thanh toán, trừ tồn kho, gửi email/SMS xác nhận, tạo phiếu giao hàng. Thực hiện tất cả đồng bộ sẽ làm tăng độ trễ và dễ gây lỗi toàn hệ thống nếu một bước thất bại.</p>
-                    <strong class="text-teal-600">Giải pháp với RabbitMQ:</strong>
-                    <p class="text-slate-600 mb-3">Khi đơn hàng được tạo, dịch vụ Order chỉ cần gửi một message "order_created" vào một <strong class="font-semibold">Topic Exchange</strong>. Các dịch vụ khác (Inventory, Notification, Shipping) sẽ lắng nghe từ các queue được binding với routing key phù hợp (ví dụ: <code>order.*.inventory</code>, <code>order.created.email</code>).</p>
-                    <strong class="text-teal-600">Kết quả:</strong>
-                    <p class="text-slate-600">Giảm độ trễ khi đặt hàng, tăng khả năng chịu lỗi (nếu dịch vụ email lỗi, các dịch vụ khác vẫn hoạt động), và dễ dàng thêm các dịch vụ mới (ví dụ: dịch vụ phân tích hành vi) mà không cần thay đổi code của dịch vụ Order.</p>
+                <div class="case-study-card bg-slate-800 rounded-lg shadow-sm border border-slate-600 p-6">
+                    <h3 class="font-bold text-xl text-slate-100">Nền tảng Thương mại Điện tử</h3>
+                    <p class="text-sm text-slate-400 mb-4">Ví dụ: Tiki, Lazada</p>
+                    <strong class="text-teal-400">Thách thức:</strong>
+                    <p class="text-slate-300 mb-3">Khi người dùng đặt hàng, hệ thống cần thực hiện nhiều tác vụ: xác nhận thanh toán, trừ tồn kho, gửi email/SMS xác nhận, tạo phiếu giao hàng. Thực hiện tất cả đồng bộ sẽ làm tăng độ trễ và dễ gây lỗi toàn hệ thống nếu một bước thất bại.</p>
+                    <strong class="text-teal-400">Giải pháp với RabbitMQ:</strong>
+                    <p class="text-slate-300 mb-3">Khi đơn hàng được tạo, dịch vụ Order chỉ cần gửi một message "order_created" vào một <strong class="font-semibold">Topic Exchange</strong>. Các dịch vụ khác (Inventory, Notification, Shipping) sẽ lắng nghe từ các queue được binding với routing key phù hợp (ví dụ: <code>order.*.inventory</code>, <code>order.created.email</code>).</p>
+                    <strong class="text-teal-400">Kết quả:</strong>
+                    <p class="text-slate-300">Giảm độ trễ khi đặt hàng, tăng khả năng chịu lỗi (nếu dịch vụ email lỗi, các dịch vụ khác vẫn hoạt động), và dễ dàng thêm các dịch vụ mới (ví dụ: dịch vụ phân tích hành vi) mà không cần thay đổi code của dịch vụ Order.</p>
                 </div>
-                <div class="case-study-card bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="font-bold text-xl text-slate-800">Hệ thống IoT Thu thập Dữ liệu</h3>
-                    <p class="text-sm text-slate-500 mb-4">Ví dụ: Giám sát nông nghiệp thông minh</p>
-                    <strong class="text-teal-600">Thách thức:</strong>
-                    <p class="text-slate-600 mb-3">Hàng ngàn cảm biến (nhiệt độ, độ ẩm, ánh sáng) gửi dữ liệu về máy chủ liên tục. Việc xử lý một lượng lớn dữ liệu ghi vào cơ sở dữ liệu cùng lúc có thể gây quá tải cho cả mạng và database.</p>
-                    <strong class="text-teal-600">Giải pháp với RabbitMQ:</strong>
-                    <p class="text-slate-600 mb-3">Các cảm biến (producers) gửi dữ liệu đến RabbitMQ. Dữ liệu có thể được định tuyến qua <strong class="font-semibold">Topic Exchange</strong> dựa trên loại cảm biến và vị trí (<code>sensor.temp.zone1</code>). Nhiều nhóm consumers có thể xử lý dữ liệu này: một nhóm ghi vào database, một nhóm phân tích cảnh báo tức thời, một nhóm lưu trữ lâu dài.</p>
-                    <strong class="text-teal-600">Kết quả:</strong>
-                    <p class="text-slate-600">Hệ thống có thể tiếp nhận lượng dữ liệu lớn mà không bị sập. Hoạt động như một bộ đệm (buffer) hiệu quả. Dữ liệu có thể được xử lý song song cho nhiều mục đích khác nhau, tăng tính linh hoạt của hệ thống.</p>
+                <div class="case-study-card bg-slate-800 rounded-lg shadow-sm border border-slate-600 p-6">
+                    <h3 class="font-bold text-xl text-slate-100">Hệ thống IoT Thu thập Dữ liệu</h3>
+                    <p class="text-sm text-slate-400 mb-4">Ví dụ: Giám sát nông nghiệp thông minh</p>
+                    <strong class="text-teal-400">Thách thức:</strong>
+                    <p class="text-slate-300 mb-3">Hàng ngàn cảm biến (nhiệt độ, độ ẩm, ánh sáng) gửi dữ liệu về máy chủ liên tục. Việc xử lý một lượng lớn dữ liệu ghi vào cơ sở dữ liệu cùng lúc có thể gây quá tải cho cả mạng và database.</p>
+                    <strong class="text-teal-400">Giải pháp với RabbitMQ:</strong>
+                    <p class="text-slate-300 mb-3">Các cảm biến (producers) gửi dữ liệu đến RabbitMQ. Dữ liệu có thể được định tuyến qua <strong class="font-semibold">Topic Exchange</strong> dựa trên loại cảm biến và vị trí (<code>sensor.temp.zone1</code>). Nhiều nhóm consumers có thể xử lý dữ liệu này: một nhóm ghi vào database, một nhóm phân tích cảnh báo tức thời, một nhóm lưu trữ lâu dài.</p>
+                    <strong class="text-teal-400">Kết quả:</strong>
+                    <p class="text-slate-300">Hệ thống có thể tiếp nhận lượng dữ liệu lớn mà không bị sập. Hoạt động như một bộ đệm (buffer) hiệu quả. Dữ liệu có thể được xử lý song song cho nhiều mục đích khác nhau, tăng tính linh hoạt của hệ thống.</p>
                 </div>
-                <div class="case-study-card bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <h3 class="font-bold text-xl text-slate-800">Dịch vụ Tài chính & Thanh toán</h3>
-                    <p class="text-sm text-slate-500 mb-4">Ví dụ: Hệ thống xử lý giao dịch</p>
-                    <strong class="text-teal-600">Thách thức:</strong>
-                    <p class="text-slate-600 mb-3">Xử lý giao dịch tài chính đòi hỏi độ tin cậy và chính xác tuyệt đối. Không một giao dịch nào được phép bị mất. Các bước xử lý cần phải được thực hiện theo đúng thứ tự và có khả năng phục hồi khi có sự cố.</p>
-                    <strong class="text-teal-600">Giải pháp với RabbitMQ:</strong>
-                    <p class="text-slate-600 mb-3">Sử dụng triệt để các tính năng đảm bảo độ tin cậy: <strong class="font-semibold">Durable Queues</strong>, <strong class="font-semibold">Persistent Messages</strong>, và <strong class="font-semibold">Publisher Confirms</strong>. Mô hình <strong class="font-semibold">Clustering</strong> với <strong class="font-semibold">Mirrored Queues</strong> được triển khai để đảm bảo tính sẵn sàng cao (High Availability). Mỗi giao dịch được coi là một message và được xử lý tuần tự.</p>
-                    <strong class="text-teal-600">Kết quả:</strong>
-                    <p class="text-slate-600">Đảm bảo không mất mát dữ liệu giao dịch ngay cả khi một node trong cluster bị lỗi. Hệ thống có khả năng chịu tải và phục hồi tốt, đáp ứng các yêu cầu khắt khe của ngành tài chính.</p>
+                <div class="case-study-card bg-slate-800 rounded-lg shadow-sm border border-slate-600 p-6">
+                    <h3 class="font-bold text-xl text-slate-100">Dịch vụ Tài chính & Thanh toán</h3>
+                    <p class="text-sm text-slate-400 mb-4">Ví dụ: Hệ thống xử lý giao dịch</p>
+                    <strong class="text-teal-400">Thách thức:</strong>
+                    <p class="text-slate-300 mb-3">Xử lý giao dịch tài chính đòi hỏi độ tin cậy và chính xác tuyệt đối. Không một giao dịch nào được phép bị mất. Các bước xử lý cần phải được thực hiện theo đúng thứ tự và có khả năng phục hồi khi có sự cố.</p>
+                    <strong class="text-teal-400">Giải pháp với RabbitMQ:</strong>
+                    <p class="text-slate-300 mb-3">Sử dụng triệt để các tính năng đảm bảo độ tin cậy: <strong class="font-semibold">Durable Queues</strong>, <strong class="font-semibold">Persistent Messages</strong>, và <strong class="font-semibold">Publisher Confirms</strong>. Mô hình <strong class="font-semibold">Clustering</strong> với <strong class="font-semibold">Mirrored Queues</strong> được triển khai để đảm bảo tính sẵn sàng cao (High Availability). Mỗi giao dịch được coi là một message và được xử lý tuần tự.</p>
+                    <strong class="text-teal-400">Kết quả:</strong>
+                    <p class="text-slate-300">Đảm bảo không mất mát dữ liệu giao dịch ngay cả khi một node trong cluster bị lỗi. Hệ thống có khả năng chịu tải và phục hồi tốt, đáp ứng các yêu cầu khắt khe của ngành tài chính.</p>
                 </div>
             </div>
         </section>
 
         <!-- Section 6: Simulator -->
         <section id="simulator" class="content-section space-y-8">
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-                <h2 class="text-2xl font-bold text-sky-700 mb-4">RabbitMQ Simulator 🎮</h2>
-                <p class="mb-6 text-slate-600">Trải nghiệm mô phỏng cách RabbitMQ định tuyến các tin nhắn thông qua các loại Exchange khác nhau. Nhập tin nhắn và khóa định tuyến, chọn loại Exchange, và xem cách tin nhắn được phân phối đến các hàng đợi.</p>
-                <div class="bg-white p-6 rounded-lg shadow-sm">
-                    <h3 class="text-xl font-semibold mb-4 text-slate-800">Producer: Gửi Tin nhắn</h3>
+            <div class="bg-slate-800 p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-sky-300 mb-4">RabbitMQ Simulator 🎮</h2>
+                <p class="mb-6 text-slate-300">Trải nghiệm mô phỏng cách RabbitMQ định tuyến các tin nhắn thông qua các loại Exchange khác nhau. Nhập tin nhắn và khóa định tuyến, chọn loại Exchange, và xem cách tin nhắn được phân phối đến các hàng đợi.</p>
+                <div class="bg-slate-800 p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-semibold mb-4 text-slate-100">Producer: Gửi Tin nhắn</h3>
                     <div class="flex flex-col space-y-4">
-                        <input id="messageInput" type="text" placeholder="Nhập tin nhắn (VD: Đơn hàng #123)" class="border p-2 rounded bg-slate-50 focus:ring-2 focus:ring-sky-500">
-                        <input id="routingKeyInput" type="text" placeholder="Nhập khóa định tuyến (VD: order.created)" class="border p-2 rounded bg-slate-50 focus:ring-2 focus:ring-sky-500">
-                        <select id="exchangeType" class="border p-2 rounded bg-slate-50 focus:ring-2 focus:ring-sky-500">
+                        <input id="messageInput" type="text" placeholder="Nhập tin nhắn (VD: Đơn hàng #123)" class="border border-slate-600 p-2 rounded bg-slate-700 text-slate-100 focus:ring-2 focus:ring-sky-400">
+                        <input id="routingKeyInput" type="text" placeholder="Nhập khóa định tuyến (VD: order.created)" class="border border-slate-600 p-2 rounded bg-slate-700 text-slate-100 focus:ring-2 focus:ring-sky-400">
+                        <select id="exchangeType" class="border border-slate-600 p-2 rounded bg-slate-700 text-slate-100 focus:ring-2 focus:ring-sky-400">
                             <option value="direct">Direct Exchange</option>
                             <option value="fanout">Fanout Exchange</option>
                             <option value="topic">Topic Exchange</option>
                         </select>
                         <div class="flex space-x-4">
-                            <button onclick="sendMessage()" class="bg-sky-500 text-white px-4 py-2 rounded hover:bg-sky-600 transition">Gửi Tin nhắn</button>
-                            <button onclick="resetSimulation()" class="bg-slate-500 text-white px-4 py-2 rounded hover:bg-slate-600 transition">Đặt lại</button>
+                            <button onclick="sendMessage()" class="bg-sky-400 text-slate-900 px-4 py-2 rounded hover:bg-sky-500 transition">Gửi Tin nhắn</button>
+                            <button onclick="resetSimulation()" class="bg-slate-600 text-slate-100 px-4 py-2 rounded hover:bg-slate-700 transition">Đặt lại</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid md:grid-cols-3 gap-4 mt-6">
-                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Queue 1 (order.created)</h3>
-                        <div id="queue1" class="queue-box border p-2 rounded bg-slate-50"></div>
-                        <p class="mt-2 text-sm text-slate-600">Consumer: Xử lý order.created</p>
+                    <div class="bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-600">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-100">Queue 1 (order.created)</h3>
+                        <div id="queue1" class="queue-box border border-slate-600 p-2 rounded bg-slate-700"></div>
+                        <p class="mt-2 text-sm text-slate-400">Consumer: Xử lý order.created</p>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Queue 2 (order.processed)</h3>
-                        <div id="queue2" class="queue-box border p-2 rounded bg-slate-50"></div>
-                        <p class="mt-2 text-sm text-slate-600">Consumer: Xử lý order.processed</p>
+                    <div class="bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-600">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-100">Queue 2 (order.processed)</h3>
+                        <div id="queue2" class="queue-box border border-slate-600 p-2 rounded bg-slate-700"></div>
+                        <p class="mt-2 text-sm text-slate-400">Consumer: Xử lý order.processed</p>
                     </div>
-                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                        <h3 class="text-lg font-semibold mb-2 text-slate-800">Queue 3 (order.*)</h3>
-                        <div id="queue3" class="queue-box border p-2 rounded bg-slate-50"></div>
-                        <p class="mt-2 text-sm text-slate-600">Consumer: Xử lý tất cả đơn hàng</p>
+                    <div class="bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-600">
+                        <h3 class="text-lg font-semibold mb-2 text-slate-100">Queue 3 (order.*)</h3>
+                        <div id="queue3" class="queue-box border border-slate-600 p-2 rounded bg-slate-700"></div>
+                        <p class="mt-2 text-sm text-slate-400">Consumer: Xử lý tất cả đơn hàng</p>
                     </div>
                 </div>
             </div>
@@ -565,8 +565,8 @@ public class RabbitMQConfig {
                 this.classList.add('active');
                 const details = componentDetails[this.id];
                 detailsContainer.innerHTML = `
-                        <h3 class="text-xl font-bold text-sky-800 mb-2">${details.title}</h3>
-                        <p class="text-slate-700">${details.content}</p>
+                        <h3 class="text-xl font-bold text-sky-300 mb-2">${details.title}</h3>
+                        <p class="text-slate-300">${details.content}</p>
                     `;
             });
         });
@@ -589,23 +589,23 @@ public class RabbitMQConfig {
                 });
             });
             // Style active button
-            button.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid transparent; color: #64748b;';
+            button.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid transparent; color: #94a3b8;';
             if (button.classList.contains('active')) {
-                button.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid #0ea5e9; color: #0284c7; font-weight: 600;';
+                button.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid #38bdf8; color: #7dd3fc; font-weight: 600;';
             }
-            button.addEventListener('mouseover', function() { if(!this.classList.contains('active')) this.style.color = '#334155'; });
-            button.addEventListener('mouseout', function() { if(!this.classList.contains('active')) this.style.color = '#64748b'; });
+            button.addEventListener('mouseover', function() { if(!this.classList.contains('active')) this.style.color = '#e2e8f0'; });
+            button.addEventListener('mouseout', function() { if(!this.classList.contains('active')) this.style.color = '#94a3b8'; });
         });
         // Initial style for tabs
         document.querySelectorAll('.code-tab-button').forEach(button => {
-            button.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid transparent; color: #64748b; transition: all 0.3s ease;';
+            button.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid transparent; color: #94a3b8; transition: all 0.3s ease;';
             button.addEventListener('click', function() {
                 document.querySelectorAll('.code-tab-button').forEach(btn => {
                     btn.classList.remove('active');
-                    btn.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid transparent; color: #64748b; transition: all 0.3s ease;';
+                    btn.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid transparent; color: #94a3b8; transition: all 0.3s ease;';
                 });
                 this.classList.add('active');
-                this.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid #0ea5e9; color: #0284c7; font-weight: 600; transition: all 0.3s ease;';
+                this.style.cssText = 'padding: 0.5rem 1rem; border-bottom: 2px solid #38bdf8; color: #7dd3fc; font-weight: 600; transition: all 0.3s ease;';
             });
         });
         document.querySelector('.code-tab-button.active').click();
@@ -648,7 +648,7 @@ public class RabbitMQConfig {
 
             // Simulate message animation
             const tempDiv = document.createElement('div');
-            tempDiv.className = 'message bg-sky-200 p-2 rounded mb-2';
+            tempDiv.className = 'message bg-sky-800 p-2 rounded mb-2';
             tempDiv.textContent = `Tin nhắn: ${message} (Key: ${routingKey})`;
             tempDiv.style.opacity = '0';
             document.body.appendChild(tempDiv);
@@ -668,7 +668,7 @@ public class RabbitMQConfig {
             const queue3 = document.getElementById('queue3');
 
             const messageDiv = document.createElement('div');
-            messageDiv.className = 'message bg-teal-200 p-2 rounded mb-2';
+            messageDiv.className = 'message bg-teal-800 p-2 rounded mb-2';
             messageDiv.textContent = `Tin nhắn: ${message} (Key: ${routingKey})`;
 
             if (exchangeType === 'direct') {
