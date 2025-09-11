@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nghiên Cứu Toàn Diện Về Monitoring</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Calm Harmony Dark Mode -->
+    <!-- Application Structure Plan: Tôi đã thiết kế ứng dụng này theo cấu trúc dashboard với thanh điều hướng cố định bên trái và vùng nội dung chính bên phải. Cấu trúc này cho phép người dùng tự do chuyển đổi giữa các chủ đề phức tạp mà không làm mất ngữ cảnh. Thay vì trình bày tuyến tính, tôi đã nhóm các mục liên quan vào các danh mục lớn (Nền tảng, Thực hành, Vận hành, Tài nguyên) để tối ưu hóa luồng học tập và tra cứu. Các tương tác chính bao gồm việc nhấp vào menu để hiển thị nội dung, xem các biểu đồ minh họa và tham khảo các đoạn mã ví dụ, giúp chuyển đổi từ lý thuyết sang thực hành một cách trực quan. -->
+    <!-- Visualization & Content Choices: 1. So sánh khái niệm (Monitoring vs Observability): Goal=So sánh, Method=Layout 3 cột, Interaction=Không, Justification=Trực quan hóa sự khác biệt. 2. Các loại Monitoring: Goal=Tổ chức, Method=Lưới thẻ (Grid of Cards), Interaction=Không, Justification=Dễ dàng quét qua các loại hình khác nhau. 3. Luồng dữ liệu Monitoring: Goal=Tổ chức, Method=Sơ đồ Flexbox HTML/CSS, Interaction=Không, Justification=Minh họa quy trình một cách đơn giản, không cần thư viện ngoài. 4. Golden Signals/RED/USE: Goal=So sánh, Method=Biểu đồ Radar (Chart.js), Interaction=Hover để xem chi tiết, Justification=So sánh trực quan các phương pháp luận trên cùng một biểu đồ. 5. Lộ trình triển khai: Goal=Tổ chức, Method=Sơ đồ timeline HTML/CSS, Interaction=Không, Justification=Hiển thị các giai đoạn một cách tuần tự và rõ ràng. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1A202C;
+            color: #E2E8F0;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+            border-left: 3px solid transparent;
+        }
+        .nav-link.active {
+            background-color: #2D3748;
+            border-left-color: #63B3ED;
+            color: #fff;
+            font-weight: 600;
+        }
+        .nav-link:hover {
+            background-color: #2D3748;
+        }
+        pre {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.875rem;
+        }
+        code.language-yaml .key { color: #f92672; }
+        code.language-yaml .string { color: #e6db74; }
+        code.language-java .keyword { color: #f92672; }
+        code.language-java .string { color: #e6db74; }
+        code.language-java .comment { color: #75715e; }
+        code.language-java .class-name { color: #a6e22e; }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+<div class="flex h-screen bg-[#1A202C]">
+    <aside class="w-64 flex-shrink-0 bg-[#2D3748] border-r border-gray-700 flex flex-col">
+        <div class="h-16 flex items-center justify-center px-4 border-b border-gray-700">
+            <h1 class="text-xl font-bold text-gray-300">Monitoring Guide</h1>
+        </div>
+        <nav id="navigation" class="flex-1 overflow-y-auto py-4 space-y-2">
+            <div>
+                <h3 class="px-4 text-sm font-semibold text-gray-400 uppercase tracking-wider">Nền tảng</h3>
+                <a href="#concepts" class="nav-link block px-4 py-2 text-gray-400">Khái niệm cơ bản</a>
+                <a href="#architecture" class="nav-link block px-4 py-2 text-gray-400">Kiến trúc & Patterns</a>
+            </div>
+            <div>
+                <h3 class="px-4 text-sm font-semibold text-gray-400 uppercase tracking-wider">Thực hành</h3>
+                <a href="#springboot" class="nav-link block px-4 py-2 text-gray-400">Spring Boot & Actuator</a>
+                <a href="#prometheus" class="nav-link block px-4 py-2 text-gray-400">Hệ sinh thái Prometheus</a>
+                <a href="#grafana" class="nav-link block px-4 py-2 text-gray-400">Grafana Visualization</a>
+                <a href="#tracing" class="nav-link block px-4 py-2 text-gray-400">Distributed Tracing</a>
+                <a href="#logging" class="nav-link block px-4 py-2 text-gray-400">Quản lý Log</a>
+            </div>
+            <div>
+                <h3 class="px-4 text-sm font-semibold text-gray-400 uppercase tracking-wider">Vận hành & Tối ưu</h3>
+                <a href="#cloud" class="nav-link block px-4 py-2 text-gray-400">Cloud Monitoring</a>
+                <a href="#alerting" class="nav-link block px-4 py-2 text-gray-400">Cảnh báo hiệu quả</a>
+                <a href="#performance" class="nav-link block px-4 py-2 text-gray-400">Performance & Tối ưu</a>
+                <a href="#security" class="nav-link block px-4 py-2 text-gray-400">Bảo mật & Tuân thủ</a>
+            </div>
+            <div>
+                <h3 class="px-4 text-sm font-semibold text-gray-400 uppercase tracking-wider">Tài nguyên</h3>
+                <a href="#casestudies" class="nav-link block px-4 py-2 text-gray-400">Case Studies & Lộ trình</a>
+            </div>
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-6 md:p-10">
+        <div id="concepts" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Khái Niệm Cơ Bản Về Monitoring</h2>
+            <p class="text-gray-400 mb-8">Phần này giới thiệu các định nghĩa nền tảng và mục đích của việc giám sát hệ thống trong phát triển phần mềm hiện đại, đặc biệt là trong bối cảnh DevOps và SRE.</p>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h3 class="font-bold text-lg mb-2 text-blue-400">Monitoring (Giám sát)</h3>
+                    <p class="text-gray-400">Là quá trình thu thập, xử lý, và hiển thị dữ liệu về hiệu suất của hệ thống. Mục tiêu là để biết hệ thống đang hoạt động như thế nào, phát hiện các vấn đề đã biết (known unknowns).</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Ví dụ:</strong> CPU usage có vượt 80% không?</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h3 class="font-bold text-lg mb-2 text-green-400">Observability (Quan sát)</h3>
+                    <p class="text-gray-400">Là khả năng suy luận trạng thái bên trong của hệ thống từ dữ liệu đầu ra của nó (metrics, logs, traces). Mục tiêu là để có thể gỡ lỗi các vấn đề chưa từng biết (unknown unknowns).</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Ví dụ:</strong> Tại sao latency của user X lại tăng đột biến?</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h3 class="font-bold text-lg mb-2 text-red-400">Alerting (Cảnh báo)</h3>
+                    <p class="text-gray-400">Là một phần của monitoring, chịu trách nhiệm thông báo cho con người khi có một sự kiện quan trọng hoặc một ngưỡng bị vi phạm, đòi hỏi sự can thiệp.</p>
+                    <p class="mt-2 text-sm text-gray-500"><strong>Ví dụ:</strong> Gửi email khi tỷ lệ lỗi vượt 5%.</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Các Loại Hình Monitoring</h3>
+            <p class="text-gray-400 mb-6">Mỗi loại hình monitoring tập trung vào một khía cạnh khác nhau của hệ thống, từ mã nguồn ứng dụng, cơ sở hạ tầng, cho đến trải nghiệm người dùng cuối và mục tiêu kinh doanh. Việc kết hợp chúng tạo ra một bức tranh toàn cảnh.</p>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>APM:</strong> Giám sát hiệu suất ứng dụng, theo dõi transaction, lỗi.</div>
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>Infrastructure Monitoring:</strong> Giám sát server, network, database, container.</div>
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>Log Monitoring:</strong> Thu thập, tổng hợp và phân tích log.</div>
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>Synthetic Monitoring:</strong> Giả lập hành vi người dùng để kiểm tra uptime, endpoint.</div>
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>Real User Monitoring (RUM):</strong> Theo dõi trải nghiệm thực tế của người dùng.</div>
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>Business Metrics:</strong> Theo dõi KPIs, tỷ lệ chuyển đổi, doanh thu.</div>
+            </div>
+        </div>
+
+        <div id="architecture" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Kiến Trúc và Patterns Monitoring</h2>
+            <p class="text-gray-400 mb-8">Hiểu về các mô hình kiến trúc và phương pháp luận là chìa khóa để xây dựng một hệ thống monitoring hiệu quả, có khả năng mở rộng và phù hợp với kiến trúc microservices.</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Luồng Dữ Liệu Monitoring Tiêu Biểu</h3>
+            <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700 mb-8">
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4 text-center">
+                    <div class="p-4 bg-blue-600/20 rounded-lg w-full md:w-1/4">
+                        <h4 class="font-bold text-blue-300">1. Collection</h4>
+                        <p class="text-sm text-gray-400">Agents, Exporters, Actuator, Logs</p>
+                    </div>
+                    <div class="text-2xl text-gray-500">→</div>
+                    <div class="p-4 bg-green-600/20 rounded-lg w-full md:w-1/4">
+                        <h4 class="font-bold text-green-300">2. Processing</h4>
+                        <p class="text-sm text-gray-400">Logstash, Fluentd, Prometheus</p>
+                    </div>
+                    <div class="text-2xl text-gray-500">→</div>
+                    <div class="p-4 bg-yellow-600/20 rounded-lg w-full md:w-1/4">
+                        <h4 class="font-bold text-yellow-300">3. Storage</h4>
+                        <p class="text-sm text-gray-400">TSDB (Prometheus, InfluxDB), Elasticsearch</p>
+                    </div>
+                    <div class="text-2xl text-gray-500">→</div>
+                    <div class="p-4 bg-purple-600/20 rounded-lg w-full md:w-1/4">
+                        <h4 class="font-bold text-purple-300">4. Visualization & Alerting</h4>
+                        <p class="text-sm text-gray-400">Grafana, Kibana, Alertmanager</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Phương Pháp Luận Monitoring cho Microservices</h3>
+            <p class="text-gray-400 mb-6">Các phương pháp luận như Golden Signals, RED, và USE cung cấp một framework để xác định những gì cần theo dõi. Chúng giúp tập trung vào các chỉ số thực sự quan trọng đối với sức khỏe của dịch vụ.</p>
+            <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                <div class="chart-container">
+                    <canvas id="methodsChart"></canvas>
+                </div>
+                <p class="text-center text-sm text-gray-500 mt-4">Biểu đồ Radar so sánh các phương pháp luận monitoring.</p>
+            </div>
+        </div>
+
+        <div id="springboot" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Monitoring Thực Hành với Spring Boot</h2>
+            <p class="text-gray-400 mb-8">Spring Boot cung cấp các công cụ mạnh mẽ để tích hợp monitoring vào ứng dụng một cách dễ dàng, đặc biệt là thông qua Actuator và thư viện Micrometer.</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Spring Boot Actuator Deep Dive</h3>
+            <p class="text-gray-400 mb-4">Actuator cung cấp các endpoint "production-ready" để giám sát và quản lý ứng dụng. Để tích hợp với Prometheus, bạn cần thêm dependency và cấu hình để expose các metrics.</p>
+            <p class="text-gray-400 font-medium mb-2">1. Thêm Dependencies (Maven):</p>
+            <pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.micrometer&lt;/groupId&gt;
+    &lt;artifactId&gt;micrometer-registry-prometheus&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+            <p class="text-gray-400 font-medium mt-6 mb-2">2. Cấu hình <code>application.yml</code>:</p>
+            <pre><code class="language-yaml">management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,prometheus" # Expose các endpoint cần thiết
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags: # Thêm tag mặc định cho tất cả metrics
+      application: ${spring.application.name}</code></pre>
+            <p class="text-gray-400 mt-4">Sau khi cấu hình, endpoint <code>/actuator/prometheus</code> sẽ có sẵn để Prometheus scrape.</p>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Tạo Custom Metrics với Micrometer</h3>
+            <p class="text-gray-400 mb-4">Micrometer cho phép bạn tạo các metrics tùy chỉnh để theo dõi các chỉ số nghiệp vụ hoặc kỹ thuật quan trọng. Dưới đây là ví dụ về việc đếm số lượng đơn hàng được tạo.</p>
+            <pre><code class="language-java">import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.stereotype.Service;
+
+@Service
+public class OrderService {
+    private final Counter orderCounter;
+
+    // Inject MeterRegistry
+    public OrderService(MeterRegistry registry) {
+        // Tạo một counter với tên và mô tả
+        this.orderCounter = Counter.builder("orders.created")
+                .description("Number of created orders")
+                .tag("region", "apac") // Thêm tag để phân loại
+                .register(registry);
+    }
+
+    public void createOrder() {
+        // ... business logic ...
+        orderCounter.increment(); // Tăng giá trị counter
+    }
+}</code></pre>
+        </div>
+
+        <div id="prometheus" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Hệ Sinh Thái Prometheus</h2>
+            <p class="text-gray-400 mb-8">Prometheus đã trở thành tiêu chuẩn de-facto cho việc giám sát metrics trong thế giới container và microservices. Nó hoạt động theo mô hình "pull", định kỳ thu thập dữ liệu từ các endpoint đã được cấu hình.</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Kiến trúc Prometheus</h3>
+            <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                    <div class="p-3 bg-gray-800 rounded text-gray-300">
+                        <h4 class="font-semibold">Service Discovery</h4>
+                        <p class="text-sm">Tìm kiếm các target (e.g., Kubernetes, Consul)</p>
+                    </div>
+                    <div class="p-3 bg-gray-800 rounded text-gray-300">
+                        <h4 class="font-semibold">Prometheus Server</h4>
+                        <p class="text-sm">Scraping, Storage (TSDB), PromQL</p>
+                    </div>
+                    <div class="p-3 bg-gray-800 rounded text-gray-300">
+                        <h4 class="font-semibold">Alertmanager</h4>
+                        <p class="text-sm">Xử lý, gom nhóm, gửi cảnh báo</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Cấu hình Prometheus (<code>prometheus.yml</code>)</h3>
+            <p class="text-gray-400 mb-4">Đây là một ví dụ cấu hình cơ bản để Prometheus scrape dữ liệu từ ứng dụng Spring Boot của bạn.</p>
+            <pre><code class="language-yaml">global:
+  scrape_interval: 15s # Tần suất scrape mặc định
+
+scrape_configs:
+  - job_name: 'spring-boot-app'
+    metrics_path: '/actuator/prometheus' # Đường dẫn tới endpoint
+    static_configs:
+      - targets: ['host.docker.internal:8080'] # Địa chỉ ứng dụng của bạn</code></pre>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Ví dụ về PromQL</h3>
+            <p class="text-gray-400 mb-4">PromQL là ngôn ngữ truy vấn mạnh mẽ của Prometheus. Bạn có thể sử dụng nó để lọc, tổng hợp và tính toán trên dữ liệu time series.</p>
+            <ul class="list-disc list-inside space-y-2 bg-[#2D3748] p-4 rounded-lg border border-gray-700 text-gray-300">
+                <li>
+                    <strong>Tính tỷ lệ request lỗi trong 5 phút qua:</strong>
+                    <pre class="mt-1"><code>sum(rate(http_server_requests_seconds_count{status=~"5.*"}[5m])) / sum(rate(http_server_requests_seconds_count[5m]))</code></pre>
+                </li>
+                <li>
+                    <strong>Tìm 95th percentile latency:</strong>
+                    <pre class="mt-1"><code>histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket[5m])) by (le, uri))</code></pre>
+                </li>
+            </ul>
+        </div>
+
+        <div id="grafana" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Grafana Visualization</h2>
+            <p class="text-gray-400 mb-8">Grafana là công cụ trực quan hóa hàng đầu, cho phép bạn tạo ra các dashboard đẹp và mạnh mẽ từ nhiều nguồn dữ liệu khác nhau, bao gồm Prometheus.</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Các Thành Phần Chính của Dashboard</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Data Sources</h4>
+                    <p class="text-gray-400">Kết nối Grafana với nơi lưu trữ dữ liệu của bạn, ví dụ như Prometheus. Bạn chỉ cần cung cấp URL của Prometheus server.</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Panels</h4>
+                    <p class="text-gray-400">Mỗi panel trên dashboard là một khối trực quan hóa (biểu đồ, bảng, gauge...). Mỗi panel được liên kết với một hoặc nhiều query đến data source.</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Queries</h4>
+                    <p class="text-gray-400">Trong mỗi panel, bạn viết các query (ví dụ: PromQL) để lấy dữ liệu bạn muốn hiển thị.</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Variables</h4>
+                    <p class="text-gray-400">Tạo các dashboard động bằng cách sử dụng biến. Ví dụ, tạo một biến `application` để người dùng có thể chọn xem dashboard cho các service khác nhau.</p>
+                </div>
+            </div>
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Dashboard Design Best Practices</h3>
+            <p class="text-gray-400 mb-6">Một dashboard tốt không chỉ đẹp mà còn phải hữu ích, giúp người xem nhanh chóng nắm bắt được tình hình và đưa ra quyết định. Hãy thiết kế dashboard theo các cấp độ khác nhau để phục vụ các đối tượng khác nhau.</p>
+            <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                <ul class="list-disc list-inside space-y-3 text-gray-300">
+                    <li><strong>Executive Dashboard:</strong> Cung cấp cái nhìn tổng quan về các chỉ số kinh doanh chính (SLO, tỷ lệ lỗi, doanh thu). Đơn giản, dễ hiểu.</li>
+                    <li><strong>Operational Dashboard:</strong> Dành cho team vận hành, hiển thị sức khỏe của hệ thống (RED metrics, saturation). Cung cấp đủ thông tin để biết hệ thống có đang ổn không.</li>
+                    <li><strong>Troubleshooting Dashboard:</strong> Dành cho developer khi debug, chứa các thông tin chi tiết (JVM metrics, connection pool, latency chi tiết). Dày đặc thông tin để phân tích nguyên nhân gốc rễ.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="tracing" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Distributed Tracing</h2>
+            <p class="text-gray-400 mb-8">Trong kiến trúc microservices, một request của người dùng có thể đi qua nhiều dịch vụ. Distributed Tracing giúp theo dõi hành trình của request đó, xác định các điểm nghẽn và gỡ lỗi dễ dàng hơn.</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Các Khái Niệm Cốt Lõi</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Trace</h4>
+                    <p class="text-gray-400">Đại diện cho toàn bộ hành trình của một request qua các service. Mỗi trace có một ID duy nhất.</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Span</h4>
+                    <p class="text-gray-400">Đại diện cho một đơn vị công việc trong một service (ví dụ: một lời gọi API, một truy vấn DB). Mỗi span có ID riêng, thời gian bắt đầu/kết thúc và thuộc về một trace.</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Tích hợp với Spring Cloud Sleuth và Zipkin</h3>
+            <p class="text-gray-400 mb-4">Spring Cloud Sleuth tự động thêm trace ID và span ID vào log (thông qua MDC) và truyền chúng qua các request HTTP, giúp việc theo dõi trở nên liền mạch.</p>
+            <p class="text-gray-400 font-medium mb-2">1. Thêm Dependencies (Maven):</p>
+            <pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-starter-sleuth&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-cloud-sleuth-zipkin&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+            <p class="text-gray-400 font-medium mt-6 mb-2">2. Cấu hình <code>application.yml</code> để gửi trace đến Zipkin:</p>
+            <pre><code class="language-yaml">spring:
+  zipkin:
+    base-url: http://localhost:9411/ # Địa chỉ Zipkin server
+  sleuth:
+    sampler:
+      probability: 0.1 # Chỉ gửi 10% trace đến Zipkin để giảm tải</code></pre>
+            <p class="text-gray-400 mt-4">Khi chạy, ứng dụng sẽ tự động gửi thông tin trace đến Zipkin, nơi bạn có thể trực quan hóa và phân tích chúng.</p>
+        </div>
+
+        <div id="logging" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Quản lý Log</h2>
+            <p class="text-gray-400 mb-8">Log là một trong ba trụ cột của observability. Quản lý log hiệu quả đòi hỏi việc thu thập tập trung, định dạng có cấu trúc và các công cụ mạnh mẽ để tìm kiếm, phân tích.</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Structured Logging (Ghi Log có cấu trúc)</h3>
+            <p class="text-gray-400 mb-4">Thay vì ghi log dưới dạng text thuần túy, hãy sử dụng định dạng JSON. Điều này giúp các hệ thống như Elasticsearch dễ dàng parse và index log, cho phép tìm kiếm và tổng hợp mạnh mẽ.</p>
+
+            <p class="text-gray-400 font-medium mt-6 mb-2">Cấu hình Logback (<code>logback-spring.xml</code>) để output JSON:</p>
+            <pre><code class="language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;configuration&gt;
+    &lt;appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender"&gt;
+        &lt;encoder class="net.logstash.logback.encoder.LogstashEncoder"/&gt;
+    &lt;/appender&gt;
+    &lt;root level="INFO"&gt;
+        &lt;appender-ref ref="jsonConsoleAppender"/&gt;
+    &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+            <p class="text-gray-400 mt-4">Để sử dụng, bạn cần thêm dependency <code>net.logstash.logback:logstash-logback-encoder</code>.</p>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">EFK Stack (Elasticsearch, Fluentd, Kibana)</h3>
+            <p class="text-gray-400 mb-6">EFK là một stack mã nguồn mở phổ biến cho việc quản lý log tập trung:</p>
+            <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                <ul class="list-disc list-inside space-y-3 text-gray-300">
+                    <li><strong>Fluentd:</strong> Là một log collector, được cài đặt trên các server hoặc như một sidecar trong container, chịu trách nhiệm thu thập log và gửi đến Elasticsearch. Nó nhẹ và linh hoạt hơn Logstash.</li>
+                    <li><strong>Elasticsearch:</strong> Lưu trữ, index và cung cấp khả năng tìm kiếm full-text trên một lượng lớn dữ liệu log.</li>
+                    <li><strong>Kibana:</strong> Giao diện web để tìm kiếm, trực quan hóa và tạo dashboard từ dữ liệu trong Elasticsearch.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="cloud" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Cloud Monitoring Solutions</h2>
+            <p class="text-gray-400 mb-8">Các nhà cung cấp đám mây như AWS và Azure cung cấp các dịch vụ monitoring tích hợp sâu, giúp đơn giản hóa việc giám sát các ứng dụng và hạ tầng trên nền tảng của họ.</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">AWS Monitoring</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">CloudWatch</h4>
+                    <p class="text-gray-400">Dịch vụ trung tâm cho metrics, logs, alarms và dashboards. Nó tự động thu thập metrics từ hầu hết các dịch vụ AWS. Bạn có thể gửi custom metrics từ Spring Boot bằng AWS SDK và Micrometer registry cho CloudWatch.</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">X-Ray</h4>
+                    <p class="text-gray-400">Dịch vụ distributed tracing của AWS, tương tự Zipkin hay Jaeger. Nó tích hợp tốt với các dịch vụ như API Gateway, Lambda, EC2 để cung cấp một service map trực quan.</p>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Azure Monitoring</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Azure Monitor</h4>
+                    <p class="text-gray-400">Giải pháp toàn diện của Azure, bao gồm metrics, logs (Log Analytics), và alerts. Nó thu thập dữ liệu từ hạ tầng Azure và ứng dụng.</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Application Insights</h4>
+                    <p class="text-gray-400">Là một tính năng APM trong Azure Monitor. Cung cấp auto-instrumentation cho các ứng dụng Java, tự động thu thập request rates, response times, failure rates và cả distributed tracing.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="alerting" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Cảnh báo hiệu quả</h2>
+            <p class="text-gray-400 mb-8">Mục tiêu của alerting không phải là gửi thật nhiều thông báo, mà là gửi những cảnh báo đúng, có ý nghĩa, và có thể hành động được (actionable) để giảm thiểu "alert fatigue".</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Nguyên Tắc Thiết Kế Alert</h3>
+            <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                <ul class="list-disc list-inside space-y-3 text-gray-300">
+                    <li><strong>Actionable:</strong> Mỗi alert phải đi kèm với một hành động rõ ràng. Nếu không biết phải làm gì khi nhận alert, thì alert đó vô dụng.</li>
+                    <li><strong>Relevant:</strong> Chỉ cảnh báo những gì thực sự ảnh hưởng đến người dùng hoặc hệ thống. Đừng cảnh báo về CPU cao nếu nó không gây ra vấn đề gì.</li>
+                    <li><strong>Timely:</strong> Cảnh báo phải đến đủ nhanh để có thể hành động trước khi sự cố trở nên nghiêm trọng, nhưng không quá sớm để gây ra báo động giả.</li>
+                    <li><strong>SLI/SLO-based Alerting:</strong> Cảnh báo dựa trên "error budget". Ví dụ: cảnh báo khi tốc độ "đốt" error budget quá nhanh và có nguy cơ vi phạm SLO trong tháng.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Alertmanager của Prometheus</h3>
+            <p class="text-gray-400 mb-6">Alertmanager nhận các cảnh báo từ Prometheus và thực hiện các chức năng nâng cao:</p>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>Grouping:</strong> Nhóm các cảnh báo tương tự thành một thông báo duy nhất. (Ví dụ: 100 instance của một service cùng bị lỗi).</div>
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>Inhibition:</strong> Chặn các cảnh báo cấp thấp hơn nếu một cảnh báo cấp cao hơn đang kích hoạt. (Ví dụ: Chặn cảnh báo service down nếu cảnh báo cluster down đang active).</div>
+                <div class="bg-[#2D3748] p-4 rounded-lg shadow-md border border-gray-700 text-gray-300"><strong>Silencing:</strong> Tạm thời tắt một cảnh báo trong lúc đang bảo trì hoặc đã biết về sự cố.</div>
+            </div>
+        </div>
+
+        <div id="performance" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Performance & Tối Ưu</h2>
+            <p class="text-gray-400 mb-8">Bản thân hệ thống monitoring cũng tiêu tốn tài nguyên. Việc hiểu và tối ưu hóa tác động này là rất quan trọng, đặc biệt ở quy mô lớn.</p>
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Tác Động Hiệu Năng của Monitoring</h3>
+            <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                <ul class="list-disc list-inside space-y-3 text-gray-300">
+                    <li><strong>Overhead:</strong> Việc thu thập metrics, ghi log, tạo trace đều tiêu tốn CPU, memory và network. Cần đo lường và giữ overhead ở mức chấp nhận được.</li>
+                    <li><strong>Sampling:</strong> Đối với tracing và RUM, không cần thu thập 100% dữ liệu. Sử dụng sampling thông minh để giảm khối lượng dữ liệu mà vẫn giữ được tính đại diện.</li>
+                    <li><strong>High Cardinality:</strong> Một trong những vấn đề lớn nhất với hệ thống metrics (như Prometheus). Khi một metric có quá nhiều kết hợp label độc nhất (ví dụ: `user_id`, `request_id`), nó sẽ tạo ra hàng triệu time series, gây quá tải cho storage và query. Hãy cẩn thận khi thêm label vào metrics.</li>
+                </ul>
+            </div>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Cân Nhắc về Khả Năng Mở Rộng</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Data Retention</h4>
+                    <p class="text-gray-400">Xác định chính sách lưu trữ dữ liệu. Dữ liệu "hot" cần truy cập nhanh có thể được lưu trữ cục bộ trong Prometheus, trong khi dữ liệu lịch sử dài hạn có thể được chuyển đến các giải pháp remote storage rẻ hơn như Thanos hoặc VictoriaMetrics.</p>
+                </div>
+                <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                    <h4 class="font-bold text-lg mb-2 text-gray-200">Horizontal Scaling</h4>
+                    <p class="text-gray-400">Khi một Prometheus server không đủ sức, bạn có thể mở rộng theo chiều ngang bằng cách sử dụng Federation (cho cấu trúc phân cấp) hoặc Sharding (chia các target cho nhiều server Prometheus khác nhau).</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="security" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Bảo mật & Tuân thủ</h2>
+            <p class="text-gray-400 mb-8">Dữ liệu monitoring có thể chứa thông tin nhạy cảm. Việc bảo mật hệ thống monitoring và đảm bảo tuân thủ các quy định như GDPR là cực kỳ quan trọng.</p>
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Các Khía Cạnh Cần Quan Tâm</h3>
+            <div class="bg-[#2D3748] p-6 rounded-lg shadow-md border border-gray-700">
+                <ul class="list-disc list-inside space-y-3 text-gray-300">
+                    <li><strong>Dữ liệu nhạy cảm (PII):</strong> Không bao giờ ghi log hoặc đưa vào trace các thông tin cá nhân như mật khẩu, số thẻ tín dụng, email... Sử dụng các kỹ thuật data masking và filtering để loại bỏ chúng.</li>
+                    <li><strong>Authentication & Authorization:</strong> Bảo vệ các endpoint của Actuator, giao diện Grafana, và API của Prometheus. Tích hợp với hệ thống xác thực của công ty (LDAP, OAuth2).</li>
+                    <li><strong>Network Security:</strong> Đảm bảo giao tiếp giữa các thành phần monitoring (ví dụ giữa app và Prometheus) được mã hóa (TLS). Đặt chúng trong các mạng riêng và sử dụng firewall để hạn chế truy cập.</li>
+                    <li><strong>Audit Trails:</strong> Ghi lại ai đã thay đổi cấu hình alert, ai đã truy cập dashboard nào. Điều này quan trọng cho việc tuân thủ và điều tra sự cố.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="casestudies" class="content-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-200">Case Studies & Lộ Trình Triển Khai</h2>
+            <p class="text-gray-400 mb-8">Học hỏi từ các công ty lớn và áp dụng một lộ trình triển khai theo từng giai đoạn sẽ giúp bạn xây dựng hệ thống monitoring một cách bền vững.</p>
+
+            <h3 class="text-2xl font-bold mb-4 text-gray-200">Lộ Trình Triển Khai Gợi Ý</h3>
+            <div class="relative pl-6 border-l-2 border-blue-800">
+                <div class="mb-8">
+                    <div class="absolute -left-3 w-5 h-5 bg-blue-500 rounded-full"></div>
+                    <h4 class="font-bold text-lg text-blue-400">Phase 1: Basic Monitoring</h4>
+                    <p class="text-gray-400"><strong>Mục tiêu:</strong> Biết được hệ thống đang sống hay chết.</p>
+                    <ul class="list-disc list-inside text-sm mt-2 text-gray-300">
+                        <li>Cài đặt Spring Boot Actuator, expose endpoint <code>/health</code> và <code>/prometheus</code>.</li>
+                        <li>Setup một Prometheus server để scrape metrics.</li>
+                        <li>Tạo một dashboard Grafana cơ bản hiển thị JVM metrics, CPU, memory.</li>
+                    </ul>
+                </div>
+                <div class="mb-8">
+                    <div class="absolute -left-3 w-5 h-5 bg-blue-500 rounded-full"></div>
+                    <h4 class="font-bold text-lg text-blue-400">Phase 2: Advanced Observability</h4>
+                    <p class="text-gray-400"><strong>Mục tiêu:</strong> Có khả năng debug các vấn đề phức tạp.</p>
+                    <ul class="list-disc list-inside text-sm mt-2 text-gray-300">
+                        <li>Tích hợp Distributed Tracing (e.g., Spring Cloud Sleuth + Zipkin).</li>
+                        <li>Triển khai Centralized Logging (e.g., EFK stack) với structured logging.</li>
+                        <li>Xây dựng các dashboard theo RED/USE method.</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="absolute -left-3 w-5 h-5 bg-blue-500 rounded-full"></div>
+                    <h4 class="font-bold text-lg text-blue-400">Phase 3: Intelligent Monitoring</h4>
+                    <p class="text-gray-400"><strong>Mục tiêu:</strong> Tự động hóa và dự đoán sự cố.</p>
+                    <ul class="list-disc list-inside text-sm mt-2 text-gray-300">
+                        <li>Thiết lập alerting dựa trên SLI/SLO và error budgets.</li>
+                        <li>Tích hợp Alertmanager với PagerDuty/OpsGenie.</li>
+                        <li>Khám phá các kỹ thuật anomaly detection, runbook automation.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3 class="text-2xl font-bold mt-8 mb-4 text-gray-200">Các Cạm Bẫy Phổ Biến</h3>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-red-900/20 p-6 rounded-lg border border-red-700">
+                    <h4 class="font-bold text-lg mb-2 text-red-400">Over-monitoring</h4>
+                    <p class="text-gray-400">Theo dõi quá nhiều thứ không cần thiết, gây tốn kém chi phí, phức tạp hóa hệ thống và tạo ra "nhiễu" thông tin.</p>
+                </div>
+                <div class="bg-yellow-900/20 p-6 rounded-lg border border-yellow-700">
+                    <h4 class="font-bold text-lg mb-2 text-yellow-400">Under-monitoring</h4>
+                    <p class="text-gray-400">Thiếu các chỉ số quan trọng, tạo ra các "điểm mù" (blind spots) và chỉ phát hiện được sự cố khi người dùng đã bị ảnh hưởng.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        function showSection(hash) {
+            let targetHash = hash || '#concepts';
+
+            contentSections.forEach(section => {
+                if ('#' + section.id === targetHash) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === targetHash) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+
+        document.getElementById('navigation').addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') {
+                e.preventDefault();
+                const targetHash = e.target.getAttribute('href');
+                history.pushState(null, null, targetHash);
+                showSection(targetHash);
+            }
+        });
+
+        window.addEventListener('popstate', function() {
+            showSection(window.location.hash);
+        });
+
+        showSection(window.location.hash);
+
+        const methodsChartCtx = document.getElementById('methodsChart');
+        if(methodsChartCtx) {
+            new Chart(methodsChartCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Rate/Traffic', 'Errors', 'Duration/Latency', 'Saturation', 'Utilization'],
+                    datasets: [{
+                        label: 'Golden Signals (SRE)',
+                        data: [1, 1, 1, 1, 0],
+                        fill: true,
+                        backgroundColor: 'rgba(99, 179, 237, 0.2)',
+                        borderColor: 'rgb(99, 179, 237)',
+                        pointBackgroundColor: 'rgb(99, 179, 237)',
+                    }, {
+                        label: 'RED Method',
+                        data: [1, 1, 1, 0, 0],
+                        fill: true,
+                        backgroundColor: 'rgba(72, 187, 120, 0.2)',
+                        borderColor: 'rgb(72, 187, 120)',
+                        pointBackgroundColor: 'rgb(72, 187, 120)',
+                    }, {
+                        label: 'USE Method',
+                        data: [0, 1, 0, 1, 1],
+                        fill: true,
+                        backgroundColor: 'rgba(246, 173, 85, 0.2)',
+                        borderColor: 'rgb(246, 173, 85)',
+                        pointBackgroundColor: 'rgb(246, 173, 85)',
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: false
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 1,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.2)'
+                            },
+                            pointLabels: {
+                                color: '#CBD5E0'
+                            },
+                            ticks: {
+                                color: '#CBD5E0',
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#E2E8F0'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
